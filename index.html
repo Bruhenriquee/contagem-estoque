@@ -1,0 +1,346 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Contagem de Estoque Cervantes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: app de uma coluna para celular — barra fixa no topo com loja/contador, abas embaixo do cabeçalho, conteúdo em cartões de leitura rápida no chão da loja */
+:root{
+  --bg:#F4F5F2; --surface:#FFFFFF; --ink:#1C2321; --muted:#5E6A66; --line:#DCE1DE;
+  --accent:#D9480F; --accent-ink:#FFFFFF; --accent-soft:#FDEBE2;
+  --ok:#1F7A4D; --ok-soft:#E3F3EA; --bad:#B42318; --bad-soft:#FDE8E6; --warn:#946200; --warn-soft:#FFF4D6;
+  --font:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121615; --surface:#1B201F; --ink:#E8ECEA; --muted:#9AA6A1; --line:#2E3634;
+  --accent:#F2733A; --accent-ink:#1B0D06; --accent-soft:#3A2116;
+  --ok:#5CC08C; --ok-soft:#173326; --bad:#F2877C; --bad-soft:#3A1916; --warn:#E8B44A; --warn-soft:#352A12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121615; --surface:#1B201F; --ink:#E8ECEA; --muted:#9AA6A1; --line:#2E3634;
+  --accent:#F2733A; --accent-ink:#1B0D06; --accent-soft:#3A2116;
+  --ok:#5CC08C; --ok-soft:#173326; --bad:#F2877C; --bad-soft:#3A1916; --warn:#E8B44A; --warn-soft:#352A12; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.45;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.hdr{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px 0;display:flex;flex-direction:column;gap:8px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+h1{font-size:17px;margin:0;font-weight:700;letter-spacing:-.01em}
+.who{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.chip{font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600;border:0;font-family:var(--font);cursor:pointer}
+.tabs{display:flex;gap:4px}
+.tab{flex:1;background:none;border:0;border-bottom:3px solid transparent;padding:9px 4px 8px;font:600 14px var(--font);color:var(--muted);cursor:pointer}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .n{font-family:var(--mono);font-size:12px;margin-left:4px;color:var(--muted)}
+section{display:flex;flex-direction:column;gap:12px;padding-top:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:11px 12px;width:100%;min-width:0}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+textarea{font-family:var(--mono);font-size:12.5px;min-height:120px;resize:vertical}
+.row{display:flex;gap:8px;align-items:stretch}
+.row>*{min-width:0}
+.btn{border:0;border-radius:8px;padding:12px 14px;font:600 15px var(--font);cursor:pointer;background:var(--bg);color:var(--ink);border:1px solid var(--line);white-space:normal;line-height:1.2}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.big{padding:15px;font-size:16px;width:100%}
+.btn.sm{padding:7px 10px;font-size:13px}
+.btn.ghost{background:none;border-color:transparent;color:var(--muted)}
+.btn:disabled{opacity:.5;cursor:default}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.results{display:flex;flex-direction:column}
+.res{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 4px;border-bottom:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;text-align:left;font:inherit;color:inherit}
+.res:last-child{border-bottom:0}
+.res b{font-weight:600}
+.res .meta{grid-column:1/-1;font-size:12.5px;color:var(--muted)}
+.prod h2{font-size:18px;margin:0;line-height:1.3;text-wrap:balance}
+.kv{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.kv span b{color:var(--ink);font-weight:600}
+.qty{display:grid;grid-template-columns:56px 1fr 56px;gap:8px}
+.qty input{text-align:center;font:600 26px var(--mono);padding:10px}
+.quick{display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.list{display:flex;flex-direction:column}
+.li{display:grid;grid-template-columns:1fr auto auto;gap:4px 10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.li:last-child{border-bottom:0}
+.li .d{min-width:0;overflow-wrap:anywhere}
+.li .d small{display:block;color:var(--muted);font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (min-width:620px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+.stat .v{font:600 20px var(--mono);font-variant-numeric:tabular-nums}
+.stat .l{font-size:12px;color:var(--muted)}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--bg);position:sticky;top:0}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pos{color:var(--ok)} .neg{color:var(--bad)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:20;max-width:calc(100% - 32px);text-align:center}
+.confirm{background:var(--warn-soft);border:1px solid var(--warn);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:8px}
+.note{font-size:13px;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:10px 12px}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg button{flex:1 1 auto}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.cmp{display:flex;flex-direction:column;gap:12px}
+.row.w{flex-wrap:wrap}
+.empty{text-align:center;color:var(--muted);padding:18px 8px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header>
+  <div class="hdr">
+    <div class="top">
+      <h1>Contagem de estoque</h1>
+      <div class="who"><button class="chip" id="chipLoja" type="button">—</button><button class="chip" id="chipNome" type="button">—</button><button class="chip" id="chipSetor" type="button">—</button></div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" id="t-contar" aria-selected="true" type="button">Contar</button>
+      <button class="tab" role="tab" id="t-minha" aria-selected="false" type="button">Contados<span class="n" id="nMinha">0</span></button>
+      <button class="tab" role="tab" id="t-comparar" aria-selected="false" type="button">Comparar</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- INÍCIO -->
+  <section id="v-inicio" hidden>
+    <div class="card">
+      <div><label for="selLoja">Loja que vai ser contada</label></div>
+      <select id="selLoja"></select>
+      <div><label for="inNome">Seu nome</label></div>
+      <input id="inNome" autocomplete="name" placeholder="Ex.: Fabiana">
+      <div><label for="inSetor">Setor que você vai contar</label></div>
+      <input id="inSetor" placeholder="Ex.: Corredor 3, Depósito, Pátio">
+      <button class="btn pri big" id="btnComecar" type="button">Começar a contar</button>
+    </div>
+    <div class="note" id="noteDados">Carregando a lista de produtos…</div>
+  </section>
+
+  <!-- CONTAR -->
+  <section id="v-contar" hidden>
+    <div class="card">
+      <label for="busca">Código de barras, código ou nome</label>
+      <div class="row">
+        <input id="busca" inputmode="search" autocomplete="off" enterkeyhint="search" placeholder="Bipe, digite ou fotografe o código">
+        <button class="btn" id="btnFoto" type="button" title="Fotografar o código de barras">📷</button>
+      </div>
+      <input id="foto" type="file" accept="image/*" capture="environment" hidden>
+      <div class="results" id="results"></div>
+    </div>
+    <div class="card prod" id="prodCard" hidden>
+      <h2 id="pNome"></h2>
+      <div class="kv" id="pInfo"></div>
+      <div id="pJa" class="small muted"></div>
+      <label for="qtd" id="qLabel">Quantidade contada</label>
+      <div class="qty">
+        <button class="btn" id="qMenos" type="button" aria-label="Diminuir 1">−</button>
+        <input id="qtd" inputmode="decimal" enterkeyhint="done" value="1">
+        <button class="btn" id="qMais" type="button" aria-label="Aumentar 1">+</button>
+      </div>
+      <div class="quick" id="quick"></div>
+      <button class="btn pri big" id="btnSomar" type="button">Somar à contagem</button>
+    </div>
+    <div class="card" id="recCard">
+      <div class="row" style="justify-content:space-between;align-items:center"><label>Últimas contagens</label><span class="small muted" id="recInfo"></span></div>
+      <div class="list" id="recentes"><div class="empty">Nada contado ainda. Bipe ou busque o primeiro produto.</div></div>
+    </div>
+  </section>
+
+  <!-- MINHA CONTAGEM -->
+  <section id="v-minha" hidden>
+    <div class="stats" id="minhaStats"></div>
+    <div class="card">
+      <label>Enviar para o responsável</label>
+      <p class="small muted" style="margin:0">Copie o texto abaixo e mande pelo WhatsApp para quem vai juntar as contagens. Mande também no meio do trabalho, por segurança: se o celular limpar os dados do navegador, a contagem se perde.</p>
+      <div class="row"><button class="btn pri" id="btnCopiar" type="button" style="flex:1">Copiar contagem</button><button class="btn" id="btnBaixar" type="button" hidden>Baixar arquivo</button></div>
+      <textarea id="txtEnvio" readonly aria-label="Texto da contagem"></textarea>
+    </div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between;align-items:center"><label>Produtos contados</label><input id="fMinha" placeholder="Filtrar" style="max-width:180px;padding:7px 10px"></div>
+      <div class="list" id="minhaLista"></div>
+    </div>
+    <div class="card">
+      <button class="btn" id="btnLimpar" type="button">Apagar minha contagem e começar outra</button>
+      <div class="confirm" id="cfLimpar" hidden>
+        <b>Apagar tudo o que você contou neste celular?</b>
+        <span class="small">Antes, confira se já copiou e enviou a contagem. Não dá para desfazer.</span>
+        <div class="row"><button class="btn" id="cfNao" type="button" style="flex:1">Cancelar</button><button class="btn pri" id="cfSim" type="button" style="flex:1">Apagar</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARAR -->
+  <section id="v-comparar" hidden>
+    <div class="card">
+      <label for="txtJuntar">Contagens recebidas</label>
+      <p class="small muted" style="margin:0">Cole aqui o texto que cada contador mandou (pode colar vários, um embaixo do outro). Produtos contados por mais de uma pessoa são somados.</p>
+      <textarea id="txtJuntar" placeholder="CONTAGEM|..."></textarea>
+      <div class="row w"><button class="btn pri" id="btnJuntar" type="button" style="flex:1">Juntar e comparar com o sistema</button><button class="btn" id="btnMinhaJuntar" type="button">Usar a deste celular</button></div>
+      <div class="small muted" id="juntarInfo"></div>
+    </div>
+    <div id="cmpOut" class="cmp" hidden>
+      <div class="stats" id="cmpStats"></div>
+      <div class="card">
+        <div class="seg" id="segFiltro">
+          <button class="btn sm" data-f="div" aria-pressed="true" type="button">Com diferença</button>
+          <button class="btn sm" data-f="ok" aria-pressed="false" type="button">Batendo</button>
+          <button class="btn sm" data-f="nao" aria-pressed="false" type="button">Não contados</button>
+        </div>
+        <div class="row"><select id="fGrupo" aria-label="Grupo"></select><input id="fBusca" placeholder="Buscar produto" aria-label="Buscar produto"></div>
+        <div class="row w"><button class="btn sm" id="btnCopiarTab" type="button">Copiar tabela para o Excel</button><button class="btn sm" id="btnBaixarTab" type="button" hidden>Baixar CSV</button><span class="small muted" id="tabInfo" style="align-self:center"></span></div>
+      </div>
+      <div class="tblwrap"><table><thead><tr><th>Código</th><th>Produto</th><th class="n">Sistema</th><th class="n">Contado</th><th class="n">Diferença</th><th class="n">Valor (venda)</th></tr></thead><tbody id="tbody"></tbody></table></div>
+    </div>
+  </section>
+
+  <p class="small muted" id="rodape" style="margin-top:16px"></p>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.20.0/umd/index.min.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const KEY='contagem-estoque-v1';
+const UN={'UNIDADE':'un','Metro':'m','Par':'par','Caixa':'cx','Metro_Quad':'m²','M2':'m²','Litros':'L','Galão':'gl','Conjunto':'cj','Lata':'lata','Balde':'balde','Kilo':'kg','KG':'kg','Peça':'pç','Rolo':'rolo','Pacote':'pct','Saco':'sc','Barra':'br','Milheiro':'mil','Tonelada':'t','M3':'m³','Metro_Cub':'m³'};
+const un=u=>UN[u]||(u||'').toLowerCase();
+const norm=s=>(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const fmtQ=v=>{const r=Math.round(v*1000)/1000;return r.toLocaleString('pt-BR',{maximumFractionDigits:3})};
+const fmtR=v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let D=null, P=new Map(), EAN=new Map(), IDX=[], ESTQ={};
+let S={loja:'',nome:'',setor:'',ent:[]};
+let cur=null, filtro='div', CMP=null;
+function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&Array.isArray(v.ent))S=v}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Não foi possível salvar neste navegador. Envie a contagem com frequência.')}}
+let tt;function toast(m){const t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2200)}
+function view(v){['inicio','contar','minha','comparar'].forEach(k=>$('v-'+k).hidden=k!==v);['contar','minha','comparar'].forEach(k=>$('t-'+k).setAttribute('aria-selected',String(k===v)));if(v==='minha')renderMinha();if(v==='contar')setTimeout(()=>$('busca').focus(),50)}
+function totais(){const m=new Map();for(const e of S.ent)m.set(e.c,(m.get(e.c)||0)+e.q);return m}
+function chips(){$('chipLoja').textContent=S.loja||'Escolher loja';$('chipNome').textContent=S.nome||'Seu nome';$('chipSetor').textContent=S.setor||'Setor';$('nMinha').textContent=totais().size}
+async function init(){
+  load();
+  try{const r=await fetch('dados.json');D=await r.json()}catch(e){$('noteDados').textContent='Não consegui carregar a lista de produtos. Recarregue a página.';view('inicio');return}
+  D.p.forEach(a=>{const o={c:a[0],e:a[1],d:a[2],g:D.grupos[a[3]],u:a[4],pv:a[5]};P.set(o.c,o);if(o.e){const k=o.e.replace(/^0+/,'');if(!EAN.has(k))EAN.set(k,[]);EAN.get(k).push(o.c)}IDX.push([norm(o.d),o.c])});
+  D.lojas.forEach((l,i)=>{const m=new Map();(D.e[i]||[]).forEach(r=>m.set(r[0],{q:r[1],pv:r[2]}));ESTQ[l]=m});
+  $('selLoja').innerHTML=D.lojas.map(l=>`<option ${l===S.loja?'selected':''}>${esc(l)}</option>`).join('');
+  $('fGrupo').innerHTML='<option value="">Todos os grupos</option>'+[...D.grupos].sort().map(g=>`<option>${esc(g)}</option>`).join('');
+  $('inNome').value=S.nome||'';$('inSetor').value=S.setor||'';
+  $('noteDados').innerHTML=`Estoque do sistema de <b>${esc(D.gerado)}</b> · ${D.p.length.toLocaleString('pt-BR')} produtos. Vendas e entradas feitas depois desse horário aparecem como diferença: o ideal é contar com a loja fechada.`;
+  $('rodape').textContent=`Estoque do sistema de ${D.gerado}. As contagens ficam guardadas só neste celular até você enviar.`;
+  chips();
+  view(S.loja&&S.nome?'contar':'inicio');renderRecentes();
+  (window.claude?.use?.('downloads')||Promise.resolve(null)).then(d=>{if(d){DL=d;$('btnBaixar').hidden=false;$('btnBaixarTab').hidden=false}}).catch(()=>{});
+}
+let DL=null;
+// ---- início
+$('btnComecar').onclick=()=>{const n=$('inNome').value.trim();if(!n){$('inNome').focus();toast('Escreva seu nome');return}
+  const l=$('selLoja').value;if(S.ent.length&&S.loja&&l!==S.loja){toast('Você tem contagem de '+S.loja+'. Envie e apague antes de trocar de loja.');return}
+  const st=$('inSetor').value.trim();if(!st){$('inSetor').focus();toast('Escreva o setor');return}
+  S.loja=l;S.nome=n;S.setor=st;save();chips();view('contar')};
+$('chipLoja').onclick=$('chipNome').onclick=$('chipSetor').onclick=()=>view('inicio');
+$('t-contar').onclick=()=>view(S.loja&&S.nome?'contar':'inicio');$('t-minha').onclick=()=>view('minha');$('t-comparar').onclick=()=>view('comparar');
+// ---- busca
+function buscar(q){q=q.trim();if(!q)return[];
+  const dig=q.replace(/\D/g,'');
+  if(dig.length>=6&&dig===q){const k=dig.replace(/^0+/,'');if(EAN.has(k))return EAN.get(k).map(c=>P.get(c))}
+  if(/^\d{1,6}$/.test(q)&&P.has(+q))return[P.get(+q)];
+  const t=norm(q).split(/\s+/).filter(Boolean);const out=[];
+  for(const [n,c] of IDX){if(t.every(w=>n.includes(w))){out.push(c);if(out.length>400)break}}
+  const st=ESTQ[S.loja]||new Map();
+  return out.map(c=>P.get(c)).sort((a,b)=>(st.has(b.c)-st.has(a.c))||(norm(a.d).startsWith(t[0])?-1:0)-(norm(b.d).startsWith(t[0])?-1:0)).slice(0,40)}
+function mostrar(lst,q){const r=$('results');
+  if(!q){r.innerHTML='';return}
+  if(!lst.length){r.innerHTML=`<div class="empty">Nenhum produto encontrado para "${esc(q)}". Tente parte do nome ou o código interno.</div>`;return}
+  if(lst.length===1&&(/^\d+$/.test(q.trim()))){escolher(lst[0]);return}
+  const st=ESTQ[S.loja]||new Map();
+  r.innerHTML=lst.map(p=>`<button class="res" data-c="${p.c}" type="button"><b>${esc(p.d)}</b><span class="mono small">${p.c}</span><span class="meta">${esc(p.g)} · ${un(p.u)}${p.e?' · EAN '+esc(p.e):' · sem código de barras'}${st.has(p.c)?'':' · sem estoque no sistema'}</span></button>`).join('')}
+$('busca').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const q=$('busca').value;mostrar(buscar(q),q)}});
+let deb;$('busca').addEventListener('input',()=>{clearTimeout(deb);const q=$('busca').value;if(/^\d+$/.test(q.trim()))return;deb=setTimeout(()=>{if(q.trim().length>=3)mostrar(buscar(q),q);else $('results').innerHTML=''},250)});
+$('results').addEventListener('click',e=>{const b=e.target.closest('.res');if(b)escolher(P.get(+b.dataset.c))});
+function escolher(p){cur=p;$('results').innerHTML='';$('busca').value='';
+  const st=(ESTQ[S.loja]||new Map()).get(p.c);const tot=totais().get(p.c)||0;
+  $('pNome').textContent=p.d;
+  $('pInfo').innerHTML=`<span>Código <b class="mono">${p.c}</b></span><span>EAN <b class="mono">${esc(p.e||'—')}</b></span><span>${esc(p.g)}</span><span>Unidade <b>${un(p.u)}</b></span>`;
+  $('pJa').innerHTML=tot?`Você já contou <b>${fmtQ(tot)} ${un(p.u)}</b> deste produto. O que digitar agora será <b>somado</b>.`:(st?'':'<span class="pill warn">Sem estoque no sistema nesta loja</span>');
+  $('qLabel').textContent='Quantidade contada ('+un(p.u)+')';
+  $('qtd').value='1';$('quick').innerHTML=[5,10,12,20,50,100].map(n=>`<button class="btn sm" data-n="${n}" type="button">${n}</button>`).join('');
+  $('prodCard').hidden=false;$('qtd').focus();$('qtd').select()}
+$('quick').addEventListener('click',e=>{const b=e.target.closest('[data-n]');if(b){$('qtd').value=b.dataset.n;$('qtd').focus()}});
+const qv=()=>parseFloat(String($('qtd').value).replace(/\./g,'').replace(',','.'));
+$('qMais').onclick=()=>{const v=qv()||0;$('qtd').value=fmtQ(v+1)};$('qMenos').onclick=()=>{const v=qv()||0;$('qtd').value=fmtQ(Math.max(0,v-1))};
+$('qtd').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();somar()}});
+$('btnSomar').onclick=somar;
+function somar(){if(!cur)return;const q=qv();if(!(q>=0)||isNaN(q)){toast('Digite uma quantidade válida');return}
+  S.ent.push({id:Date.now()+''+Math.random().toString(36).slice(2,6),c:cur.c,q,t:Date.now(),s:S.setor});save();
+  const tot=totais().get(cur.c);toast(`Somado ${fmtQ(q)} ${un(cur.u)} · total ${fmtQ(tot)}`);
+  cur=null;$('prodCard').hidden=true;chips();renderRecentes();$('busca').focus()}
+function renderRecentes(){const r=S.ent.slice(-8).reverse();$('recInfo').textContent=S.ent.length?`${S.ent.length} lançamentos · ${totais().size} produtos`:'';
+  $('recentes').innerHTML=r.length?r.map(e=>{const p=P.get(e.c)||{d:'Produto '+e.c,u:''};return`<div class="li"><div class="d">${esc(p.d)}<small class="mono">${e.c} · ${esc(e.s||'')} · ${new Date(e.t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</small></div><span class="mono">${fmtQ(e.q)} ${un(p.u)}</span><button class="btn sm ghost" data-del="${e.id}" type="button">Desfazer</button></div>`}).join(''):'<div class="empty">Nada contado ainda. Bipe ou busque o primeiro produto.</div>'}
+$('recentes').addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;S.ent=S.ent.filter(x=>x.id!==b.dataset.del);save();chips();renderRecentes();toast('Lançamento desfeito')});
+// ---- foto do código de barras
+$('btnFoto').onclick=()=>$('foto').click();
+$('foto').addEventListener('change',async()=>{const f=$('foto').files[0];$('foto').value='';if(!f)return;
+  if(!window.ZXing){toast('Leitor indisponível. Digite o código.');return}
+  toast('Lendo o código…');
+  try{const code=await lerFoto(f);if(!code){toast('Não li o código. Tire a foto mais perto e reta, com boa luz.');return}
+    const l=buscar(code);if(l.length===1)escolher(l[0]);else if(l.length>1){mostrar(l,code);toast('Código usado em mais de um produto: escolha o certo')}
+    else{$('busca').value=code;mostrar([],code)}}catch(e){toast('Não li o código. Tente de novo.')}});
+async function lerFoto(file){const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=URL.createObjectURL(file)});
+  const hints=new Map();const F=ZXing.BarcodeFormat;hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS,[F.EAN_13,F.EAN_8,F.UPC_A,F.UPC_E,F.CODE_128,F.CODE_39,F.ITF]);hints.set(ZXing.DecodeHintType.TRY_HARDER,true);
+  const reader=new ZXing.MultiFormatReader();reader.setHints(hints);
+  for(const rot of [0,90]){for(const max of [1400,900]){const c=document.createElement('canvas');const sc=Math.min(1,max/Math.max(img.width,img.height));const w=Math.round(img.width*sc),h=Math.round(img.height*sc);
+    c.width=rot?h:w;c.height=rot?w:h;const x=c.getContext('2d');if(rot){x.translate(h,0);x.rotate(Math.PI/2)}x.drawImage(img,0,0,w,h);
+    try{const lum=new ZXing.HTMLCanvasElementLuminanceSource(c);const bmp=new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(lum));return reader.decode(bmp).getText()}catch(e){}}}
+  return null}
+// ---- minha contagem
+function textoEnvio(){const by=new Map();for(const e of S.ent){const k=e.s||S.setor||'';if(!by.has(k))by.set(k,new Map());const m=by.get(k);m.set(e.c,(m.get(e.c)||0)+e.q)}const dt=new Date().toLocaleString('pt-BR');return[...by].map(([st,m])=>`CONTAGEM|${S.loja}|${S.nome}|${dt}|${m.size} produtos|${st}\n`+[...m].map(([c,q])=>c+';'+fmtQ(q).replace(/\./g,'')).join('\n')).join('\n')}
+function renderMinha(){const m=totais();const st=ESTQ[S.loja]||new Map();
+  $('minhaStats').innerHTML=[[m.size,'produtos contados'],[S.ent.length,'lançamentos'],[st.size,'com estoque no sistema'],[st.size?Math.round([...m.keys()].filter(c=>st.has(c)).length/st.size*100)+'%':'—','da loja já contado']].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+  $('txtEnvio').value=m.size?textoEnvio():'';
+  const f=norm($('fMinha').value);
+  const rows=[...m].map(([c,q])=>[P.get(c)||{c,d:'Produto '+c,u:''},q]).filter(([p])=>!f||norm(p.d).includes(f)||String(p.c).includes(f)).sort((a,b)=>a[0].d.localeCompare(b[0].d));
+  $('minhaLista').innerHTML=rows.length?rows.map(([p,q])=>`<div class="li"><div class="d">${esc(p.d)}<small class="mono">${p.c}</small></div><span class="mono">${fmtQ(q)} ${un(p.u)}</span><button class="btn sm ghost" data-zera="${p.c}" type="button">Remover</button></div>`).join(''):'<div class="empty">Nenhum produto contado.</div>'}
+$('fMinha').addEventListener('input',renderMinha);
+$('minhaLista').addEventListener('click',e=>{const b=e.target.closest('[data-zera]');if(!b)return;const c=+b.dataset.zera;S.ent=S.ent.filter(x=>x.c!==c);save();chips();renderMinha();renderRecentes();toast('Produto removido da contagem')});
+async function copiar(txt,okMsg,ta){try{await navigator.clipboard.writeText(txt);toast(okMsg)}catch(e){if(ta){ta.focus();ta.select()}toast('Selecionei o texto: toque em Copiar')}}
+$('btnCopiar').onclick=()=>{const t=$('txtEnvio').value;if(!t){toast('Nada para enviar ainda');return}copiar(t,'Contagem copiada. Cole no WhatsApp.',$('txtEnvio'))};
+$('btnBaixar').onclick=async()=>{const t=$('txtEnvio').value;if(!t||!DL)return;try{await DL.save({filename:`contagem_${S.loja}_${S.nome}.txt`.replace(/\s+/g,'_'),data:t})}catch(e){}};
+$('btnLimpar').onclick=()=>{$('cfLimpar').hidden=false};$('cfNao').onclick=()=>{$('cfLimpar').hidden=true};
+$('cfSim').onclick=()=>{S.ent=[];save();$('cfLimpar').hidden=true;chips();renderMinha();renderRecentes();toast('Contagem apagada')};
+// ---- comparar
+$('btnMinhaJuntar').onclick=()=>{if(!S.ent.length){toast('Este celular não tem contagem');return}$('txtJuntar').value=($('txtJuntar').value.trim()?$('txtJuntar').value.trim()+'\n':'')+textoEnvio()};
+$('btnJuntar').onclick=()=>{const txt=$('txtJuntar').value;const blocos=[];let b=null;
+  txt.split(/\r?\n/).forEach(l=>{l=l.trim();if(!l)return;if(/^CONTAGEM\|/.test(l)){const h=l.split('|');b={loja:h[1],nome:h[2],data:h[3],setor:h[5]||'',m:new Map()};blocos.push(b);return}
+    const m=l.match(/^(\d+)\s*[;\t,]\s*([\d.,]+)/);if(m&&b){const q=parseFloat(m[2].replace(/\./g,'').replace(',','.'));if(!isNaN(q))b.m.set(+m[1],(b.m.get(+m[1])||0)+q)}});
+  if(!blocos.length){$('juntarInfo').textContent='Não encontrei nenhuma contagem. O texto precisa começar com "CONTAGEM|".';$('cmpOut').hidden=true;return}
+  const lojas=[...new Set(blocos.map(x=>x.loja))];const loja=lojas[0];
+  const cont=new Map(),ond=new Map();blocos.filter(x=>x.loja===loja).forEach(x=>x.m.forEach((q,c)=>{cont.set(c,(cont.get(c)||0)+q);if(!ond.has(c))ond.set(c,[]);ond.get(c).push(`${x.setor||'?'} (${x.nome}): ${fmtQ(q)}`)}));
+  $('juntarInfo').innerHTML=`Loja <b>${esc(loja)}</b> · ${blocos.filter(x=>x.loja===loja).map(x=>`${esc(x.setor||'sem setor')} · ${esc(x.nome)} (${x.m.size})`).join(', ')}`+(lojas.length>1?` · <span class="pill warn">ignorei contagens de outra loja: ${esc(lojas.slice(1).join(', '))}</span>`:'');
+  const st=ESTQ[loja]||new Map();const linhas=[];const cods=new Set([...cont.keys(),...st.keys()]);
+  cods.forEach(c=>{const p=P.get(c)||{c,d:'Produto '+c,g:'—',u:'',pv:0};const s=st.has(c)?st.get(c).q:0;const pv=st.has(c)?st.get(c).pv:p.pv;const k=cont.has(c)?cont.get(c):null;
+    linhas.push({p,s,k,dif:k===null?null:Math.round((k-s)*1000)/1000,pv,o:ond.get(c)||[]})});
+  CMP={loja,linhas};renderCmp();$('cmpOut').hidden=false};
+function renderCmp(){if(!CMP)return;const L=CMP.linhas;const cont=L.filter(x=>x.k!==null);const div=cont.filter(x=>x.dif!==0);const nao=L.filter(x=>x.k===null&&x.s>0);
+  const vf=div.filter(x=>x.dif<0).reduce((a,x)=>a+x.dif*x.pv,0),vs=div.filter(x=>x.dif>0).reduce((a,x)=>a+x.dif*x.pv,0);
+  $('cmpStats').innerHTML=[[cont.length,'produtos contados'],[div.length,'com diferença'],[`<span class="neg">${fmtR(vf)}</span>`,'faltando (preço de venda)'],[`<span class="pos">+${fmtR(vs)}</span>`,'sobrando (preço de venda)'],[cont.length-div.length,'batendo'],[nao.length,'com estoque e não contados']].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+  const g=$('fGrupo').value,q=norm($('fBusca').value);
+  let rows=filtro==='div'?div:filtro==='ok'?cont.filter(x=>x.dif===0):nao;
+  rows=rows.filter(x=>(!g||x.p.g===g)&&(!q||norm(x.p.d).includes(q)||String(x.p.c).includes(q)));
+  rows.sort((a,b)=>filtro==='div'?Math.abs(b.dif*b.pv)-Math.abs(a.dif*a.pv):(b.s*b.pv)-(a.s*a.pv));
+  CMP.vis=rows;$('tabInfo').textContent=rows.length+' linhas';
+  $('tbody').innerHTML=rows.slice(0,600).map(x=>{const d=x.dif;return`<tr><td class="mono">${x.p.c}</td><td>${esc(x.p.d)}<div class="muted small">${esc(x.p.g)} · ${un(x.p.u)}${x.o.length?' · contado em: '+esc(x.o.join(' · ')):''}</div></td><td class="n">${fmtQ(x.s)}</td><td class="n">${x.k===null?'—':fmtQ(x.k)}</td><td class="n ${d>0?'pos':d<0?'neg':''}">${d===null?'—':(d>0?'+':'')+fmtQ(d)}</td><td class="n ${d>0?'pos':d<0?'neg':''}">${d===null?fmtR(x.s*x.pv):(d>0?'+':'')+fmtR(d*x.pv)}</td></tr>`}).join('')+(rows.length>600?`<tr><td colspan="6" class="muted">Mostrando 600 de ${rows.length}. Use o filtro de grupo ou copie a tabela para ver tudo.</td></tr>`:'')||'<tr><td colspan="6" class="empty">Nada aqui.</td></tr>'}
+$('segFiltro').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;filtro=b.dataset.f;[...$('segFiltro').children].forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderCmp()});
+$('fGrupo').onchange=renderCmp;$('fBusca').addEventListener('input',renderCmp);
+function tabela(sep){const r=(CMP&&CMP.vis)||[];return['Código','Produto','Grupo','Unidade','Sistema','Contado','Diferença','Valor diferença (venda)','Onde foi contado'].join(sep)+'\n'+r.map(x=>[x.p.c,x.p.d.replace(/[\t;\n]/g,' '),x.p.g,un(x.p.u),fmtQ(x.s),x.k===null?'':fmtQ(x.k),x.dif===null?'':fmtQ(x.dif),x.dif===null?'':(x.dif*x.pv).toFixed(2).replace('.',','),x.o.join(' | ')].join(sep)).join('\n')}
+$('btnCopiarTab').onclick=()=>copiar(tabela('\t'),'Tabela copiada. Cole no Excel.');
+$('btnBaixarTab').onclick=async()=>{if(!DL)return;try{await DL.save({filename:`diferencas_${CMP.loja}.csv`.replace(/\s+/g,'_'),data:'﻿'+tabela(';')})}catch(e){}};
+init();
+})();
+</script>
+</body></html>
