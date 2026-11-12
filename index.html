@@ -220,6 +220,7 @@ nav.tabs .badge{position:absolute;top:7px;left:calc(50% + 6px);background:var(--
       <button class="btn pri" id="btnZap" type="button">Enviar (WhatsApp)</button>
       <button class="btn" id="btnXls" type="button">Baixar Excel</button>
     </div>
+    <button class="btn" id="btnOM" type="button">Arquivo para o OM (F7 · coletor)</button>
     <button class="btn sm ghost" id="btnTexto" type="button">Mostrar texto para copiar</button>
     <textarea id="txtEnvio" readonly hidden aria-label="Texto da contagem"></textarea>
   </div>
@@ -266,7 +267,8 @@ nav.tabs .badge{position:absolute;top:7px;left:calc(50% + 6px);background:var(--
         <button class="btn sm" data-f="nao" type="button">Não contados</button>
       </div>
       <div class="row"><select id="fGrupo" aria-label="Grupo"></select><input id="fBusca" placeholder="Buscar" aria-label="Buscar produto"></div>
-      <button class="btn pri" id="btnXlsCmp" type="button">Baixar Excel completo</button>
+      <div class="grid2"><button class="btn pri" id="btnOMCmp" type="button">Arquivo para o OM</button><button class="btn" id="btnXlsCmp" type="button">Baixar Excel completo</button></div>
+      <p class="small muted">No OM: Contagem de Estoque (Balanço) → escolha a empresa desta loja → <b>F7</b> → "..." para abrir o arquivo → Delimitador <b>";"</b> → Carregar dados → confira → Concluir a importação.</p>
       <span class="small muted" id="tabInfo"></span>
     </div>
     <div class="tblwrap"><table><thead><tr><th>Produto</th><th class="n">Sistema</th><th class="n">Contado</th><th class="n">Dif.</th><th class="n">Valor</th></tr></thead><tbody id="tbody"></tbody></table></div>
@@ -484,6 +486,15 @@ function wbMinha(){const rows=[];const by=new Map();for(const e of ent()){const 
   const wb=XLSX.utils.book_new();const ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:12},{wch:14},{wch:16},{wch:9},{wch:15},{wch:50},{wch:24},{wch:8},{wch:11},{wch:12}];XLSX.utils.book_append_sheet(wb,ws,'Contagem');return wb}
 const nomeArq=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w.-]+/g,'_');
 function baixar(wb,nome){XLSX.writeFile(wb,nome)}
+/* arquivo do coletor do OM: código interno;quantidade (vírgula decimal), delimitador ";" */
+function txtOM(m){return[...m].filter(([c,q])=>q>=0).sort((a,b)=>a[0]-b[0]).map(([c,q])=>c+';'+String(r3(q)).replace('.',',')).join('\r\n')+'\r\n'}
+async function entregarTxt(txt,nome,compartilhar){
+  if(compartilhar){try{const file=new File([txt],nome,{type:'text/plain'});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:nome});return}}catch(e){if(e&&e.name==='AbortError')return}}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));a.download=nome;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+$('btnOM').onclick=()=>{const m=totais();if(!m.size){toast('Nada contado ainda','bad');return}
+  entregarTxt(txtOM(m),nomeArq(`Coletor_${nl(S.loja)}_${S.nome}.txt`),true)};
+$('btnOMCmp').onclick=()=>{if(!CMP)return;const m=new Map();CMP.L.forEach(x=>{if(x.k!==null)m.set(x.p.c,x.k)});if(!m.size){toast('Nada contado','bad');return}
+  entregarTxt(txtOM(m),nomeArq(`Coletor_${nl(CMP.loja)}_${new Date().toISOString().slice(0,10)}.txt`),false);toast(m.size+' produtos no arquivo do OM','ok')};
 $('btnXls').onclick=()=>{if(!ent().length){toast('Nada contado ainda','bad');return}baixar(wbMinha(),nomeArq(`contagem_${nl(S.loja)}_${S.nome}_${S.setor}.xlsx`))};
 $('btnZap').onclick=async()=>{if(!ent().length){toast('Nada contado ainda','bad');return}
   const nome=nomeArq(`contagem_${nl(S.loja)}_${S.nome}_${S.setor}.xlsx`);
