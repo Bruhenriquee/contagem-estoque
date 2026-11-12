@@ -124,7 +124,7 @@ button:focus-visible{outline:3px solid rgba(21,101,192,.45);outline-offset:2px}
 .scan .mira i:nth-child(4){right:0;bottom:0;border-left:0;border-top:0;border-radius:0 0 10px 0}
 .scan .linha{position:absolute;left:12%;right:12%;top:50%;height:2px;border-radius:2px;background:#60A5FA;box-shadow:0 0 12px 2px rgba(96,165,250,.8);pointer-events:none;animation:lz 1.6s ease-in-out infinite}
 @keyframes lz{0%,100%{transform:translateY(-22px);opacity:.65}50%{transform:translateY(22px);opacity:1}}
-.scan .ctl{position:absolute;right:10px;top:10px;display:flex;gap:6px}
+.scan .ctl{position:absolute;left:10px;right:10px;top:10px;display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
 .scan .ctl button{background:rgba(15,23,42,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:8px 12px;font-weight:600;font-size:13px}
 .scan .st{position:absolute;left:10px;bottom:10px;right:10px;color:#fff;font-size:13px;font-weight:600;background:rgba(15,23,42,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:12px;padding:8px 11px;pointer-events:none}
 .flash{animation:fl .45s}
@@ -297,12 +297,13 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
   <div class="scan" id="scanBox" hidden>
     <video id="video" playsinline muted></video>
     <div class="vig"></div><div class="mira"><i></i><i></i><i></i><i></i></div><div class="linha"></div>
-    <div class="ctl"><button id="btnZoom" type="button" hidden>Zoom 2x</button><button id="btnLuz" type="button" hidden>🔦</button><button id="btnFechar" type="button">✕ Fechar</button></div>
-    <div class="st" id="scanSt">Aponte para o código de barras</div>
+    <div class="ctl"><button id="btnTrocaCam" type="button" hidden aria-label="Trocar de câmera">🔄</button><button id="btnZoom" type="button" hidden>Zoom 2x</button><button id="btnLuz" type="button" hidden aria-label="Lanterna">🔦</button><button id="btnFoto" type="button">📸 Foto</button><button id="btnFechar" type="button" aria-label="Fechar">✕</button></div>
+    <div class="st"><span id="scanSt">Aponte para o código de barras</span><small id="scanInfo" style="display:block;font-size:10.5px;font-weight:500;opacity:.7;margin-top:2px"></small></div>
   </div>
   <button class="scanbtn" id="btnCamera" type="button"><span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 8v8M10 8v8M14 8v8M17 8v8"/></svg></span><span><b>Abrir leitor de código</b><span>A câmera lê sozinha e apita a cada produto</span></span></button>
   <div class="search">
     <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="fotoIn" type="file" accept="image/*" capture="environment" hidden>
     <input id="busca" inputmode="search" autocomplete="off" enterkeyhint="search" placeholder="Código, EAN ou nome do produto">
     <button class="go" id="btnBusca" type="button" aria-label="Buscar">OK</button>
   </div>
@@ -419,6 +420,7 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
 
 <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.20.0/umd/index.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/zxing-wasm@3.1.5/dist/iife/reader/index.js"></script>
 <script>
 (function(){
 'use strict';
@@ -552,50 +554,81 @@ function renderRecentes(){const L=ent().slice(-10).reverse();$('recInfo').textCo
     return`<div class="li ${stCls(d)}"><div class="d">${esc(p.d)}<small>#${e.c} · ${esc(e.s||'')} · +${fQ(e.q)} ${un(p.u)}</small></div><div class="r">${fQ(tot)} <span class="of">/ ${fQ(s)}</span><small>${pillD(d)}</small></div><div class="act"><button data-del="${e.id}" type="button">↶ desfazer este bipe</button></div></div>`}).join(''):vazio('📦','Nenhum produto contado nesta loja ainda.<br>Abra o leitor e comece a bipar.')}
 $('recentes').addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;S.L[S.loja]=ent().filter(x=>x.id!==b.dataset.del);save();header();renderRecentes();toast('Bipe desfeito')});
 
-/* ---------- câmera (bip contínuo) ---------- */
-let t0Ler=0,stream=null,det=null,camAberta=false,pausado=false,ultimo='',ultimoT=0,loopT=null,ac=null,track=null,luz=false,frame=0,semLer=0,zoomOn=false,cap={};
+/* ---------- câmera (bip contínuo) ----------
+   Motores de leitura, em ordem: leitor nativo do celular (BarcodeDetector) e zxing-wasm (zxing-cpp),
+   alternando quadro a quadro; zxing-js fica só de reserva se o wasm não carregar.
+   Em celular com várias câmeras traseiras, escolhe a principal (com foco automático) e deixa trocar. */
+let t0Ler=0,stream=null,det=null,camAberta=false,pausado=false,ultimo='',ultimoT=0,loopT=null,ac=null,track=null,luz=false,frame=0,zoomOn=false,cap={},cams=[],camIdx=-1;
+let wasmOk=false,zr=null,motor='';
+const FMT_W=['EAN13','EAN8','UPCA','UPCE','Code128','Code39','Code93','ITF','QRCode','DataMatrix'];
+const OPT_W={formats:FMT_W,tryHarder:true,tryRotate:true,tryInvert:true,tryDownscale:true,maxNumberOfSymbols:1};
+function prepWasm(){if(wasmOk||!window.ZXingWASM)return;try{ZXingWASM.prepareZXingModule({fireImmediately:true});const t=new ImageData(8,8);ZXingWASM.readBarcodes(t,OPT_W).then(()=>{wasmOk=true}).catch(()=>{})}catch(e){}}
+prepWasm();
 const ZF=()=>{const F=ZXing.BarcodeFormat;return[F.EAN_13,F.EAN_8,F.UPC_A,F.UPC_E,F.CODE_128,F.CODE_39,F.CODE_93,F.ITF,F.QR_CODE,F.DATA_MATRIX]};
-let zr=null;
 function bip(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type='square';o.frequency.value=1900;g.gain.value=.08;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.09)}catch(e){}
   try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}}
-$('btnCamera').onclick=abrirCamera;$('btnFechar').onclick=pararCamera;
-async function abrirCamera(){
+$('btnCamera').onclick=()=>abrirCamera();$('btnFechar').onclick=pararCamera;
+const CAMKEY='contagem-camera';
+async function listarCams(){try{const ds=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');
+  const tras=ds.filter(d=>/back|rear|tras|environment|traseir/i.test(d.label));const L=tras.length?tras:ds;
+  /* principal primeiro: "camera2 0" / "camera 0" no Android costuma ser a principal com foco; ultra-wide/tele por último */
+  const peso=d=>{const l=d.label.toLowerCase();return(/camera2 0|camera 0|, 0,|\b0\b.*back|back.*\b0\b/.test(l)?-3:0)+(/ultra|wide|grande|tele|macro|depth|profund/.test(l)?3:0)};
+  cams=L.slice().sort((a,b)=>peso(a)-peso(b))}catch(e){cams=[]}}
+async function abrirCamera(trocar){
   try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('Este navegador não abre a câmera. Use o Chrome ou o Safari.','bad');return}
-  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false})}
-  catch(e){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false})}catch(e2){toast('Sem acesso à câmera. Permita a câmera nas configurações do navegador.','bad');return}}
+  prepWasm();
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+  const base={width:{ideal:1920},height:{ideal:1080}};
+  let id=null;try{id=localStorage.getItem(CAMKEY)}catch(e){}
+  if(trocar&&cams.length>1){camIdx=(camIdx+1)%cams.length;id=cams[camIdx].deviceId;try{localStorage.setItem(CAMKEY,id)}catch(e){}}
+  try{stream=await navigator.mediaDevices.getUserMedia({video:id?Object.assign({deviceId:{exact:id}},base):Object.assign({facingMode:{ideal:'environment'}},base),audio:false})}
+  catch(e){try{try{localStorage.removeItem(CAMKEY)}catch(e3){}stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false})}catch(e2){toast('Sem acesso à câmera. Permita a câmera nas configurações do navegador.','bad');return}}
+  if(!cams.length)await listarCams();
+  track=stream.getVideoTracks()[0];
+  /* primeira vez num celular com várias traseiras: se o navegador abriu uma câmera secundária, troca para a principal */
+  if(!id&&!trocar&&cams.length>1&&/camera2|facing back/i.test(cams[0].label)){const st=track.getSettings?track.getSettings():{};if(st.deviceId&&cams[0].deviceId&&st.deviceId!==cams[0].deviceId){try{localStorage.setItem(CAMKEY,cams[0].deviceId)}catch(e){}camIdx=0;return abrirCamera()}}
+  {const st=track.getSettings?track.getSettings():{};const i=cams.findIndex(c=>c.deviceId===st.deviceId);if(i>=0)camIdx=i}
   const v=$('video');v.srcObject=stream;await v.play().catch(()=>{});
-  $('scanBox').hidden=false;$('btnCamera').hidden=true;camAberta=true;pausado=false;semLer=0;t0Ler=Date.now();zoomOn=false;
-  track=stream.getVideoTracks()[0];cap={};try{cap=(track.getCapabilities&&track.getCapabilities())||{}}catch(e){}
-  $('btnLuz').hidden=!cap.torch;$('btnZoom').hidden=!(cap.zoom&&cap.zoom.max>1);$('btnZoom').textContent='Zoom 2x';
+  $('scanBox').hidden=false;$('btnCamera').hidden=true;camAberta=true;pausado=false;t0Ler=Date.now();zoomOn=false;
+  cap={};try{cap=(track.getCapabilities&&track.getCapabilities())||{}}catch(e){}
+  $('btnLuz').hidden=!cap.torch;$('btnZoom').hidden=!(cap.zoom&&cap.zoom.max>1);$('btnZoom').textContent='Zoom 2x';$('btnTrocaCam').hidden=cams.length<2;
   try{if(cap.focusMode&&cap.focusMode.includes('continuous'))await track.applyConstraints({advanced:[{focusMode:'continuous'}]})}catch(e){}
-  det=null;zr=null;
-  if('BarcodeDetector' in window){try{const sup=await BarcodeDetector.getSupportedFormats();const want=['ean_13','ean_8','upc_a','upc_e','code_128','code_39','code_93','itf','qr_code','data_matrix'].filter(f=>sup.includes(f));if(want.length)det=new BarcodeDetector({formats:want})}catch(e){det=null}}
-  if(window.ZXing){zr=new ZXing.MultiFormatReader();const h=new Map();h.set(ZXing.DecodeHintType.POSSIBLE_FORMATS,ZF());h.set(ZXing.DecodeHintType.TRY_HARDER,true);zr.setHints(h)}
-  $('scanSt').textContent='Aponte para o código de barras';loop()}
+  if(!det&&'BarcodeDetector' in window){try{const sup=await BarcodeDetector.getSupportedFormats();const want=['ean_13','ean_8','upc_a','upc_e','code_128','code_39','code_93','itf','qr_code','data_matrix'].filter(f=>sup.includes(f));if(want.length)det=new BarcodeDetector({formats:want})}catch(e){det=null}}
+  if(!zr&&window.ZXing){zr=new ZXing.MultiFormatReader();const h=new Map();h.set(ZXing.DecodeHintType.POSSIBLE_FORMATS,ZF());h.set(ZXing.DecodeHintType.TRY_HARDER,true);zr.setHints(h)}
+  const st=track.getSettings?track.getSettings():{};
+  motor=[det?'nativo':'',window.ZXingWASM?'wasm':'',(!window.ZXingWASM&&zr)?'zxing':''].filter(Boolean).join('+')+` · ${st.width||v.videoWidth}×${st.height||v.videoHeight}`+(cams.length>1?` · câm. ${camIdx+1}/${cams.length}`:'');
+  $('scanSt').textContent='Aponte para o código de barras';$('scanInfo').textContent=motor;loop()}
 function pararCamera(){camAberta=false;clearTimeout(loopT);if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('scanBox').hidden=true;$('btnCamera').hidden=false;luz=false}
+$('btnTrocaCam').onclick=()=>{clearTimeout(loopT);camAberta=false;abrirCamera(true).then(()=>toast('Câmera '+(camIdx+1)+' de '+cams.length))};
 $('btnLuz').onclick=async()=>{try{luz=!luz;await track.applyConstraints({advanced:[{torch:luz}]})}catch(e){toast('Lanterna indisponível')}};
 $('btnZoom').onclick=async()=>{try{zoomOn=!zoomOn;const z=zoomOn?Math.min(2,cap.zoom.max):Math.max(1,cap.zoom.min||1);await track.applyConstraints({advanced:[{zoom:z}]});$('btnZoom').textContent=zoomOn?'Zoom 1x':'Zoom 2x'}catch(e){toast('Zoom indisponível')}};
 $('video').addEventListener('click',async()=>{if(!track)return;try{if(cap.focusMode&&cap.focusMode.includes('single-shot')){await track.applyConstraints({advanced:[{focusMode:'single-shot'}]});setTimeout(()=>track&&track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(()=>{}),800)}}catch(e){}$('scanSt').textContent='Focando…'});
 const cv=document.createElement('canvas');
-/* recortes que o ZXing tenta, alternando a cada quadro: faixa da mira, faixa maior, imagem inteira */
-const CORTES=[[.30,1],[.55,1],[1,1],[.30,.6],[1,1,1],[1,.6,1]];
-function zxing(v){const w=v.videoWidth,h=v.videoHeight;if(!w||!h)return null;const [fh,fw,rot]=CORTES[frame%CORTES.length];
-  const sw=w*fw,sh=h*fh,sx=(w-sw)/2,sy=(h-sh)/2;const sc=Math.min(1,1280/Math.max(sw,sh));const dw=Math.round(sw*sc),dh=Math.round(sh*sc);
-  cv.width=rot?dh:dw;cv.height=rot?dw:dh;const x=cv.getContext('2d',{willReadFrequently:true});
-  if(rot){x.setTransform(0,1,-1,0,dh,0)}else x.setTransform(1,0,0,1,0,0);x.drawImage(v,sx,sy,sw,sh,0,0,dw,dh);
-  const src=new ZXing.HTMLCanvasElementLuminanceSource(cv);
-  for(const B of (frame%2?[ZXing.HybridBinarizer,ZXing.GlobalHistogramBinarizer]:[ZXing.HybridBinarizer])){try{return zr.decodeWithState(new ZXing.BinaryBitmap(new B(src))).getText()}catch(e){}}
-  return null}
+/* recortes alternados: faixa da mira, faixa maior, imagem inteira (o zxing-wasm já tenta girado e invertido) */
+const CORTES=[[.34,.9],[.6,1],[1,1]];
+function quadro(v,i){const w=v.videoWidth,h=v.videoHeight;if(!w||!h)return null;const [fh,fw]=CORTES[i%CORTES.length];
+  const sw=w*fw,sh=h*fh,sx=(w-sw)/2,sy=(h-sh)/2;const sc=Math.min(1,1280/Math.max(sw,sh));cv.width=Math.round(sw*sc);cv.height=Math.round(sh*sc);
+  const x=cv.getContext('2d',{willReadFrequently:true});x.drawImage(v,sx,sy,sw,sh,0,0,cv.width,cv.height);return x}
+async function lerWasm(img){try{const r=await ZXingWASM.readBarcodes(img,OPT_W);const b=r&&r.find(x=>x.isValid&&x.text);return b?b.text:null}catch(e){return null}}
+function lerZx(){const src=new ZXing.HTMLCanvasElementLuminanceSource(cv);for(const B of [ZXing.HybridBinarizer,ZXing.GlobalHistogramBinarizer]){try{return zr.decodeWithState(new ZXing.BinaryBitmap(new B(src))).getText()}catch(e){}}return null}
 async function loop(){if(!camAberta)return;const v=$('video');let code=null;
   if(!pausado&&v.readyState>=2){frame++;
-    try{if(det){const r=await det.detect(v);if(r&&r.length)code=r[0].rawValue}}catch(e){}
-    if(!code&&zr&&(!det||frame%3===0)){try{code=zxing(v)}catch(e){}}
+    if(det&&(frame%2===0||!wasmOk)){try{const r=await det.detect(v);if(r&&r.length)code=r[0].rawValue}catch(e){}}
+    if(!code&&(wasmOk||(!window.ZXingWASM&&zr))&&(!det||frame%2===1||!wasmOk)){const x=quadro(v,frame>>1);
+      if(x){if(wasmOk)code=await lerWasm(x.getImageData(0,0,cv.width,cv.height));else if(zr)code=lerZx()}}
     if(code&&!buscar(code.replace(/\D/g,'')||code).length&&!/^\d{8,}$/.test(code))code=null;
-    if(!code){semLer++;if(t0Ler&&Date.now()-t0Ler>7000){t0Ler=0;$('scanSt').textContent='Não leu? Afaste o celular um palmo, toque na imagem para focar, use o zoom ou a lanterna, ou digite os números do código.'}}
+    if(!code&&t0Ler&&Date.now()-t0Ler>7000){t0Ler=0;$('scanSt').textContent=cams.length>1?'Não leu? Toque em 🔄 para trocar de câmera, afaste um palmo ou use 📸 Foto.':'Não leu? Afaste um palmo, toque na imagem para focar ou use 📸 Foto.'}
   }
-  if(code){semLer=0;t0Ler=Date.now();const now=Date.now();if(code!==ultimo||now-ultimoT>(S.modo==='uni'?900:2500)){ultimo=code;ultimoT=now;lido(code)}}
-  loopT=setTimeout(loop,det?70:110)}
+  if(code){t0Ler=Date.now();const now=Date.now();if(code!==ultimo||now-ultimoT>(S.modo==='uni'?900:2500)){ultimo=code;ultimoT=now;lido(code)}}
+  loopT=setTimeout(loop,wasmOk?40:90)}
+/* foto: usa a câmera do próprio celular (foco e resolução máximos) e lê a imagem inteira */
+$('btnFoto').onclick=()=>$('fotoIn').click();
+$('fotoIn').addEventListener('change',async()=>{const f=$('fotoIn').files[0];$('fotoIn').value='';if(!f)return;toast('Lendo a foto…');let code=null;
+  try{if(window.ZXingWASM)code=await lerWasm(f)}catch(e){}
+  if(!code){try{const bmp=await createImageBitmap(f);if(det){const r=await det.detect(bmp);if(r&&r.length)code=r[0].rawValue}
+    if(!code&&window.ZXingWASM){const sc=Math.min(1,2000/Math.max(bmp.width,bmp.height));cv.width=Math.round(bmp.width*sc);cv.height=Math.round(bmp.height*sc);const x=cv.getContext('2d',{willReadFrequently:true});x.drawImage(bmp,0,0,cv.width,cv.height);code=await lerWasm(x.getImageData(0,0,cv.width,cv.height))}}catch(e){}}
+  if(code){ultimo=code;ultimoT=Date.now();lido(code)}else toast('Não achei código na foto. Chegue mais perto e deixe o código reto e nítido.','bad')});
 function lido(code){const l=buscar(code.replace(/\D/g,'')||code);$('scanBox').classList.remove('flash');void $('scanBox').offsetWidth;$('scanBox').classList.add('flash');
   if(!l.length){bip();$('scanSt').textContent='Código '+code+' não cadastrado. Busque pelo nome.';toast('Código '+code+' não está no cadastro','bad');return}
   bip();
