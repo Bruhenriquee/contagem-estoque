@@ -69,11 +69,11 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 /* scanner */
 .scan{position:relative;border-radius:var(--r);overflow:hidden;background:#000;aspect-ratio:4/3;max-height:46vh;width:100%}
 .scan video{width:100%;height:100%;object-fit:cover;display:block}
-.scan .mira{position:absolute;left:8%;right:8%;top:38%;bottom:38%;border:2px solid rgba(255,255,255,.85);border-radius:10px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
-.scan .linha{position:absolute;left:10%;right:10%;top:50%;height:2px;background:#ff3b30;box-shadow:0 0 8px #ff3b30}
+.scan .mira{pointer-events:none;position:absolute;left:8%;right:8%;top:38%;bottom:38%;border:2px solid rgba(255,255,255,.85);border-radius:10px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
+.scan .linha{pointer-events:none;position:absolute;left:10%;right:10%;top:50%;height:2px;background:#ff3b30;box-shadow:0 0 8px #ff3b30}
 .scan .ctl{position:absolute;right:8px;top:8px;display:flex;gap:6px}
 .scan .ctl button{background:rgba(0,0,0,.55);color:#fff;border:0;border-radius:999px;padding:8px 12px;font-weight:600;font-size:13px}
-.scan .st{position:absolute;left:8px;bottom:8px;right:8px;color:#fff;font-size:13px;text-shadow:0 1px 2px #000}
+.scan .st{position:absolute;left:8px;bottom:8px;right:8px;pointer-events:none;color:#fff;font-size:13px;text-shadow:0 1px 2px #000}
 .flash{animation:fl .35s}
 @keyframes fl{0%{box-shadow:inset 0 0 0 6px #22c55e}100%{box-shadow:inset 0 0 0 0 transparent}}
 .modo{display:grid;grid-template-columns:1fr 1fr;gap:6px}
@@ -172,7 +172,7 @@ nav.tabs .badge{position:absolute;top:7px;left:calc(50% + 6px);background:var(--
     <div class="scan" id="scanBox" hidden>
       <video id="video" playsinline muted></video>
       <div class="mira"></div><div class="linha"></div>
-      <div class="ctl"><button id="btnLuz" type="button" hidden>Lanterna</button><button id="btnFechar" type="button">Fechar</button></div>
+      <div class="ctl"><button id="btnZoom" type="button" hidden>Zoom 2x</button><button id="btnLuz" type="button" hidden>Lanterna</button><button id="btnFechar" type="button">Fechar</button></div>
       <div class="st" id="scanSt">Aponte para o código de barras</div>
     </div>
     <button class="btn pri big" id="btnCamera" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 8v8M10 8v8M14 8v8M17 8v8"/></svg>Abrir leitor de código</button>
@@ -411,8 +411,8 @@ function renderRecentes(){const L=ent().slice(-10).reverse();$('recInfo').textCo
 $('recentes').addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;S.L[S.loja]=ent().filter(x=>x.id!==b.dataset.del);save();header();renderRecentes();toast('Bipe desfeito')});
 
 /* ---------- câmera (bip contínuo) ---------- */
-let stream=null,det=null,camAberta=false,pausado=false,ultimo='',ultimoT=0,loopT=null,ac=null,track=null,luz=false;
-const ZF=()=>{const F=ZXing.BarcodeFormat;return[F.EAN_13,F.EAN_8,F.UPC_A,F.UPC_E,F.CODE_128,F.CODE_39,F.ITF]};
+let t0Ler=0,stream=null,det=null,camAberta=false,pausado=false,ultimo='',ultimoT=0,loopT=null,ac=null,track=null,luz=false,frame=0,semLer=0,zoomOn=false,cap={};
+const ZF=()=>{const F=ZXing.BarcodeFormat;return[F.EAN_13,F.EAN_8,F.UPC_A,F.UPC_E,F.CODE_128,F.CODE_39,F.CODE_93,F.ITF,F.QR_CODE,F.DATA_MATRIX]};
 let zr=null;
 function bip(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type='square';o.frequency.value=1900;g.gain.value=.08;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.09)}catch(e){}
   try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}}
@@ -420,27 +420,40 @@ $('btnCamera').onclick=abrirCamera;$('btnFechar').onclick=pararCamera;
 async function abrirCamera(){
   try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('Este navegador não abre a câmera. Use o Chrome ou o Safari.','bad');return}
-  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false})}
-  catch(e){toast('Sem acesso à câmera. Permita a câmera nas configurações do navegador.','bad');return}
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false})}
+  catch(e){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false})}catch(e2){toast('Sem acesso à câmera. Permita a câmera nas configurações do navegador.','bad');return}}
   const v=$('video');v.srcObject=stream;await v.play().catch(()=>{});
-  $('scanBox').hidden=false;$('btnCamera').hidden=true;camAberta=true;pausado=false;
-  track=stream.getVideoTracks()[0];try{const cap=track.getCapabilities&&track.getCapabilities();$('btnLuz').hidden=!(cap&&cap.torch)}catch(e){}
-  det=null;
-  if('BarcodeDetector' in window){try{const sup=await BarcodeDetector.getSupportedFormats();const want=['ean_13','ean_8','upc_a','upc_e','code_128','code_39','itf'].filter(f=>sup.includes(f));if(want.length)det=new BarcodeDetector({formats:want})}catch(e){det=null}}
-  if(!det&&window.ZXing){zr=new ZXing.MultiFormatReader();const h=new Map();h.set(ZXing.DecodeHintType.POSSIBLE_FORMATS,ZF());h.set(ZXing.DecodeHintType.TRY_HARDER,true);zr.setHints(h)}
+  $('scanBox').hidden=false;$('btnCamera').hidden=true;camAberta=true;pausado=false;semLer=0;t0Ler=Date.now();zoomOn=false;
+  track=stream.getVideoTracks()[0];cap={};try{cap=(track.getCapabilities&&track.getCapabilities())||{}}catch(e){}
+  $('btnLuz').hidden=!cap.torch;$('btnZoom').hidden=!(cap.zoom&&cap.zoom.max>1);$('btnZoom').textContent='Zoom 2x';
+  try{if(cap.focusMode&&cap.focusMode.includes('continuous'))await track.applyConstraints({advanced:[{focusMode:'continuous'}]})}catch(e){}
+  det=null;zr=null;
+  if('BarcodeDetector' in window){try{const sup=await BarcodeDetector.getSupportedFormats();const want=['ean_13','ean_8','upc_a','upc_e','code_128','code_39','code_93','itf','qr_code','data_matrix'].filter(f=>sup.includes(f));if(want.length)det=new BarcodeDetector({formats:want})}catch(e){det=null}}
+  if(window.ZXing){zr=new ZXing.MultiFormatReader();const h=new Map();h.set(ZXing.DecodeHintType.POSSIBLE_FORMATS,ZF());h.set(ZXing.DecodeHintType.TRY_HARDER,true);zr.setHints(h)}
   $('scanSt').textContent='Aponte para o código de barras';loop()}
 function pararCamera(){camAberta=false;clearTimeout(loopT);if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('scanBox').hidden=true;$('btnCamera').hidden=false;luz=false}
 $('btnLuz').onclick=async()=>{try{luz=!luz;await track.applyConstraints({advanced:[{torch:luz}]})}catch(e){toast('Lanterna indisponível')}};
+$('btnZoom').onclick=async()=>{try{zoomOn=!zoomOn;const z=zoomOn?Math.min(2,cap.zoom.max):Math.max(1,cap.zoom.min||1);await track.applyConstraints({advanced:[{zoom:z}]});$('btnZoom').textContent=zoomOn?'Zoom 1x':'Zoom 2x'}catch(e){toast('Zoom indisponível')}};
+$('video').addEventListener('click',async()=>{if(!track)return;try{if(cap.focusMode&&cap.focusMode.includes('single-shot')){await track.applyConstraints({advanced:[{focusMode:'single-shot'}]});setTimeout(()=>track&&track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(()=>{}),800)}}catch(e){}$('scanSt').textContent='Focando…'});
 const cv=document.createElement('canvas');
+/* recortes que o ZXing tenta, alternando a cada quadro: faixa da mira, faixa maior, imagem inteira */
+const CORTES=[[.30,1],[.55,1],[1,1],[.30,.6],[1,1,1],[1,.6,1]];
+function zxing(v){const w=v.videoWidth,h=v.videoHeight;if(!w||!h)return null;const [fh,fw,rot]=CORTES[frame%CORTES.length];
+  const sw=w*fw,sh=h*fh,sx=(w-sw)/2,sy=(h-sh)/2;const sc=Math.min(1,1280/Math.max(sw,sh));const dw=Math.round(sw*sc),dh=Math.round(sh*sc);
+  cv.width=rot?dh:dw;cv.height=rot?dw:dh;const x=cv.getContext('2d',{willReadFrequently:true});
+  if(rot){x.setTransform(0,1,-1,0,dh,0)}else x.setTransform(1,0,0,1,0,0);x.drawImage(v,sx,sy,sw,sh,0,0,dw,dh);
+  const src=new ZXing.HTMLCanvasElementLuminanceSource(cv);
+  for(const B of (frame%2?[ZXing.HybridBinarizer,ZXing.GlobalHistogramBinarizer]:[ZXing.HybridBinarizer])){try{return zr.decodeWithState(new ZXing.BinaryBitmap(new B(src))).getText()}catch(e){}}
+  return null}
 async function loop(){if(!camAberta)return;const v=$('video');let code=null;
-  if(!pausado&&v.readyState>=2){
-    try{if(det){const r=await det.detect(v);if(r&&r.length)code=r[0].rawValue}
-      else if(zr){const w=v.videoWidth,h=v.videoHeight;const cw=Math.min(w,960),ch=Math.round(cw*.42);const sx=(w-cw*(w/cw))/2;
-        cv.width=cw;cv.height=ch;const x=cv.getContext('2d',{willReadFrequently:true});const sh=h*.42;x.drawImage(v,0,(h-sh)/2,w,sh,0,0,cw,ch);
-        try{const res=zr.decode(new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(new ZXing.HTMLCanvasElementLuminanceSource(cv))));code=res.getText()}catch(e){}}}catch(e){}
+  if(!pausado&&v.readyState>=2){frame++;
+    try{if(det){const r=await det.detect(v);if(r&&r.length)code=r[0].rawValue}}catch(e){}
+    if(!code&&zr&&(!det||frame%3===0)){try{code=zxing(v)}catch(e){}}
+    if(code&&!buscar(code.replace(/\D/g,'')||code).length&&!/^\d{8,}$/.test(code))code=null;
+    if(!code){semLer++;if(t0Ler&&Date.now()-t0Ler>7000){t0Ler=0;$('scanSt').textContent='Não leu? Afaste o celular um palmo, toque na imagem para focar, use o zoom ou a lanterna, ou digite os números do código.'}}
   }
-  if(code){const now=Date.now();if(code!==ultimo||now-ultimoT>(S.modo==='uni'?900:2500)){ultimo=code;ultimoT=now;lido(code)}}
-  loopT=setTimeout(loop,det?90:160)}
+  if(code){semLer=0;t0Ler=Date.now();const now=Date.now();if(code!==ultimo||now-ultimoT>(S.modo==='uni'?900:2500)){ultimo=code;ultimoT=now;lido(code)}}
+  loopT=setTimeout(loop,det?70:110)}
 function lido(code){const l=buscar(code.replace(/\D/g,'')||code);$('scanBox').classList.remove('flash');void $('scanBox').offsetWidth;$('scanBox').classList.add('flash');
   if(!l.length){bip();$('scanSt').textContent='Código '+code+' não cadastrado. Busque pelo nome.';toast('Código '+code+' não está no cadastro','bad');return}
   bip();
