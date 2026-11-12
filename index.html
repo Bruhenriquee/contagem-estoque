@@ -224,6 +224,40 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
 .toast.ok{background:var(--green)} .toast.bad{background:var(--red)}
 @keyframes tin{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
 @media (min-width:560px){.lojas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* ---------- relatório ---------- */
+.rh{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:8px;border-top:5px solid var(--blue)}
+.rh h1{font-size:21px;margin:0;letter-spacing:-.01em}
+.rings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.rbig{--c:var(--blue);background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 12px;box-shadow:var(--sh);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.ring.xl{width:96px;height:96px} .ring.xl b{font-size:20px;color:var(--ink)}
+.rbig .l{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--label)}
+.rbig .s{font-size:12px;color:var(--muted);line-height:1.35}
+.resumo{font-size:14.5px;line-height:1.6;color:var(--ink2)}
+.resumo b{color:var(--ink)}
+.gb{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.gb:last-child{border-bottom:0}
+.gb .n{font-size:13.5px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gb .p{font-size:14px;font-weight:700;text-align:right}
+.gb .t{grid-column:1/-1;height:10px;background:var(--soft);border-radius:99px;overflow:hidden}
+.gb .t i{display:block;height:100%;background:var(--blue);border-radius:99px}
+.gb .x{grid-column:1/-1;font-size:12px;color:var(--muted)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--label);background:var(--soft2);text-align:left;padding:8px;position:static}
+.tbl td{padding:8px;border-bottom:1px solid var(--line)}
+.tbl .n{text-align:right;white-space:nowrap}
+.def{font-size:12px;color:var(--muted);line-height:1.55}
+.def b{color:var(--ink2)}
+@media print{
+  @page{size:A4;margin:12mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html,body{background:#fff}
+  .hero,nav.tabs,.noprint,.toast,.foot{display:none!important}
+  .app{padding:0;max-width:none} main{padding:0}
+  .card{box-shadow:none}
+  .stat,.rbig,.rh,.gb,.li,.resumo,tr{box-shadow:none;break-inside:avoid}
+  .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .rings{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -347,6 +381,7 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
   </div>
   <div id="cmpOut" hidden style="display:flex;flex-direction:column;gap:14px">
     <div class="stats" id="cmpStats"></div>
+    <button class="scanbtn" id="btnRel" type="button"><span class="bi" style="font-size:24px">📊</span><span><b>Relatório para a direção</b><span>Acurácia, perdas em R$, grupos e equipe · salva em PDF</span></span></button>
     <div class="card">
       <div class="seg" id="segF">
         <button class="btn on" data-f="div" type="button">Diferença</button>
@@ -360,6 +395,12 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
     </div>
     <div class="card" style="padding:4px 16px"><div class="list" id="tbody"></div></div>
   </div>
+</section>
+
+<!-- ============ RELATÓRIO ============ -->
+<section id="v-relatorio" hidden>
+  <div class="row noprint"><button class="btn" id="relVoltar" type="button">← Voltar</button><button class="btn pri" id="relPrint" type="button" style="flex:1">🖨 Salvar em PDF / imprimir</button></div>
+  <div id="relBody" style="display:flex;flex-direction:column;gap:14px"></div>
 </section>
 
 <p class="foot" id="rodape"></p>
@@ -419,13 +460,14 @@ const vazio=(e,t)=>`<div class="empty"><span class="e">${e}</span>${t}</div>`;
 let tt;function toast(m,k){const t=$('toast');t.textContent=m;t.className='toast'+(k?' '+k:'');t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2400)}
 
 /* ---------- navegação ---------- */
-const VIEWS=['inicio','contar','contados','conferir'];
-function view(v){if(v!=='inicio'&&v!=='conferir'&&!(S.loja&&S.nome)){v='inicio'}
-  VIEWS.forEach(k=>{$('v-'+k).hidden=k!==v;$('n-'+k).setAttribute('aria-current',k===v?'page':'false')});
+const VIEWS=['inicio','contar','contados','conferir','relatorio'];
+function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='conferir'&&v!=='relatorio'&&!(S.loja&&S.nome)){v='inicio'}
+  VIEWS.forEach(k=>{$('v-'+k).hidden=k!==v;const n=$('n-'+k);if(n)n.setAttribute('aria-current',(k===v||(k==='conferir'&&v==='relatorio'))?'page':'false')});
+  $('hStats').style.display=v==='relatorio'?'none':'';
   if(v!=='contar')pararCamera();
   if(v==='contados')renderContados();if(v==='inicio')renderLojas();
   window.scrollTo(0,0)}
-VIEWS.forEach(k=>$('n-'+k).onclick=()=>view(k));
+VIEWS.forEach(k=>{const n=$('n-'+k);if(n)n.onclick=()=>view(k)});
 $('hLoja').onclick=()=>view('inicio');
 function header(){$('hTitulo').textContent=S.loja?nl(S.loja):'Contagem de estoque';
   $('hSub').textContent=S.loja?[S.nome,S.setor].filter(Boolean).join(' · ')||'Contagem de estoque':'Escolha a loja para começar';
@@ -638,6 +680,49 @@ function renderCmp(){if(!CMP)return;const G=grupoCmp();const falta=G.div.filter(
     return`<div class="li ${d===null?'':stCls(d)}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small>${x.o.length?`<small>📍 ${esc(x.o.join(' · '))}</small>`:''}</div><div class="r">${dir}</div></div>`}).join('')+(R.length>300?`<div class="empty">Mostrando 300 de ${R.length.toLocaleString('pt-BR')}. O Excel completo tem todos.</div>`:'')||vazio('✨','Nada nesta lista.')}
 $('segF').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;filtroF=b.dataset.f;[...$('segF').children].forEach(x=>x.classList.toggle('on',x===b));renderCmp()});
 $('fGrupo').onchange=renderCmp;$('fBusca').addEventListener('input',renderCmp);
+/* ---------- indicadores para a direção ---------- */
+const pct=v=>(v*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+function indic(){const G=grupoCmp();const C=G.cont;const comEst=CMP.L.filter(x=>x.s>0);const cEst=C.filter(x=>x.s>0);
+  const falta=G.div.filter(x=>x.d<0).reduce((a,x)=>a+x.d*x.v,0),sobra=G.div.filter(x=>x.d>0).reduce((a,x)=>a+x.d*x.v,0);
+  const vSis=C.reduce((a,x)=>a+Math.max(0,x.s)*x.v,0),vCont=C.reduce((a,x)=>a+x.k*x.v,0),bruta=sobra-falta;
+  const vEst=comEst.reduce((a,x)=>a+x.s*x.v,0),vEstC=cEst.reduce((a,x)=>a+x.s*x.v,0);
+  const gm=new Map();for(const x of CMP.L){if(x.k===null&&!(x.s>0))continue;const g=x.p.g||'—';if(!gm.has(g))gm.set(g,{g,est:0,cont:0,ok:0,falta:0,sobra:0});const o=gm.get(g);if(x.s>0)o.est++;if(x.k!==null){o.cont++;if(x.d===0)o.ok++;else if(x.d<0)o.falta+=x.d*x.v;else o.sobra+=x.d*x.v}}
+  const byC=new Map(CMP.L.map(x=>[x.p.c,x]));
+  const eq=CMP.B.map(b=>{const ks=[...b.m.keys()];return{setor:b.setor||'sem setor',nome:b.nome||'',n:ks.length,ok:ks.filter(c=>(byC.get(c)||{}).d===0).length}});
+  return{G,C,falta,sobra,bruta,liq:falta+sobra,vSis,vCont,acI:C.length?G.ok.length/C.length:0,acV:vSis?Math.max(0,1-bruta/vSis):0,
+    cob:comEst.length?cEst.length/comEst.length:0,cobV:vEst?vEstC/vEst:0,nEst:comEst.length,nEstC:cEst.length,vEst,
+    grupos:[...gm.values()].filter(o=>o.cont>0).sort((a,b)=>b.cont-a.cont),top:G.div.slice().sort((a,b)=>Math.abs(b.d*b.v)-Math.abs(a.d*a.v)).slice(0,10),eq}}
+const nivel=v=>v>=.95?['#047857','✅ Ótimo']:v>=.85?['#B45309','⚠️ Atenção']:['#DC2626','⛔ Crítico'];
+function renderRel(){const I=indic();const hoje=new Date().toLocaleDateString('pt-BR');const [cI,tI]=nivel(I.acI),[cV,tV]=nivel(I.acV);
+  const pessoas=[...new Set(CMP.B.map(b=>b.nome).filter(Boolean))];
+  const maiorG=I.grupos.filter(o=>o.falta<0).sort((a,b)=>a.falta-b.falta)[0];
+  let h=`<div class="rh"><div class="ttl" style="color:var(--blue)">Cervantes · Relatório de contagem de estoque</div><h1>${esc(nl(CMP.loja))}</h1>
+    <div class="sub">Contagem conferida em ${hoje} · estoque do sistema de ${esc(D.gerado)}</div>
+    <div class="tags">${CMP.B.map(b=>`<span class="tag">${esc(b.setor||'sem setor')} · ${esc(b.nome||'')}</span>`).join('')}</div></div>`;
+  h+=`<div class="card"><div class="sh"><div class="ic" style="--c:#1565C0">📝</div><div class="tt"><div class="ttl">Resumo</div></div></div><p class="resumo">
+    Foram contados <b>${I.C.length.toLocaleString('pt-BR')} produtos</b> em ${esc(nl(CMP.loja))}${pessoas.length?` por ${pessoas.length} ${pessoas.length>1?'pessoas':'pessoa'}`:''}. 
+    <b>${pct(I.acI)}</b> bateram exatamente com o sistema e <b>${I.G.div.length.toLocaleString('pt-BR')}</b> tiveram diferença.
+    A preço de venda, faltaram <b class="neg">${fR(-I.falta)}</b> e sobraram <b class="pos">${fR(I.sobra)}</b>, uma diferença líquida de <b>${fR(I.liq)}</b>.
+    A contagem cobriu <b>${pct(I.cob)}</b> dos produtos com estoque no sistema (${pct(I.cobV)} do valor em estoque)${maiorG?`. O grupo com mais falta foi <b>${esc(maiorG.g)}</b> (${fR(maiorG.falta)})`:''}.</p></div>`;
+  h+=`<div class="rings"><div class="rbig">${ringH(I.acI*100,cI).replace('class="ring"','class="ring xl"')}<div class="l">Acurácia por item</div><span class="pill" style="background:${cI}14;color:${cI}">${tI}</span><div class="s">${I.G.ok.length.toLocaleString('pt-BR')} de ${I.C.length.toLocaleString('pt-BR')} produtos bateram</div></div>
+    <div class="rbig">${ringH(I.acV*100,cV).replace('class="ring"','class="ring xl"')}<div class="l">Acurácia em valor</div><span class="pill" style="background:${cV}14;color:${cV}">${tV}</span><div class="s">diferença bruta ${fR(I.bruta)} sobre ${fR(I.vSis)} contados</div></div></div>`;
+  h+=`<div class="stats">${statH('📦','#1565C0',I.C.length.toLocaleString('pt-BR'),'produtos contados')+statH('✅','#047857',I.G.ok.length.toLocaleString('pt-BR'),'batendo')+statH('⚠️','#DC2626',I.G.div.length.toLocaleString('pt-BR'),'com diferença')}
+    <div class="stats two" style="grid-column:1/-1">${statH('📉','#DC2626',fR(I.falta),'faltando')+statH('📈','#047857','+'+fR(I.sobra),'sobrando')+statH('⚖️',I.liq<0?'#DC2626':'#047857',(I.liq>0?'+':'')+fR(I.liq),'diferença líquida')+statH('🧭','#4F46E5',pct(I.cob),'cobertura dos itens com estoque')}</div></div>`;
+  h+=`<div class="card"><div class="sh"><div class="ic" style="--c:#0D9488">🗂️</div><div class="tt"><div class="ttl">Acerto por grupo</div><div class="sub">% dos produtos contados que bateram · ordenado por quantidade contada</div></div></div><div>${
+    I.grupos.slice(0,15).map(o=>{const a=o.cont?o.ok/o.cont:0;return`<div class="gb" title="${esc(o.g)}: ${o.ok} de ${o.cont} bateram · falta ${fR(o.falta)} · sobra ${fR(o.sobra)}"><div class="n">${esc(o.g)}</div><div class="p">${pct(a)}</div><div class="t"><i style="width:${(a*100).toFixed(1)}%"></i></div><div class="x">${o.ok} de ${o.cont} contados${o.est?` · ${o.cont&&o.est?Math.round(Math.min(o.cont,o.est)/o.est*100):0}% do grupo coberto`:''}${o.falta?` · <span class="neg">falta ${fR(o.falta)}</span>`:''}${o.sobra?` · <span class="pos">sobra ${fR(o.sobra)}</span>`:''}</div></div>`}).join('')||vazio('🗂️','Sem grupos')}</div></div>`;
+  h+=`<div class="card"><div class="sh"><div class="ic" style="--c:#DC2626">🔟</div><div class="tt"><div class="ttl">Maiores diferenças em valor</div><div class="sub">Onde conferir primeiro</div></div></div><div class="list">${
+    I.top.map(x=>`<div class="li ${stCls(x.d)}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · contado ${fQ(x.k)} / sistema ${fQ(x.s)} ${un(x.p.u)}</small></div><div class="r">${pillD(x.d)}<small class="${x.d>0?'pos':'neg'}" style="font-size:13px">${x.d>0?'+':''}${fR(x.d*x.v)}</small></div></div>`).join('')||vazio('✨','Nenhuma diferença')}</div></div>`;
+  h+=`<div class="card"><div class="sh"><div class="ic" style="--c:#4F46E5">👥</div><div class="tt"><div class="ttl">Equipe</div><div class="sub">Itens que cada um contou e quantos bateram</div></div></div>
+    <table class="tbl"><thead><tr><th>Setor</th><th>Contador</th><th class="n">Itens</th><th class="n">Bateram</th></tr></thead><tbody>${I.eq.map(e=>`<tr><td>${esc(e.setor)}</td><td>${esc(e.nome)}</td><td class="n">${e.n.toLocaleString('pt-BR')}</td><td class="n">${e.n?pct(e.ok/e.n):'—'}</td></tr>`).join('')}</tbody></table></div>`;
+  h+=`<div class="card def"><div class="ttl">Como ler</div>
+    <div><b>Acurácia por item</b>: produtos cuja quantidade contada é igual à do sistema, dividido pelos produtos contados.</div>
+    <div><b>Acurácia em valor</b>: 1 − (soma das diferenças, sem sinal, em R$) ÷ (valor no sistema dos produtos contados).</div>
+    <div><b>Faltando / sobrando</b>: diferença × preço de venda da loja. <b>Cobertura</b>: produtos com estoque no sistema que foram contados.</div>
+    <div>Níveis: ✅ 95% ou mais · ⚠️ 85% a 95% · ⛔ abaixo de 85%. Vendas e entradas feitas depois de ${esc(D.gerado)} aparecem como diferença.</div></div>`;
+  $('relBody').innerHTML=h}
+$('btnRel').onclick=()=>{if(!CMP)return;renderRel();view('relatorio')};
+$('relVoltar').onclick=()=>view('conferir');
+$('relPrint').onclick=()=>{const t=document.title;document.title=nomeArq(`Relatorio_contagem_${nl(CMP.loja)}_${new Date().toISOString().slice(0,10)}`);window.print();setTimeout(()=>document.title=t,1500)};
 $('btnXlsCmp').onclick=()=>{if(!CMP)return;const G=grupoCmp();
   const linha=x=>({'Código':x.p.c,'EAN':x.p.e||'','Produto':x.p.d,'Grupo':x.p.g,'Unidade':un(x.p.u),'Sistema':x.s,'Contado':x.k===null?'':x.k,'Diferença':x.d===null?'':x.d,'Preço de venda':x.v,'Valor da diferença':x.d===null?'':Math.round(x.d*x.v*100)/100,'Onde foi contado':x.o.join(' | ')});
   const ord=(a,b)=>Math.abs((b.d||0)*b.v)-Math.abs((a.d||0)*a.v);
@@ -646,6 +731,14 @@ $('btnXlsCmp').onclick=()=>{if(!CMP)return;const G=grupoCmp();
     ['Faltando (preço de venda)',Math.round(G.div.filter(x=>x.d<0).reduce((a,x)=>a+x.d*x.v,0)*100)/100],['Sobrando (preço de venda)',Math.round(G.div.filter(x=>x.d>0).reduce((a,x)=>a+x.d*x.v,0)*100)/100],[],['Contagens'],...CMP.B.map(b=>[b.setor||'sem setor',b.nome,b.m.size+' produtos'])];
   const add=(n,rows,cols)=>{const ws=Array.isArray(rows[0])?XLSX.utils.aoa_to_sheet(rows):XLSX.utils.json_to_sheet(rows.length?rows:[{'Sem dados':''}]);if(cols)ws['!cols']=cols;XLSX.utils.book_append_sheet(wb,ws,n)};
   const C=[{wch:9},{wch:15},{wch:50},{wch:24},{wch:8},{wch:10},{wch:10},{wch:10},{wch:13},{wch:16},{wch:40}];
+  const I=indic();
+  add('Indicadores',[['Indicador','Valor','Como foi calculado'],['Loja',nl(CMP.loja),''],['Estoque do sistema de',D.gerado,''],[],
+    ['Produtos contados',I.C.length,''],['Batendo',I.G.ok.length,''],['Com diferença',I.G.div.length,''],
+    ['Acurácia por item (%)',Math.round(I.acI*1000)/10,'batendo ÷ contados'],['Acurácia em valor (%)',Math.round(I.acV*1000)/10,'1 − diferença bruta ÷ valor no sistema dos contados'],
+    ['Faltando (R$, preço de venda)',Math.round(I.falta*100)/100,''],['Sobrando (R$, preço de venda)',Math.round(I.sobra*100)/100,''],['Diferença líquida (R$)',Math.round(I.liq*100)/100,'sobrando + faltando'],['Diferença bruta (R$)',Math.round(I.bruta*100)/100,'sobrando − faltando'],
+    ['Valor no sistema dos contados (R$)',Math.round(I.vSis*100)/100,''],['Cobertura de itens (%)',Math.round(I.cob*1000)/10,`${I.nEstC} de ${I.nEst} produtos com estoque`],['Cobertura em valor (%)',Math.round(I.cobV*1000)/10,''],[],
+    ['Grupo','Contados','Batendo','Acerto (%)','Faltando (R$)','Sobrando (R$)'],...I.grupos.map(o=>[o.g,o.cont,o.ok,o.cont?Math.round(o.ok/o.cont*1000)/10:0,Math.round(o.falta*100)/100,Math.round(o.sobra*100)/100]),[],
+    ['Setor','Contador','Itens','Bateram (%)'],...I.eq.map(e=>[e.setor,e.nome,e.n,e.n?Math.round(e.ok/e.n*1000)/10:0])],[{wch:34},{wch:18},{wch:48},{wch:12},{wch:14},{wch:14}]);
   add('Resumo',res,[{wch:30},{wch:30},{wch:16}]);add('Com diferença',G.div.slice().sort(ord).map(linha),C);add('Batendo',G.ok.map(linha),C);add('Não contados',G.nao.slice().sort((a,b)=>b.s*b.v-a.s*a.v).map(linha),C);
   const pg=new Map();CMP.L.forEach(x=>{const g=x.p.g||'—';if(!pg.has(g))pg.set(g,{g,est:0,cont:0,dif:0,val:0});const o=pg.get(g);if(x.s>0)o.est++;if(x.k!==null){o.cont++;if(x.d!==0){o.dif++;o.val+=x.d*x.v}}});
   add('Por grupo',[...pg.values()].sort((a,b)=>a.g.localeCompare(b.g)).map(o=>({'Grupo':o.g,'Com estoque no sistema':o.est,'Contados':o.cont,'Com diferença':o.dif,'Valor das diferenças':Math.round(o.val*100)/100})),[{wch:28},{wch:20},{wch:10},{wch:14},{wch:18}]);
