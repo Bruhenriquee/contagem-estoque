@@ -418,14 +418,15 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
   <button class="btn sm ghost" id="cfVoltar" type="button" style="align-self:flex-start">← Voltar</button>
   <div class="card">
     <div class="sh"><div class="ic" style="--c:var(--indigo)">🧮</div><div class="tt"><div class="ttl">Juntar as contagens da equipe</div><div class="sub">Contagens de pessoas diferentes do mesmo produto são somadas</div></div></div>
-    <div id="cfNuvem" hidden style="display:flex;flex-direction:column;gap:8px"><div class="row"><select id="cfLoja" aria-label="Loja"></select><button class="btn pri" id="btnNuvem" type="button" style="flex:1">☁️ Buscar da planilha</button></div><div class="small muted">Junta sozinho o que todo mundo contou nessa loja. Ou use os arquivos abaixo:</div></div>
+    <div id="cfNuvem" hidden style="display:flex;flex-direction:column;gap:10px"><select id="cfLoja" aria-label="Loja" style="width:100%"></select><button class="btn pri big" id="btnNuvem" type="button">☁️ Buscar contagens da planilha</button><div class="small muted">Junta sozinho o que todo mundo contou nessa loja.</div></div>
+    <details id="cfManual"><summary class="small" style="cursor:pointer;font-weight:600;padding:4px 0">📂 Juntar por arquivo ou texto (WhatsApp/Excel)</summary><div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
     <div class="grid2">
       <button class="btn" id="btnArq" type="button">📂 Abrir arquivos Excel</button>
       <button class="btn" id="btnDeste" type="button">📱 Usar a deste celular</button>
     </div>
     <input id="arq" type="file" accept=".xlsx,.xls,.csv,.txt" multiple hidden>
     <textarea id="txtJuntar" placeholder="Ou cole aqui os textos (CONTAGEM|...)"></textarea>
-    <button class="btn pri big" id="btnJuntar" type="button">Comparar com o estoque do sistema</button>
+    <button class="btn pri big" id="btnJuntar" type="button">Comparar com o estoque do sistema</button></div></details>
     <div class="small muted" id="juntarInfo"></div>
   </div>
   <div id="cmpOut" hidden style="display:flex;flex-direction:column;gap:14px">
@@ -512,7 +513,7 @@ function agendarEnvio(){if(!PLANILHA||!S.loja||!S.nome)return;S.pend=S.pend||{};
 async function enviarPlanilha(){clearTimeout(syncT);if(!PLANILHA||!D||enviando||navigator.onLine===false)return syncUI();enviando=true;
   for(const loja of Object.keys(S.pend||{})){const itens=[...totais(loja)].map(([c,q])=>[c,r3(q),(P.get(c)||{}).d||'']);const v=JSON.stringify(itens);
     try{const r=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({chave:CHAVE_ENVIO,loja,nome:S.nome,aparelho:aparelho(),finalizada:!!(S.finalizadas||{})[loja],itens})});const j=await r.json();if(!j.ok)throw 0;
-      if(JSON.stringify([...totais(loja)].map(([c,q])=>[c,r3(q),(P.get(c)||{}).d||'']))===v)delete S.pend[loja];S.envioOk=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}catch(e){}}
+      if(JSON.stringify([...totais(loja)].map(([c,q])=>[c,r3(q),(P.get(c)||{}).d||'']))===v)delete S.pend[loja];S.envioOk=Date.now();S.envOk=S.envOk||{};S.envOk[loja]=S.envioOk;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}catch(e){}}
   enviando=false;syncUI();if(Object.keys(S.pend||{}).length)syncT=setTimeout(enviarPlanilha,60000)}
 function syncUI(){const el=$('syncSt');if(!el)return;if(!PLANILHA){el.hidden=true;return}el.hidden=false;const n=Object.keys(S.pend||{}).length;
   const h=S.envioOk?new Date(S.envioOk).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
@@ -579,7 +580,8 @@ async function init(){
   $('noteDados').innerHTML=`Estoque do sistema de <b>${esc(D.gerado)}</b>. Vendas e entradas feitas depois desse horário aparecem como diferença: conte com a loja fechada.`;
   $('rodape').textContent='Estoque do sistema de '+D.gerado;
   modo(S.modo||'qtd');renderRecentes();header();
-  if(PLANILHA){$('cfNuvem').hidden=false;$('cfLoja').innerHTML=D.lojas.map(l=>`<option value="${esc(l)}">${esc(nl(l))}</option>`).join('');if(S.loja)$('cfLoja').value=S.loja;syncUI();enviarPlanilha()}
+  if(!PLANILHA)$('cfManual').open=true;
+  if(PLANILHA){$('cfNuvem').hidden=false;$('cfLoja').innerHTML=D.lojas.map(l=>`<option value="${esc(l)}">${esc(nl(l))}</option>`).join('');if(S.loja)$('cfLoja').value=S.loja;Object.keys(S.L||{}).forEach(l=>{if((S.L[l]||[]).length&&!(S.envOk||{})[l]){S.pend=S.pend||{};S.pend[l]=1}});syncUI();enviarPlanilha()}
   view(S.loja&&S.nome?'contar':'inicio');
   let viu=1;try{viu=localStorage.getItem('contagem-tutorial')}catch(e){}if(!viu)tutorial();
 }
