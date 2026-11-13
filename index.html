@@ -177,7 +177,10 @@ button:focus-visible{outline:3px solid rgba(21,101,192,.45);outline-offset:2px}
 .li .act{grid-column:2/-1;display:flex;justify-content:flex-end}
 .li .act button{background:none;border:0;color:var(--muted);font-size:12.5px;font-weight:600;padding:2px 0;cursor:pointer}
 .pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
-.pill.ok{background:var(--green-l);color:var(--green)} .pill.bad{background:var(--red-l);color:var(--red)} .pill.warn{background:var(--amber-l);color:var(--amber)} .pill.info{background:var(--blue-l);color:var(--blue)}
+.pill.ok{background:var(--green-l);color:var(--green)} .pill.bad{background:var(--red-l);color:var(--red)} .pill.warn{background:var(--amber-l);color:var(--amber)} .pill.info{background:var(--blue-l);color:var(--blue)} .pill.muted{background:var(--line);color:var(--muted)}
+.stat.tap{cursor:pointer;transition:transform .1s,box-shadow .1s}
+.stat.tap:active{transform:scale(.97)}
+.stat.tap.on{box-shadow:0 0 0 2px var(--c) inset}
 .empty{text-align:center;color:var(--muted);padding:22px 8px;font-size:14px}
 .empty .e{font-size:30px;display:block;margin-bottom:6px}
 
@@ -365,13 +368,15 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
     <input id="backupIn" type="file" accept="application/json,.json" hidden>
   </div>
   <div class="card">
-    <div class="sh"><div class="ic" style="--c:var(--blue)">📋</div><div class="tt"><div class="ttl">Produtos contados</div><div class="sub">Contado / sistema da loja</div></div></div>
+    <div class="sh"><div class="ic" style="--c:var(--blue)">📋</div><div class="tt"><div class="ttl">Lista de produtos</div><div class="sub">Contados, diferenças e o que falta contar</div></div></div>
     <div class="seg" id="segC">
       <button class="btn on" data-f="todos" type="button">Todos</button>
       <button class="btn" data-f="dif" type="button">Diferença</button>
       <button class="btn" data-f="ok" type="button">Batendo</button>
+      <button class="btn" data-f="falta" type="button">Faltam</button>
     </div>
     <input id="fC" placeholder="Filtrar por nome ou código">
+    <div class="small muted" id="cInfo" style="margin:-4px 0 2px"></div>
     <div class="list" id="cLista"></div>
   </div>
   <button class="btn danger" id="btnLimpar" type="button">🗑 Apagar a contagem desta loja</button>
@@ -571,7 +576,7 @@ function achou(p,viaScan){
   $('pInfo').innerHTML=`<span class="tag g">${esc(p.g)}</span><span class="tag">#${p.c}</span><span class="tag">${p.e?'EAN '+esc(p.e):'sem EAN'}</span><span class="tag">${un(p.u)}</span>`;
   $('pNums').innerHTML=numsHtml(p);
   $('cxBox').hidden=!p.cx;cxUI();
-  $('qtd').value='1';$('quick').innerHTML=[2,5,10,12,20,50,100].map(n=>`<button class="chip" data-n="${n}" type="button">${n}</button>`).join('');
+  $('qtd').value='1';$('quick').innerHTML=[0,2,5,10,12,20,50,100].map(n=>`<button class="chip" data-n="${n}" type="button">${n}</button>`).join('');
   $('prodCard').hidden=false;$('prodCard').scrollIntoView({block:'nearest',behavior:'smooth'});
   if(!viaScan){$('qtd').focus();$('qtd').select()}}
 $('quick').addEventListener('click',e=>{const b=e.target.closest('[data-n]');if(b){$('qtd').value=b.dataset.n;cxCalc()}});
@@ -679,19 +684,38 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)pararCamera
 
 /* ---------- contados ---------- */
 function linhasMinhas(){const m=totais();return[...m].map(([c,q])=>{const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};const s=sis(c);return{p,q,s,d:r3(q-s)}})}
+function linhasFaltam(){const st=ESTQ[S.loja]||new Map();const m=totais();const out=[];
+  for(const [c,x] of st){if(m.has(c))continue;const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};out.push({p,s:x.q})}
+  return out}
+const statTap=(ic,c,v,l,f,on)=>`<div class="stat tap${on?' on':''}" data-f="${f}" style="--c:${c}"><div class="ic" style="--c:${c}">${ic}</div><div class="v">${v}</div><div class="l">${l}</div></div>`;
 function renderContados(){renderStatusFinalizar();const L=linhasMinhas();const st=ESTQ[S.loja]||new Map();const pos=[...st.values()].filter(x=>x.q>0).length;
-  const cont=L.filter(x=>x.s>0).length;const dif=L.filter(x=>x.d!==0).length;
+  const cont=L.filter(x=>x.s>0).length;const dif=L.filter(x=>x.d!==0).length;const F=linhasFaltam();
   const pc=pos?cont/pos*100:0;
-  $('cStats').innerHTML=statH('📦','#1565C0',L.length,'contados')+statH('✅','#047857',L.length-dif,'batendo')+statH('⚠️','#DC2626',dif,'diferença')+
-   `<div class="stat wide" style="--c:#1565C0">${ringH(pc,'#1565C0')}<div style="flex:1;min-width:0"><div class="l">Progresso em ${esc(nl(S.loja))}</div><div style="font-size:15px;font-weight:600;margin-top:3px">${cont.toLocaleString('pt-BR')} de ${pos.toLocaleString('pt-BR')} produtos com estoque</div><div class="prog" style="margin-top:8px"><i style="width:${Math.min(100,pc)}%"></i></div></div></div>`;
-  const f=norm($('fC').value);let R=L.filter(x=>!f||norm(x.p.d).includes(f)||String(x.p.c).includes(f));
-  if(filtroC==='dif')R=R.filter(x=>x.d!==0);if(filtroC==='ok')R=R.filter(x=>x.d===0);
-  R.sort((a,b)=>a.p.d.localeCompare(b.p.d));
-  $('cLista').innerHTML=R.length?R.map(x=>`<div class="li ${stCls(x.d)}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small></div><div class="r">${fQ(x.q)} <span class="of">/ ${fQ(x.s)}</span><small>${pillD(x.d)}</small></div><div class="act"><button data-zera="${x.p.c}" type="button">✕ remover</button></div></div>`).join(''):vazio('📋','Nada para mostrar.');
+  $('cStats').innerHTML=statTap('📦','#1565C0',L.length,'contados','todos',filtroC==='todos')+statTap('✅','#047857',L.length-dif,'batendo','ok',filtroC==='ok')+statTap('⚠️','#DC2626',dif,'diferença','dif',filtroC==='dif')+
+   `<div class="stat wide tap${filtroC==='falta'?' on':''}" data-f="falta" style="--c:#1565C0">${ringH(pc,'#1565C0')}<div style="flex:1;min-width:0"><div class="l">Progresso em ${esc(nl(S.loja))}</div><div style="font-size:15px;font-weight:600;margin-top:3px">${cont.toLocaleString('pt-BR')} de ${pos.toLocaleString('pt-BR')} produtos com estoque</div><div class="prog" style="margin-top:8px"><i style="width:${Math.min(100,pc)}%"></i></div>${F.length?`<div style="margin-top:8px;font-size:13px;font-weight:700;color:#B45309">🔍 ${F.length.toLocaleString('pt-BR')} ainda faltam contar</div>`:`<div style="margin-top:8px;font-size:13px;font-weight:700;color:#047857">✅ Tudo contado</div>`}</div></div>`;
+  const f=norm($('fC').value);
+  if(filtroC==='falta'){
+    let RF=F.filter(x=>!f||norm(x.p.d).includes(f)||String(x.p.c).includes(f));
+    RF.sort((a,b)=>(a.p.g||'').localeCompare(b.p.g||'')||a.p.d.localeCompare(b.p.d));
+    $('cInfo').textContent=RF.length?`${RF.length.toLocaleString('pt-BR')} produtos ainda não contados`:'';
+    $('cLista').innerHTML=RF.length?RF.slice(0,300).map(x=>`<div class="li" data-code="${x.p.c}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small>${x.s<=0?'<small><span class="pill muted">sem estoque no sistema</span></small>':''}</div><div class="r"><span class="of">sistema</span> ${fQ(x.s)}</div><div style="grid-column:2/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:4px"><button class="btn sm" data-zero="${x.p.c}" type="button">É zero</button><button class="btn sm pri" data-ir="${x.p.c}" type="button">Contar →</button></div></div>`).join('')+(RF.length>300?`<div class="empty">Mostrando 300 de ${RF.length.toLocaleString('pt-BR')}. Use a busca para achar mais rápido.</div>`:''):vazio('🎉','Tudo contado nesta loja!');
+  }else{
+    let R=L.filter(x=>!f||norm(x.p.d).includes(f)||String(x.p.c).includes(f));
+    if(filtroC==='dif')R=R.filter(x=>x.d!==0);if(filtroC==='ok')R=R.filter(x=>x.d===0);
+    R.sort((a,b)=>a.p.d.localeCompare(b.p.d));
+    $('cInfo').textContent=R.length?`${R.length.toLocaleString('pt-BR')} produto${R.length===1?'':'s'}`:'';
+    $('cLista').innerHTML=R.length?R.map(x=>`<div class="li ${stCls(x.d)}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small></div><div class="r">${fQ(x.q)} <span class="of">/ ${fQ(x.s)}</span><small>${pillD(x.d)}</small></div><div class="act"><button data-zera="${x.p.c}" type="button">✕ remover</button></div></div>`).join(''):vazio('📋','Nada para mostrar.');
+  }
   $('txtEnvio').value=L.length?textoEnvio():''}
-$('segC').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;filtroC=b.dataset.f;[...$('segC').children].forEach(x=>x.classList.toggle('on',x===b));renderContados()});
+function setFiltroC(f){filtroC=f;[...$('segC').children].forEach(x=>x.classList.toggle('on',x.dataset.f===f));renderContados()}
+$('segC').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;setFiltroC(b.dataset.f)});
+$('cStats').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;setFiltroC(b.dataset.f)});
 $('fC').addEventListener('input',renderContados);
-$('cLista').addEventListener('click',e=>{const b=e.target.closest('[data-zera]');if(!b)return;const c=+b.dataset.zera;S.L[S.loja]=ent().filter(x=>x.c!==c);save();header();renderContados();renderRecentes();toast('Produto removido')});
+$('cLista').addEventListener('click',e=>{
+  const zera=e.target.closest('[data-zera]');if(zera){const c=+zera.dataset.zera;S.L[S.loja]=ent().filter(x=>x.c!==c);save();header();renderContados();renderRecentes();toast('Produto removido');return}
+  const zero=e.target.closest('[data-zero]');if(zero){const c=+zero.dataset.zero;const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};adicionar(p,0);renderContados();return}
+  const ir=e.target.closest('[data-ir]');if(ir){const c=+ir.dataset.ir;const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};view('contar');achou(p,false);return}
+});
 function textoEnvio(){const m=totais();const dt=new Date().toLocaleString('pt-BR');
   return`CONTAGEM|${S.loja}|${S.nome}|${dt}|${m.size} produtos\n`+[...m].map(([c,q])=>c+';'+String(r3(q)).replace('.',',')).join('\n')}
 $('btnTexto').onclick=()=>{$('txtEnvio').hidden=!$('txtEnvio').hidden;if(!$('txtEnvio').hidden){$('txtEnvio').focus();$('txtEnvio').select()}};
