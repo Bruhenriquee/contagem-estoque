@@ -497,7 +497,7 @@ function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='con
   VIEWS.forEach(k=>{$('v-'+k).hidden=k!==v;const n=$('n-'+k);if(n)n.setAttribute('aria-current',(k===v||(k==='conferir'&&v==='relatorio'))?'page':'false')});
   $('hStats').style.display=(v==='relatorio'||v==='contados')?'none':'';
   if(v!=='contar')pararCamera();
-  if(v==='contados')renderContados();if(v==='inicio')renderLojas();
+  if(v==='contados')renderContados();if(v==='inicio')renderLojas();if(v==='contar')renderRecentes();
   window.scrollTo(0,0)}
 VIEWS.forEach(k=>{const n=$('n-'+k);if(n)n.onclick=()=>view(k)});
 $('hLoja').onclick=()=>{if(!S.loja){view('inicio');return}
@@ -540,7 +540,9 @@ function renderIniciar(){const c=$('cardIniciar');if(!S.loja||!S.nome){c.hidden=
   else if(st==='and'){$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>. <span class="pill info">🟢 Em andamento desde ${dt(S.iniciadas[S.loja])}</span>`;btn.textContent='▶️ Continuar contagem'}
   else{$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>.`;btn.textContent='▶️ Iniciar contagem'}}
 $('btnComecar').onclick=()=>{if(!S.loja||!S.nome)return;const l=S.loja;
-  const doStart=()=>{S.iniciadas=S.iniciadas||{};if(!S.iniciadas[l])S.iniciadas[l]=Date.now();save();header();view('contar')};
+  const doStart=()=>{S.iniciadas=S.iniciadas||{};if(!S.iniciadas[l])S.iniciadas[l]=Date.now();save();header();
+    cur=null;$('prodCard').hidden=true;$('results').innerHTML='';$('busca').value='';
+    view('contar')};
   if((S.finalizadas||{})[l])confirmar('Reabrir contagem?',`A contagem de ${nl(l)} já foi finalizada. Quer reabrir e continuar contando?`,'Reabrir',()=>{delete S.finalizadas[l];doStart()});
   else doStart()};
 
