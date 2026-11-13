@@ -99,6 +99,7 @@ button:focus-visible{outline:3px solid rgba(21,101,192,.45);outline-offset:2px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{border:1px solid var(--line2);background:#fff;color:var(--ink2);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:var(--sh)}
 .chip:active{background:var(--blue-l);border-color:var(--blue);color:var(--blue)}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 6px 14px -6px rgba(21,101,192,.6)}
 
 /* ---------- lojas ---------- */
 .lojas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -223,6 +224,9 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 14px);background:#0F172A;color:#fff;padding:12px 16px;border-radius:14px;font-weight:600;font-size:14.5px;z-index:40;width:max-content;max-width:calc(100% - 32px);text-align:center;box-shadow:0 14px 34px -10px rgba(15,23,42,.55);animation:tin .2s ease-out}
 .toast.ok{background:var(--green)} .toast.bad{background:var(--red)}
 @keyframes tin{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+.modalBack{position:fixed;inset:0;z-index:60;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:20px}
+.modalBox{background:#fff;border-radius:18px;padding:18px;max-width:380px;width:100%;box-shadow:var(--sh2);display:flex;flex-direction:column;gap:10px}
+.modalBox b{font-size:16px}
 @media (min-width:560px){.lojas{grid-template-columns:repeat(3,minmax(0,1fr))}}
 /* ---------- relatório ---------- */
 .rh{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:8px;border-top:5px solid var(--blue)}
@@ -280,10 +284,15 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
     <div class="lojas" id="lojas"></div>
   </div>
   <div class="card">
-    <div class="sh"><div class="ic" style="--c:var(--indigo)">👤</div><div class="tt"><div class="ttl">2 · Quem está contando</div><div class="sub">Aparece no arquivo que você enviar</div></div></div>
-    <label class="f">Seu nome<input id="inNome" autocomplete="name" placeholder="Ex.: Ana"></label>
-    <label class="f">Setor da loja<input id="inSetor" placeholder="Ex.: Corredor 3, Depósito, Pátio"></label>
-    <button class="btn pri big" id="btnComecar" type="button">Começar a contar →</button>
+    <div class="sh"><div class="ic" style="--c:var(--indigo)">👤</div><div class="tt"><div class="ttl">2 · Quem é você</div><div class="sub">Toque no seu nome, ou adicione um novo</div></div></div>
+    <div class="chips" id="pessoas"></div>
+    <div class="row" id="novoNomeRow" hidden><input id="inNovoNome" autocomplete="name" placeholder="Seu nome"><button class="btn pri" id="btnAddNome" type="button">Adicionar</button></div>
+    <button class="btn sm ghost" id="btnNovoNome" type="button">+ Adicionar meu nome</button>
+  </div>
+  <div class="card" id="cardIniciar" hidden>
+    <div class="ttl">3 · Pronto para começar</div>
+    <p class="small" id="iniciarInfo" style="color:var(--ink2)"></p>
+    <button class="btn pri big" id="btnComecar" type="button">▶️ Iniciar contagem</button>
   </div>
   <div class="note"><div class="ic">🕒</div><div id="noteDados">Carregando a lista de produtos…</div></div>
 </section>
@@ -339,8 +348,9 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
 <!-- ============ CONTADOS ============ -->
 <section id="v-contados" hidden>
   <div class="stats" id="cStats"></div>
+  <div id="statusFinalizar"></div>
   <div class="card">
-    <div class="sh"><div class="ic" style="--c:var(--green)">📤</div><div class="tt"><div class="ttl">Enviar a contagem</div><div class="sub">Mande ao terminar cada setor. Fica só neste celular até ser enviada.</div></div></div>
+    <div class="sh"><div class="ic" style="--c:var(--green)">📤</div><div class="tt"><div class="ttl">Enviar a contagem</div><div class="sub">Mande sempre que quiser. Fica só neste celular até ser enviada.</div></div></div>
     <div class="grid2">
       <button class="btn grn" id="btnZap" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>WhatsApp</button>
       <button class="btn tl" id="btnXls" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13l4 5M13 13l-4 5"/></svg>Excel</button>
@@ -348,6 +358,11 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
     <button class="btn" id="btnOM" type="button">📥 Arquivo para o OM (F7 · coletor)</button>
     <button class="btn sm ghost" id="btnTexto" type="button">Mostrar texto para copiar</button>
     <textarea id="txtEnvio" readonly hidden aria-label="Texto da contagem"></textarea>
+  </div>
+  <div class="card">
+    <div class="sh"><div class="ic" style="--c:var(--muted)">💾</div><div class="tt"><div class="ttl">Backup de segurança</div><div class="sub">Fica salvo neste celular automaticamente. Para contagens de vários dias, faça este backup de vez em quando.</div></div></div>
+    <div class="grid2"><button class="btn" id="btnBackup" type="button">💾 Salvar backup</button><button class="btn" id="btnRestore" type="button">📂 Restaurar backup</button></div>
+    <input id="backupIn" type="file" accept="application/json,.json" hidden>
   </div>
   <div class="card">
     <div class="sh"><div class="ic" style="--c:var(--blue)">📋</div><div class="tt"><div class="ttl">Produtos contados</div><div class="sub">Contado / sistema da loja</div></div></div>
@@ -360,17 +375,12 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
     <div class="list" id="cLista"></div>
   </div>
   <button class="btn danger" id="btnLimpar" type="button">🗑 Apagar a contagem desta loja</button>
-  <div class="confirm" id="cfLimpar" hidden>
-    <b>Apagar tudo o que foi contado nesta loja neste celular?</b>
-    <span class="small">Confira se já enviou. Não dá para desfazer.</span>
-    <div class="row"><button class="btn" id="cfNao" type="button" style="flex:1">Cancelar</button><button class="btn pri" id="cfSim" type="button" style="flex:1;background:var(--red);border-color:var(--red)">Apagar</button></div>
-  </div>
 </section>
 
 <!-- ============ CONFERIR ============ -->
 <section id="v-conferir" hidden>
   <div class="card">
-    <div class="sh"><div class="ic" style="--c:var(--indigo)">🧮</div><div class="tt"><div class="ttl">Juntar as contagens da equipe</div><div class="sub">Setores diferentes do mesmo produto são somados</div></div></div>
+    <div class="sh"><div class="ic" style="--c:var(--indigo)">🧮</div><div class="tt"><div class="ttl">Juntar as contagens da equipe</div><div class="sub">Contagens de pessoas diferentes do mesmo produto são somadas</div></div></div>
     <div class="grid2">
       <button class="btn" id="btnArq" type="button">📂 Abrir arquivos Excel</button>
       <button class="btn" id="btnDeste" type="button">📱 Usar a deste celular</button>
@@ -382,7 +392,7 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
   </div>
   <div id="cmpOut" hidden style="display:flex;flex-direction:column;gap:14px">
     <div class="stats" id="cmpStats"></div>
-    <button class="scanbtn" id="btnRel" type="button"><span class="bi" style="font-size:24px">📊</span><span><b>Relatório para a direção</b><span>Acurácia, perdas em R$, grupos e equipe · salva em PDF</span></span></button>
+    <button class="scanbtn" id="btnRel" type="button"><span class="bi" style="font-size:24px">📊</span><span><b>Relatório para a direção</b><span>Taxa de erro, cobertura, grupos e equipe · salva em PDF</span></span></button>
     <div class="card">
       <div class="seg" id="segF">
         <button class="btn on" data-f="div" type="button">Diferença</button>
@@ -416,6 +426,13 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
     <button id="n-conferir" type="button"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Conferir</button>
   </div>
 </nav>
+<div class="modalBack" id="modalBack" hidden>
+  <div class="modalBox">
+    <b id="modalTitulo"></b>
+    <p class="small muted" id="modalTexto"></p>
+    <div class="row"><button class="btn" id="modalCancelar" type="button">Cancelar</button><button class="btn pri" id="modalOk" type="button">Confirmar</button></div>
+  </div>
+</div>
 <div class="toast" id="toast" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.20.0/umd/index.min.js"></script>
@@ -438,13 +455,15 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const sinal=d=>(d>0?'+':'')+fQ(d);
 
 let D=null,P=new Map(),EAN=new Map(),IDX=[],ESTQ={};
-let S={nome:'',setor:'',loja:'',modo:'qtd',cx:true,L:{}};
+let S={nome:'',loja:'',modo:'qtd',cx:true,L:{},pessoas:[],iniciadas:{},finalizadas:{}};
 let cur=null,CMP=null,filtroC='todos',filtroF='div';
 
 /* ---------- estado ---------- */
 function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&v.L)S=Object.assign(S,v);
+  S.pessoas=Array.isArray(S.pessoas)?S.pessoas:[];S.iniciadas=S.iniciadas&&typeof S.iniciadas==='object'?S.iniciadas:{};S.finalizadas=S.finalizadas&&typeof S.finalizadas==='object'?S.finalizadas:{};
+  if(S.nome&&!S.pessoas.includes(S.nome))S.pessoas.push(S.nome);
   const old=JSON.parse(localStorage.getItem('contagem-estoque-v1')||'null');
-  if(old&&old.ent&&old.ent.length&&old.loja&&!(S.L[old.loja]&&S.L[old.loja].length)){S.L[old.loja]=old.ent.map(e=>Object.assign({s:old.setor||''},e));S.nome=S.nome||old.nome||'';S.setor=S.setor||old.setor||'';S.loja=S.loja||old.loja;save()}}catch(e){}}
+  if(old&&old.ent&&old.ent.length&&old.loja&&!(S.L[old.loja]&&S.L[old.loja].length)){S.L[old.loja]=old.ent.map(e=>({id:e.id,c:e.c,q:e.q,t:e.t}));S.nome=S.nome||old.nome||'';if(S.nome&&!S.pessoas.includes(S.nome))S.pessoas.push(S.nome);S.loja=S.loja||old.loja;save()}}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Não consegui salvar neste navegador. Envie a contagem agora.','bad')}}
 const ent=()=>S.L[S.loja]||(S.L[S.loja]=[]);
 function totais(loja){const m=new Map();for(const e of (S.L[loja||S.loja]||[]))m.set(e.c,(m.get(e.c)||0)+e.q);return m}
@@ -454,6 +473,12 @@ const preco=(c,loja)=>{const x=(ESTQ[loja||S.loja]||new Map()).get(c);return x?x
 const COR_LOJA={'Bastos':'#1565C0','Deposito':'#475569','Iacri':'#0D9488','Osvaldo Cruz':'#4F46E5','Parapua':'#EA580C','Rinópolis':'#7C3AED','Tupa':'#D97706'};
 const PAL=['#1565C0','#0D9488','#4F46E5','#EA580C','#7C3AED','#D97706','#475569'];
 const corLoja=(l,i)=>COR_LOJA[l]||PAL[(i||0)%PAL.length];
+function statusLoja(l){if((S.finalizadas||{})[l])return 'fin';if((S.iniciadas||{})[l])return 'and';return 'novo'}
+let modalCb=null;
+function confirmar(titulo,texto,textoOk,cb,danger){$('modalTitulo').textContent=titulo;$('modalTexto').textContent=texto;const ok=$('modalOk');ok.textContent=textoOk||'Confirmar';ok.style.background=danger?'var(--red)':'';ok.style.borderColor=danger?'var(--red)':'';modalCb=cb;$('modalBack').hidden=false}
+$('modalCancelar').onclick=()=>{$('modalBack').hidden=true;modalCb=null};
+$('modalBack').addEventListener('click',e=>{if(e.target.id==='modalBack'){$('modalBack').hidden=true;modalCb=null}});
+$('modalOk').onclick=()=>{const cb=modalCb;$('modalBack').hidden=true;modalCb=null;if(cb)cb()};
 const stCls=d=>d===0?'ok':d>0?'warn':'bad';
 const pillD=d=>d===0?'<span class="pill ok">✓ bateu</span>':d>0?`<span class="pill warn">▲ ${sinal(d)}</span>`:`<span class="pill bad">▼ ${sinal(d)}</span>`;
 const statH=(ic,c,v,l,ex)=>`<div class="stat${ex?' '+ex:''}" style="--c:${c}"><div class="ic" style="--c:${c}">${ic}</div><div class="v">${v}</div><div class="l">${l}</div></div>`;
@@ -470,9 +495,11 @@ function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='con
   if(v==='contados')renderContados();if(v==='inicio')renderLojas();
   window.scrollTo(0,0)}
 VIEWS.forEach(k=>{const n=$('n-'+k);if(n)n.onclick=()=>view(k)});
-$('hLoja').onclick=()=>view('inicio');
+$('hLoja').onclick=()=>{if(!S.loja){view('inicio');return}
+  confirmar('Trocar de loja?',`A contagem de ${nl(S.loja)} fica salva. Você vai escolher outra loja (ou voltar a ela depois).`,'Trocar',()=>view('inicio'))};
 function header(){$('hTitulo').textContent=S.loja?nl(S.loja):'Contagem de estoque';
-  $('hSub').textContent=S.loja?[S.nome,S.setor].filter(Boolean).join(' · ')||'Contagem de estoque':'Escolha a loja para começar';
+  const stj=S.loja?statusLoja(S.loja):null;const tagTxt=stj==='fin'?' · ✅ finalizada':stj==='and'?' · 🟢 em andamento':'';
+  $('hSub').textContent=S.loja?(S.nome||'Contagem de estoque')+tagTxt:'Escolha a loja para começar';
   $('hLoja').innerHTML=S.loja?'🏬 Trocar':'🏬 Loja';const n=totais().size;$('nBadge').textContent=n;$('nBadge').hidden=!n;
   const hs=$('hStats');if(!(D&&S.loja&&S.nome)){hs.hidden=true;return}const L=linhasMinhas();const dif=L.filter(x=>x.d!==0).length;
   hs.hidden=false;hs.innerHTML=`<div class="hs"><div class="v">${L.length}</div><div class="l">contados</div></div><div class="hs ok"><div class="v">${L.length-dif}</div><div class="l">batendo</div></div><div class="hs bad"><div class="v">${dif}</div><div class="l">com diferença</div></div>`}
@@ -483,7 +510,7 @@ async function init(){
   try{const r=await fetch('dados.json',{cache:'no-cache'});D=await r.json()}catch(e){$('noteDados').textContent='Não consegui carregar a lista de produtos. Verifique a internet e recarregue.';view('inicio');return}
   D.p.forEach(a=>{const o={c:a[0],e:a[1],d:a[2],g:D.grupos[a[3]],u:a[4],pv:a[5]};const mx=/^(Metro|Metro_Quad|M2|Metro_Cub)$/.test(o.u)&&o.d.match(/\bCX\.?\s*(\d+[,.]\d+)/);if(mx){o.cx=parseFloat(mx[1].replace(',','.'));o.u='M2'}P.set(o.c,o);if(o.e){const k=o.e.replace(/^0+/,'');if(!EAN.has(k))EAN.set(k,[]);EAN.get(k).push(o.c)}IDX.push([norm(o.d+' '+o.c),o.c])});
   D.lojas.forEach((l,i)=>{const m=new Map();(D.e[i]||[]).forEach(r=>m.set(r[0],{q:r[1],v:r[2]}));ESTQ[l]=m});
-  $('inNome').value=S.nome;$('inSetor').value=S.setor;
+  renderPessoas();renderIniciar();
   $('fGrupo').innerHTML='<option value="">Todos os grupos</option>'+[...D.grupos].sort().map(g=>`<option>${esc(g)}</option>`).join('');
   $('noteDados').innerHTML=`Estoque do sistema de <b>${esc(D.gerado)}</b>. Vendas e entradas feitas depois desse horário aparecem como diferença: conte com a loja fechada.`;
   $('rodape').textContent='Estoque do sistema de '+D.gerado;
@@ -492,11 +519,25 @@ async function init(){
 }
 function renderLojas(){if(!D)return;$('lojas').innerHTML=D.lojas.map((l,i)=>{const st=ESTQ[l];const pos=[...st.values()].filter(x=>x.q>0).length;const m=totais(l);const c=m.size;
   const cs=[...m.keys()].filter(k=>(st.get(k)||{q:0}).q>0).length;const cor=corLoja(l,i);
-  return`<button class="loja" type="button" data-l="${esc(l)}" aria-pressed="${l===S.loja}" style="--c:${cor}"><div class="top"><div class="ic" style="--c:${cor}">🏬</div><b>${esc(nl(l))}</b></div><div class="q">${pos.toLocaleString('pt-BR')} produtos com estoque</div><div class="bar"><i style="width:${pos?Math.min(100,cs/pos*100):0}%"></i></div><div class="cnt">${c?c.toLocaleString('pt-BR')+' já contados':'&nbsp;'}</div></button>`}).join('')}
-$('lojas').addEventListener('click',e=>{const b=e.target.closest('.loja');if(!b)return;S.loja=b.dataset.l;save();renderLojas();header()});
-$('btnComecar').onclick=()=>{if(!S.loja){toast('Escolha a loja','bad');return}const n=$('inNome').value.trim(),s=$('inSetor').value.trim();
-  if(!n){$('inNome').focus();toast('Escreva seu nome','bad');return}if(!s){$('inSetor').focus();toast('Escreva o setor','bad');return}
-  S.nome=n;S.setor=s;save();header();view('contar')};
+  const stj=statusLoja(l);const tagLoja=stj==='fin'?'<span class="pill ok" style="margin-top:2px;align-self:flex-start">✅ finalizada</span>':stj==='and'?'<span class="pill info" style="margin-top:2px;align-self:flex-start">🟢 em andamento</span>':'';
+  return`<button class="loja" type="button" data-l="${esc(l)}" aria-pressed="${l===S.loja}" style="--c:${cor}"><div class="top"><div class="ic" style="--c:${cor}">🏬</div><b>${esc(nl(l))}</b></div><div class="q">${pos.toLocaleString('pt-BR')} produtos com estoque</div><div class="bar"><i style="width:${pos?Math.min(100,cs/pos*100):0}%"></i></div><div class="cnt">${c?c.toLocaleString('pt-BR')+' já contados':'&nbsp;'}</div>${tagLoja}</button>`}).join('')}
+$('lojas').addEventListener('click',e=>{const b=e.target.closest('.loja');if(!b)return;S.loja=b.dataset.l;save();renderLojas();header();renderIniciar()});
+function renderPessoas(){$('pessoas').innerHTML=(S.pessoas||[]).map(nm=>`<button class="chip${nm===S.nome?' on':''}" data-nome="${esc(nm)}" type="button" aria-pressed="${nm===S.nome}">${esc(nm)}</button>`).join('')}
+$('pessoas').addEventListener('click',e=>{const b=e.target.closest('[data-nome]');if(!b)return;S.nome=b.dataset.nome;save();renderPessoas();header();renderIniciar()});
+$('btnNovoNome').onclick=()=>{$('novoNomeRow').hidden=false;$('inNovoNome').focus()};
+$('btnAddNome').onclick=()=>{const n=$('inNovoNome').value.trim();if(!n){toast('Escreva um nome','bad');return}
+  if(!S.pessoas.includes(n))S.pessoas.push(n);S.nome=n;save();$('inNovoNome').value='';$('novoNomeRow').hidden=true;renderPessoas();header();renderIniciar();toast('Nome adicionado')};
+$('inNovoNome').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('btnAddNome').click()}});
+function renderIniciar(){const c=$('cardIniciar');if(!S.loja||!S.nome){c.hidden=true;return}c.hidden=false;
+  const dt=ts=>new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  const st=statusLoja(S.loja);const btn=$('btnComecar');
+  if(st==='fin'){$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>. <span class="pill ok">✅ Finalizada em ${dt(S.finalizadas[S.loja])}</span>`;btn.textContent='🔓 Reabrir e continuar'}
+  else if(st==='and'){$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>. <span class="pill info">🟢 Em andamento desde ${dt(S.iniciadas[S.loja])}</span>`;btn.textContent='▶️ Continuar contagem'}
+  else{$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>.`;btn.textContent='▶️ Iniciar contagem'}}
+$('btnComecar').onclick=()=>{if(!S.loja||!S.nome)return;const l=S.loja;
+  const doStart=()=>{S.iniciadas=S.iniciadas||{};if(!S.iniciadas[l])S.iniciadas[l]=Date.now();save();header();view('contar')};
+  if((S.finalizadas||{})[l])confirmar('Reabrir contagem?',`A contagem de ${nl(l)} já foi finalizada. Quer reabrir e continuar contando?`,'Reabrir',()=>{delete S.finalizadas[l];doStart()});
+  else doStart()};
 
 /* ---------- busca ---------- */
 function buscar(q){q=q.trim();if(!q)return[];const dig=q.replace(/\D/g,'');
@@ -545,13 +586,13 @@ $('qtd').addEventListener('input',cxCalc);
 $('qtd').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();somar()}});
 $('btnSomar').onclick=somar;$('btnCancelar').onclick=()=>{cur=null;$('prodCard').hidden=true;pausado=false};
 function somar(){if(!cur)return;const q=qv();if(isNaN(q)||q<0){toast('Digite uma quantidade válida','bad');return}adicionar(cur,cur.cx&&S.cx?r3(q*cur.cx):q);cur=null;$('prodCard').hidden=true;pausado=false}
-function adicionar(p,q){ent().push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),c:p.c,q,t:Date.now(),s:S.setor});save();
+function adicionar(p,q){ent().push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),c:p.c,q,t:Date.now()});save();
   const tot=totais().get(p.c),s=sis(p.c),d=r3(tot-s);
   toast(`${p.d.slice(0,40)} · contado ${fQ(tot)} · sistema ${fQ(s)} · ${d===0?'bateu ✓':'dif. '+sinal(d)}`,d===0?'ok':'');
   header();renderRecentes();if(!camAberta)$('busca').focus()}
 function renderRecentes(){const L=ent().slice(-10).reverse();$('recInfo').textContent=ent().length?`${totais().size} produtos · ${ent().length} bipes nesta loja`:'Nada contado ainda';
   $('recentes').innerHTML=L.length?L.map(e=>{const p=P.get(e.c)||{d:'Produto '+e.c,u:''};const tot=totais().get(e.c),s=sis(e.c),d=r3(tot-s);
-    return`<div class="li ${stCls(d)}"><div class="d">${esc(p.d)}<small>#${e.c} · ${esc(e.s||'')} · +${fQ(e.q)} ${un(p.u)}</small></div><div class="r">${fQ(tot)} <span class="of">/ ${fQ(s)}</span><small>${pillD(d)}</small></div><div class="act"><button data-del="${e.id}" type="button">↶ desfazer este bipe</button></div></div>`}).join(''):vazio('📦','Nenhum produto contado nesta loja ainda.<br>Abra o leitor e comece a bipar.')}
+    return`<div class="li ${stCls(d)}"><div class="d">${esc(p.d)}<small>#${e.c} · +${fQ(e.q)} ${un(p.u)}</small></div><div class="r">${fQ(tot)} <span class="of">/ ${fQ(s)}</span><small>${pillD(d)}</small></div><div class="act"><button data-del="${e.id}" type="button">↶ desfazer este bipe</button></div></div>`}).join(''):vazio('📦','Nenhum produto contado nesta loja ainda.<br>Abra o leitor e comece a bipar.')}
 $('recentes').addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;S.L[S.loja]=ent().filter(x=>x.id!==b.dataset.del);save();header();renderRecentes();toast('Bipe desfeito')});
 
 /* ---------- câmera (bip contínuo) ----------
@@ -638,7 +679,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)pararCamera
 
 /* ---------- contados ---------- */
 function linhasMinhas(){const m=totais();return[...m].map(([c,q])=>{const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};const s=sis(c);return{p,q,s,d:r3(q-s)}})}
-function renderContados(){const L=linhasMinhas();const st=ESTQ[S.loja]||new Map();const pos=[...st.values()].filter(x=>x.q>0).length;
+function renderContados(){renderStatusFinalizar();const L=linhasMinhas();const st=ESTQ[S.loja]||new Map();const pos=[...st.values()].filter(x=>x.q>0).length;
   const cont=L.filter(x=>x.s>0).length;const dif=L.filter(x=>x.d!==0).length;
   const pc=pos?cont/pos*100:0;
   $('cStats').innerHTML=statH('📦','#1565C0',L.length,'contados')+statH('✅','#047857',L.length-dif,'batendo')+statH('⚠️','#DC2626',dif,'diferença')+
@@ -651,13 +692,12 @@ function renderContados(){const L=linhasMinhas();const st=ESTQ[S.loja]||new Map(
 $('segC').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;filtroC=b.dataset.f;[...$('segC').children].forEach(x=>x.classList.toggle('on',x===b));renderContados()});
 $('fC').addEventListener('input',renderContados);
 $('cLista').addEventListener('click',e=>{const b=e.target.closest('[data-zera]');if(!b)return;const c=+b.dataset.zera;S.L[S.loja]=ent().filter(x=>x.c!==c);save();header();renderContados();renderRecentes();toast('Produto removido')});
-function textoEnvio(){const by=new Map();for(const e of ent()){const k=e.s||S.setor||'';if(!by.has(k))by.set(k,new Map());const m=by.get(k);m.set(e.c,(m.get(e.c)||0)+e.q)}const dt=new Date().toLocaleString('pt-BR');
-  return[...by].map(([st,m])=>`CONTAGEM|${S.loja}|${S.nome}|${dt}|${m.size} produtos|${st}\n`+[...m].map(([c,q])=>c+';'+String(r3(q)).replace('.',',')).join('\n')).join('\n')}
+function textoEnvio(){const m=totais();const dt=new Date().toLocaleString('pt-BR');
+  return`CONTAGEM|${S.loja}|${S.nome}|${dt}|${m.size} produtos\n`+[...m].map(([c,q])=>c+';'+String(r3(q)).replace('.',',')).join('\n')}
 $('btnTexto').onclick=()=>{$('txtEnvio').hidden=!$('txtEnvio').hidden;if(!$('txtEnvio').hidden){$('txtEnvio').focus();$('txtEnvio').select()}};
-function wbMinha(){const rows=[];const by=new Map();for(const e of ent()){const k=e.c+'|'+(e.s||'');by.set(k,(by.get(k)||0)+e.q)}
-  for(const [k,q] of by){const [c,s]=k.split('|');const p=P.get(+c)||{c:+c,d:'Produto '+c,g:'',u:'',e:''};const si=sis(+c);rows.push({'Loja':nl(S.loja),'Contador':S.nome,'Setor':s,'Código':+c,'EAN':p.e||'','Produto':p.d,'Grupo':p.g,'Unidade':un(p.u),'Quantidade':r3(q),'Sistema (loja toda)':si})}
-  rows.sort((a,b)=>a.Setor.localeCompare(b.Setor)||a.Produto.localeCompare(b.Produto));
-  const wb=XLSX.utils.book_new();const ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:12},{wch:14},{wch:16},{wch:9},{wch:15},{wch:50},{wch:24},{wch:8},{wch:11},{wch:12}];XLSX.utils.book_append_sheet(wb,ws,'Contagem');return wb}
+function wbMinha(){const rows=[];for(const [c,q] of totais()){const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};const si=sis(c);rows.push({'Loja':nl(S.loja),'Contador':S.nome,'Código':c,'EAN':p.e||'','Produto':p.d,'Grupo':p.g,'Unidade':un(p.u),'Quantidade':r3(q),'Sistema (loja toda)':si})}
+  rows.sort((a,b)=>a.Produto.localeCompare(b.Produto));
+  const wb=XLSX.utils.book_new();const ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:12},{wch:14},{wch:9},{wch:15},{wch:50},{wch:24},{wch:8},{wch:11},{wch:12}];XLSX.utils.book_append_sheet(wb,ws,'Contagem');return wb}
 const nomeArq=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w.-]+/g,'_');
 function baixar(wb,nome){XLSX.writeFile(wb,nome)}
 /* arquivo do coletor do OM: código interno;quantidade (vírgula decimal), delimitador ";" */
@@ -669,15 +709,29 @@ $('btnOM').onclick=()=>{const m=totais();if(!m.size){toast('Nada contado ainda',
   entregarTxt(txtOM(m),nomeArq(`Coletor_${nl(S.loja)}_${S.nome}.txt`),true)};
 $('btnOMCmp').onclick=()=>{if(!CMP)return;const m=new Map();CMP.L.forEach(x=>{if(x.k!==null)m.set(x.p.c,x.k)});if(!m.size){toast('Nada contado','bad');return}
   entregarTxt(txtOM(m),nomeArq(`Coletor_${nl(CMP.loja)}_${new Date().toISOString().slice(0,10)}.txt`),false);toast(m.size+' produtos no arquivo do OM','ok')};
-$('btnXls').onclick=()=>{if(!ent().length){toast('Nada contado ainda','bad');return}baixar(wbMinha(),nomeArq(`contagem_${nl(S.loja)}_${S.nome}_${S.setor}.xlsx`))};
+$('btnXls').onclick=()=>{if(!ent().length){toast('Nada contado ainda','bad');return}baixar(wbMinha(),nomeArq(`contagem_${nl(S.loja)}_${S.nome}.xlsx`))};
 $('btnZap').onclick=async()=>{if(!ent().length){toast('Nada contado ainda','bad');return}
-  const nome=nomeArq(`contagem_${nl(S.loja)}_${S.nome}_${S.setor}.xlsx`);
+  const nome=nomeArq(`contagem_${nl(S.loja)}_${S.nome}.xlsx`);
   try{const buf=XLSX.write(wbMinha(),{type:'array',bookType:'xlsx'});const file=new File([buf],nome,{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Contagem '+nl(S.loja),text:`Contagem ${nl(S.loja)} · ${S.nome} · ${S.setor}`});return}}catch(e){if(e&&e.name==='AbortError')return}
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Contagem '+nl(S.loja),text:`Contagem ${nl(S.loja)} · ${S.nome}`});return}}catch(e){if(e&&e.name==='AbortError')return}
   const txt=textoEnvio();try{if(navigator.share){await navigator.share({text:txt});return}}catch(e){if(e&&e.name==='AbortError')return}
   try{await navigator.clipboard.writeText(txt);toast('Texto copiado. Cole no WhatsApp.','ok')}catch(e){$('txtEnvio').hidden=false;$('txtEnvio').select();toast('Copie o texto abaixo')}};
-$('btnLimpar').onclick=()=>$('cfLimpar').hidden=false;$('cfNao').onclick=()=>$('cfLimpar').hidden=true;
-$('cfSim').onclick=()=>{S.L[S.loja]=[];save();$('cfLimpar').hidden=true;header();renderContados();renderRecentes();toast('Contagem apagada')};
+$('btnLimpar').onclick=()=>confirmar('Apagar contagem?',`Apagar tudo o que foi contado em ${nl(S.loja)} neste celular? Confira se já enviou. Não dá para desfazer.`,'Apagar',()=>{S.L[S.loja]=[];save();header();renderContados();renderRecentes();toast('Contagem apagada')},true);
+function renderStatusFinalizar(){const fz=(S.finalizadas||{})[S.loja];const el=$('statusFinalizar');if(!el)return;
+  const dt=ts=>new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  if(fz){el.innerHTML=`<div class="card" style="flex-direction:row;align-items:center;gap:10px;border-color:var(--green)"><div class="ic" style="--c:#047857">✅</div><div style="flex:1;min-width:0"><b>Finalizada</b><div class="small muted">em ${dt(fz)}</div></div><button class="btn sm" id="btnReabrir" type="button">🔓 Reabrir</button></div>`;
+    $('btnReabrir').onclick=()=>confirmar('Reabrir contagem?',`Reabrir a contagem de ${nl(S.loja)} para continuar editando?`,'Reabrir',()=>{delete S.finalizadas[S.loja];save();renderContados();header()})}
+  else{el.innerHTML=`<button class="btn big" id="btnFinalizar" type="button" style="background:var(--green);border-color:var(--green);color:#fff">✅ Finalizar contagem desta loja</button>`;
+    $('btnFinalizar').onclick=()=>confirmar('Finalizar contagem?',`Finalizar a contagem de ${nl(S.loja)}? Você ainda poderá reabrir depois se precisar.`,'Finalizar',()=>{S.finalizadas=S.finalizadas||{};S.finalizadas[S.loja]=Date.now();save();renderContados();header();toast('Contagem finalizada','ok')})}}
+$('btnBackup').onclick=()=>{if(!ent().length){toast('Nada contado ainda','bad');return}
+  const payload={app:'contagem-estoque',v:1,loja:S.loja,nome:S.nome,exportadoEm:new Date().toISOString(),iniciado:(S.iniciadas||{})[S.loja]||null,entries:ent()};
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(payload)],{type:'application/json'}));a.download=nomeArq(`Backup_${nl(S.loja)}_${new Date().toISOString().slice(0,10)}.json`);document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('Backup salvo','ok')};
+$('btnRestore').onclick=()=>$('backupIn').click();
+$('backupIn').addEventListener('change',async()=>{const f=$('backupIn').files[0];$('backupIn').value='';if(!f)return;
+  try{const data=JSON.parse(await f.text());if(!data||!Array.isArray(data.entries))throw 0;
+    confirmar('Restaurar backup?',`Isso substitui a contagem atual de ${nl(S.loja)} neste celular pelo backup${data.loja?' de '+nl(data.loja):''} (${data.exportadoEm?new Date(data.exportadoEm).toLocaleString('pt-BR'):'?'}, ${data.entries.length} itens). Continuar?`,'Restaurar',()=>{
+      S.L[S.loja]=data.entries;if(data.iniciado){S.iniciadas=S.iniciadas||{};S.iniciadas[S.loja]=S.iniciadas[S.loja]?Math.min(data.iniciado,S.iniciadas[S.loja]):data.iniciado}save();header();renderContados();renderRecentes();toast('Backup restaurado','ok')},true)
+  }catch(e){toast('Arquivo de backup inválido','bad')}});
 
 /* ---------- conferir ---------- */
 let BLOCOS=[];
@@ -685,18 +739,18 @@ $('btnArq').onclick=()=>$('arq').click();
 $('arq').addEventListener('change',async()=>{const fs=[...$('arq').files];$('arq').value='';let n=0;
   for(const f of fs){try{if(/\.(txt|csv)$/i.test(f.name)&&!/CONTAGEM/.test('')){const t=await f.text();if(/^CONTAGEM\|/m.test(t)){$('txtJuntar').value+=(($('txtJuntar').value?'\n':'')+t);n++;continue}}
     const wb=XLSX.read(await f.arrayBuffer());const ws=wb.Sheets['Contagem']||wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws);
-    const by=new Map();rows.forEach(r=>{const loja=Object.keys(NOME_LOJA).find(k=>NOME_LOJA[k]===r['Loja'])||r['Loja'];const k=loja+'|'+(r['Contador']||'')+'|'+(r['Setor']||'');if(!by.has(k))by.set(k,new Map());const m=by.get(k);const c=+r['Código'],q=+r['Quantidade'];if(c&&!isNaN(q))m.set(c,(m.get(c)||0)+q)});
-    for(const [k,m] of by){const [loja,nome,setor]=k.split('|');$('txtJuntar').value+=(($('txtJuntar').value?'\n':'')+`CONTAGEM|${loja}|${nome}|arquivo|${m.size} produtos|${setor}\n`+[...m].map(([c,q])=>c+';'+String(r3(q)).replace('.',',')).join('\n'))}n++}
+    const by=new Map();rows.forEach(r=>{const loja=Object.keys(NOME_LOJA).find(k=>NOME_LOJA[k]===r['Loja'])||r['Loja'];const k=loja+'|'+(r['Contador']||'');if(!by.has(k))by.set(k,new Map());const m=by.get(k);const c=+r['Código'],q=+r['Quantidade'];if(c&&!isNaN(q))m.set(c,(m.get(c)||0)+q)});
+    for(const [k,m] of by){const [loja,nome]=k.split('|');$('txtJuntar').value+=(($('txtJuntar').value?'\n':'')+`CONTAGEM|${loja}|${nome}|arquivo|${m.size} produtos\n`+[...m].map(([c,q])=>c+';'+String(r3(q)).replace('.',',')).join('\n'))}n++}
    catch(e){toast('Não consegui ler '+f.name,'bad')}}
   if(n)toast(n+' arquivo(s) adicionado(s). Toque em Comparar.','ok')});
 $('btnDeste').onclick=()=>{if(!ent().length){toast('Este celular não tem contagem desta loja','bad');return}$('txtJuntar').value=($('txtJuntar').value.trim()?$('txtJuntar').value.trim()+'\n':'')+textoEnvio();toast('Contagem deste celular adicionada')};
 $('btnJuntar').onclick=()=>{const blocos=[];let b=null;
-  $('txtJuntar').value.split(/\r?\n/).forEach(l=>{l=l.trim();if(!l)return;if(/^CONTAGEM\|/.test(l)){const h=l.split('|');b={loja:h[1],nome:h[2],setor:h[5]||'',m:new Map()};blocos.push(b);return}
+  $('txtJuntar').value.split(/\r?\n/).forEach(l=>{l=l.trim();if(!l)return;if(/^CONTAGEM\|/.test(l)){const h=l.split('|');b={loja:h[1],nome:h[2],m:new Map()};blocos.push(b);return}
     const m=l.match(/^(\d+)\s*[;\t]\s*([\d.,]+)/);if(m&&b){const q=parseFloat(m[2].replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.'));if(!isNaN(q))b.m.set(+m[1],(b.m.get(+m[1])||0)+q)}});
   if(!blocos.length){$('juntarInfo').textContent='Nenhuma contagem encontrada. Abra os arquivos Excel ou cole os textos que começam com "CONTAGEM|".';$('cmpOut').hidden=true;return}
   const lojas=[...new Set(blocos.map(x=>x.loja))];const loja=lojas.includes(S.loja)?S.loja:lojas[0];const B=blocos.filter(x=>x.loja===loja);
-  const cont=new Map(),ond=new Map();B.forEach(x=>x.m.forEach((q,c)=>{cont.set(c,(cont.get(c)||0)+q);if(!ond.has(c))ond.set(c,[]);ond.get(c).push(`${x.setor||'?'} (${x.nome}): ${fQ(q)}`)}));
-  $('juntarInfo').innerHTML=`<b>${esc(nl(loja))}</b> · ${B.length} contagem(ns): ${B.map(x=>`${esc(x.setor||'sem setor')} – ${esc(x.nome)} (${x.m.size})`).join(', ')}`+(lojas.length>1?`<br><span class="pill warn">Outras lojas ignoradas: ${esc(lojas.filter(l=>l!==loja).map(nl).join(', '))}</span>`:'');
+  const cont=new Map(),ond=new Map();B.forEach(x=>x.m.forEach((q,c)=>{cont.set(c,(cont.get(c)||0)+q);if(!ond.has(c))ond.set(c,[]);ond.get(c).push(`${x.nome}: ${fQ(q)}`)}));
+  $('juntarInfo').innerHTML=`<b>${esc(nl(loja))}</b> · ${B.length} contagem(ns): ${B.map(x=>`${esc(x.nome||'sem nome')} (${x.m.size})`).join(', ')}`+(lojas.length>1?`<br><span class="pill warn">Outras lojas ignoradas: ${esc(lojas.filter(l=>l!==loja).map(nl).join(', '))}</span>`:'');
   const st=ESTQ[loja]||new Map();const L=[];new Set([...cont.keys(),...[...st].filter(([c,x])=>x.q!==0).map(([c])=>c)]).forEach(c=>{const p=P.get(c)||{c,d:'Produto '+c,g:'—',u:'',e:'',pv:0};const s=st.has(c)?st.get(c).q:0;const v=preco(c,loja);const k=cont.has(c)?r3(cont.get(c)):null;L.push({p,s,k,d:k===null?null:r3(k-s),v,o:ond.get(c)||[]})});
   CMP={loja,L,B};renderCmp();$('cmpOut').hidden=false;$('cmpOut').scrollIntoView({behavior:'smooth'})};
 function grupoCmp(){const L=CMP.L;return{cont:L.filter(x=>x.k!==null),div:L.filter(x=>x.k!==null&&x.d!==0),ok:L.filter(x=>x.k!==null&&x.d===0),nao:L.filter(x=>x.k===null&&x.s>0)}}
@@ -719,39 +773,40 @@ function indic(){const G=grupoCmp();const C=G.cont;const comEst=CMP.L.filter(x=>
   const falta=G.div.filter(x=>x.d<0).reduce((a,x)=>a+x.d*x.v,0),sobra=G.div.filter(x=>x.d>0).reduce((a,x)=>a+x.d*x.v,0);
   const vSis=C.reduce((a,x)=>a+Math.max(0,x.s)*x.v,0),vCont=C.reduce((a,x)=>a+x.k*x.v,0),bruta=sobra-falta;
   const vEst=comEst.reduce((a,x)=>a+x.s*x.v,0),vEstC=cEst.reduce((a,x)=>a+x.s*x.v,0);
-  const gm=new Map();for(const x of CMP.L){if(x.k===null&&!(x.s>0))continue;const g=x.p.g||'—';if(!gm.has(g))gm.set(g,{g,est:0,cont:0,ok:0,falta:0,sobra:0});const o=gm.get(g);if(x.s>0)o.est++;if(x.k!==null){o.cont++;if(x.d===0)o.ok++;else if(x.d<0)o.falta+=x.d*x.v;else o.sobra+=x.d*x.v}}
+  const gm=new Map();for(const x of CMP.L){if(x.k===null&&!(x.s>0))continue;const g=x.p.g||'—';if(!gm.has(g))gm.set(g,{g,est:0,cont:0,ok:0,dif:0,falta:0,sobra:0});const o=gm.get(g);if(x.s>0)o.est++;if(x.k!==null){o.cont++;if(x.d===0)o.ok++;else{o.dif++;if(x.d<0)o.falta+=x.d*x.v;else o.sobra+=x.d*x.v}}}
   const byC=new Map(CMP.L.map(x=>[x.p.c,x]));
-  const eq=CMP.B.map(b=>{const ks=[...b.m.keys()];return{setor:b.setor||'sem setor',nome:b.nome||'',n:ks.length,ok:ks.filter(c=>(byC.get(c)||{}).d===0).length}});
+  const porNome=new Map();CMP.B.forEach(b=>{const nm=b.nome||'';if(!porNome.has(nm))porNome.set(nm,new Set());const s=porNome.get(nm);b.m.forEach((q,c)=>s.add(c))});
+  const eq=[...porNome].map(([nome,codes])=>{const ks=[...codes];return{nome,n:ks.length,ok:ks.filter(c=>(byC.get(c)||{}).d===0).length}});
   return{G,C,falta,sobra,bruta,liq:falta+sobra,vSis,vCont,acI:C.length?G.ok.length/C.length:0,acV:vSis?Math.max(0,1-bruta/vSis):0,
     cob:comEst.length?cEst.length/comEst.length:0,cobV:vEst?vEstC/vEst:0,nEst:comEst.length,nEstC:cEst.length,vEst,
-    grupos:[...gm.values()].filter(o=>o.cont>0).sort((a,b)=>b.cont-a.cont),top:G.div.slice().sort((a,b)=>Math.abs(b.d*b.v)-Math.abs(a.d*a.v)).slice(0,10),eq}}
+    errTotal:comEst.length?G.div.length/comEst.length:0,
+    grupos:[...gm.values()].filter(o=>o.cont>0).sort((a,b)=>b.cont-a.cont),top:G.div.slice().sort((a,b)=>Math.abs(b.d)-Math.abs(a.d)).slice(0,10),eq}}
 const nivel=v=>v>=.95?['#047857','✅ Ótimo']:v>=.85?['#B45309','⚠️ Atenção']:['#DC2626','⛔ Crítico'];
-function renderRel(){const I=indic();const hoje=new Date().toLocaleDateString('pt-BR');const [cI,tI]=nivel(I.acI),[cV,tV]=nivel(I.acV);
+const nivelErro=v=>v<=.05?['#047857','✅ Ótimo']:v<=.15?['#B45309','⚠️ Atenção']:['#DC2626','⛔ Crítico'];
+function renderRel(){const I=indic();const hoje=new Date().toLocaleDateString('pt-BR');const [cE,tE]=nivelErro(I.errTotal),[cC,tC]=nivel(I.cob);
   const pessoas=[...new Set(CMP.B.map(b=>b.nome).filter(Boolean))];
-  const maiorG=I.grupos.filter(o=>o.falta<0).sort((a,b)=>a.falta-b.falta)[0];
+  const maiorG=I.grupos.filter(o=>o.dif>0).sort((a,b)=>b.dif-a.dif)[0];
   let h=`<div class="rh"><div class="ttl" style="color:var(--blue)">Cervantes · Relatório de contagem de estoque</div><h1>${esc(nl(CMP.loja))}</h1>
     <div class="sub">Contagem conferida em ${hoje} · estoque do sistema de ${esc(D.gerado)}</div>
-    <div class="tags">${CMP.B.map(b=>`<span class="tag">${esc(b.setor||'sem setor')} · ${esc(b.nome||'')}</span>`).join('')}</div></div>`;
+    <div class="tags">${pessoas.map(p=>`<span class="tag">${esc(p)}</span>`).join('')}</div></div>`;
   h+=`<div class="card"><div class="sh"><div class="ic" style="--c:#1565C0">📝</div><div class="tt"><div class="ttl">Resumo</div></div></div><p class="resumo">
-    Foram contados <b>${I.C.length.toLocaleString('pt-BR')} produtos</b> em ${esc(nl(CMP.loja))}${pessoas.length?` por ${pessoas.length} ${pessoas.length>1?'pessoas':'pessoa'}`:''}. 
-    <b>${pct(I.acI)}</b> bateram exatamente com o sistema e <b>${I.G.div.length.toLocaleString('pt-BR')}</b> tiveram diferença.
-    A preço de venda, faltaram <b class="neg">${fR(-I.falta)}</b> e sobraram <b class="pos">${fR(I.sobra)}</b>, uma diferença líquida de <b>${fR(I.liq)}</b>.
-    A contagem cobriu <b>${pct(I.cob)}</b> dos produtos com estoque no sistema (${pct(I.cobV)} do valor em estoque)${maiorG?`. O grupo com mais falta foi <b>${esc(maiorG.g)}</b> (${fR(maiorG.falta)})`:''}.</p></div>`;
-  h+=`<div class="rings"><div class="rbig">${ringH(I.acI*100,cI).replace('class="ring"','class="ring xl"')}<div class="l">Acurácia por item</div><span class="pill" style="background:${cI}14;color:${cI}">${tI}</span><div class="s">${I.G.ok.length.toLocaleString('pt-BR')} de ${I.C.length.toLocaleString('pt-BR')} produtos bateram</div></div>
-    <div class="rbig">${ringH(I.acV*100,cV).replace('class="ring"','class="ring xl"')}<div class="l">Acurácia em valor</div><span class="pill" style="background:${cV}14;color:${cV}">${tV}</span><div class="s">diferença bruta ${fR(I.bruta)} sobre ${fR(I.vSis)} contados</div></div></div>`;
-  h+=`<div class="stats">${statH('📦','#1565C0',I.C.length.toLocaleString('pt-BR'),'produtos contados')+statH('✅','#047857',I.G.ok.length.toLocaleString('pt-BR'),'batendo')+statH('⚠️','#DC2626',I.G.div.length.toLocaleString('pt-BR'),'com diferença')}
-    <div class="stats two" style="grid-column:1/-1">${statH('📉','#DC2626',fR(I.falta),'faltando')+statH('📈','#047857','+'+fR(I.sobra),'sobrando')+statH('⚖️',I.liq<0?'#DC2626':'#047857',(I.liq>0?'+':'')+fR(I.liq),'diferença líquida')+statH('🧭','#4F46E5',pct(I.cob),'cobertura dos itens com estoque')}</div></div>`;
+    Foram contados <b>${I.C.length.toLocaleString('pt-BR')} de ${I.nEst.toLocaleString('pt-BR')} produtos</b> com estoque em ${esc(nl(CMP.loja))} (cobertura de <b>${pct(I.cob)}</b>)${pessoas.length?`, por ${pessoas.length} ${pessoas.length>1?'pessoas':'pessoa'}`:''}.
+    Entre os contados, <b>${I.G.ok.length.toLocaleString('pt-BR')}</b> bateram certinho e <b>${I.G.div.length.toLocaleString('pt-BR')}</b> tiveram diferença.
+    Considerando todo o estoque da loja (${I.nEst.toLocaleString('pt-BR')} produtos), a <b>taxa de erro foi de ${pct(I.errTotal)}</b>${maiorG?` — o grupo com mais diferenças foi <b>${esc(maiorG.g)}</b> (${maiorG.dif} ${maiorG.dif===1?'item':'itens'})`:''}.</p></div>`;
+  h+=`<div class="rings"><div class="rbig">${ringH(I.errTotal*100,cE).replace('class="ring"','class="ring xl"')}<div class="l">Taxa de erro</div><span class="pill" style="background:${cE}14;color:${cE}">${tE}</span><div class="s">${I.G.div.length.toLocaleString('pt-BR')} de ${I.nEst.toLocaleString('pt-BR')} itens com estoque</div></div>
+    <div class="rbig">${ringH(I.cob*100,cC).replace('class="ring"','class="ring xl"')}<div class="l">Cobertura</div><span class="pill" style="background:${cC}14;color:${cC}">${tC}</span><div class="s">${I.nEstC.toLocaleString('pt-BR')} de ${I.nEst.toLocaleString('pt-BR')} produtos contados</div></div></div>`;
+  h+=`<div class="stats">${statH('📦','#1565C0',I.C.length.toLocaleString('pt-BR'),'produtos contados')+statH('✅','#047857',I.G.ok.length.toLocaleString('pt-BR'),'batendo')+statH('⚠️','#DC2626',I.G.div.length.toLocaleString('pt-BR'),'com diferença')}</div>`;
   h+=`<div class="card"><div class="sh"><div class="ic" style="--c:#0D9488">🗂️</div><div class="tt"><div class="ttl">Acerto por grupo</div><div class="sub">% dos produtos contados que bateram · ordenado por quantidade contada</div></div></div><div>${
-    I.grupos.slice(0,15).map(o=>{const a=o.cont?o.ok/o.cont:0;return`<div class="gb" title="${esc(o.g)}: ${o.ok} de ${o.cont} bateram · falta ${fR(o.falta)} · sobra ${fR(o.sobra)}"><div class="n">${esc(o.g)}</div><div class="p">${pct(a)}</div><div class="t"><i style="width:${(a*100).toFixed(1)}%"></i></div><div class="x">${o.ok} de ${o.cont} contados${o.est?` · ${o.cont&&o.est?Math.round(Math.min(o.cont,o.est)/o.est*100):0}% do grupo coberto`:''}${o.falta?` · <span class="neg">falta ${fR(o.falta)}</span>`:''}${o.sobra?` · <span class="pos">sobra ${fR(o.sobra)}</span>`:''}</div></div>`}).join('')||vazio('🗂️','Sem grupos')}</div></div>`;
-  h+=`<div class="card"><div class="sh"><div class="ic" style="--c:#DC2626">🔟</div><div class="tt"><div class="ttl">Maiores diferenças em valor</div><div class="sub">Onde conferir primeiro</div></div></div><div class="list">${
-    I.top.map(x=>`<div class="li ${stCls(x.d)}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · contado ${fQ(x.k)} / sistema ${fQ(x.s)} ${un(x.p.u)}</small></div><div class="r">${pillD(x.d)}<small class="${x.d>0?'pos':'neg'}" style="font-size:13px">${x.d>0?'+':''}${fR(x.d*x.v)}</small></div></div>`).join('')||vazio('✨','Nenhuma diferença')}</div></div>`;
+    I.grupos.slice(0,15).map(o=>{const a=o.cont?o.ok/o.cont:0;return`<div class="gb" title="${esc(o.g)}: ${o.ok} de ${o.cont} bateram · ${o.dif} com diferença"><div class="n">${esc(o.g)}</div><div class="p">${pct(a)}</div><div class="t"><i style="width:${(a*100).toFixed(1)}%"></i></div><div class="x">${o.ok} de ${o.cont} contados${o.est?` · ${Math.round(Math.min(o.cont,o.est)/o.est*100)}% do grupo coberto`:''}${o.dif?` · <span class="neg">${o.dif} ${o.dif===1?'item':'itens'} com diferença</span>`:''}</div></div>`}).join('')||vazio('🗂️','Sem grupos')}</div></div>`;
+  h+=`<div class="card"><div class="sh"><div class="ic" style="--c:#DC2626">🔟</div><div class="tt"><div class="ttl">Maiores diferenças</div><div class="sub">Onde conferir primeiro</div></div></div><div class="list">${
+    I.top.map(x=>`<div class="li ${stCls(x.d)}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · contado ${fQ(x.k)} / sistema ${fQ(x.s)} ${un(x.p.u)}</small></div><div class="r">${pillD(x.d)}</div></div>`).join('')||vazio('✨','Nenhuma diferença')}</div></div>`;
   h+=`<div class="card"><div class="sh"><div class="ic" style="--c:#4F46E5">👥</div><div class="tt"><div class="ttl">Equipe</div><div class="sub">Itens que cada um contou e quantos bateram</div></div></div>
-    <table class="tbl"><thead><tr><th>Setor</th><th>Contador</th><th class="n">Itens</th><th class="n">Bateram</th></tr></thead><tbody>${I.eq.map(e=>`<tr><td>${esc(e.setor)}</td><td>${esc(e.nome)}</td><td class="n">${e.n.toLocaleString('pt-BR')}</td><td class="n">${e.n?pct(e.ok/e.n):'—'}</td></tr>`).join('')}</tbody></table></div>`;
+    <table class="tbl"><thead><tr><th>Contador</th><th class="n">Itens</th><th class="n">Bateram</th></tr></thead><tbody>${I.eq.map(e=>`<tr><td>${esc(e.nome)}</td><td class="n">${e.n.toLocaleString('pt-BR')}</td><td class="n">${e.n?pct(e.ok/e.n):'—'}</td></tr>`).join('')}</tbody></table></div>`;
   h+=`<div class="card def"><div class="ttl">Como ler</div>
-    <div><b>Acurácia por item</b>: produtos cuja quantidade contada é igual à do sistema, dividido pelos produtos contados.</div>
-    <div><b>Acurácia em valor</b>: 1 − (soma das diferenças, sem sinal, em R$) ÷ (valor no sistema dos produtos contados).</div>
-    <div><b>Faltando / sobrando</b>: diferença × preço de venda da loja. <b>Cobertura</b>: produtos com estoque no sistema que foram contados.</div>
-    <div>Níveis: ✅ 95% ou mais · ⚠️ 85% a 95% · ⛔ abaixo de 85%. Vendas e entradas feitas depois de ${esc(D.gerado)} aparecem como diferença.</div></div>`;
+    <div><b>Taxa de erro</b>: produtos com diferença, dividido pelo total de produtos com estoque na loja — contados ou não.</div>
+    <div><b>Cobertura</b>: dos produtos com estoque no sistema, quantos foram efetivamente contados.</div>
+    <div>Níveis da taxa de erro: ✅ até 5% · ⚠️ de 5% a 15% · ⛔ acima de 15%. Níveis da cobertura: ✅ 95% ou mais · ⚠️ 85% a 95% · ⛔ abaixo de 85%.</div>
+    <div>Vendas e entradas feitas depois de ${esc(D.gerado)} aparecem como diferença.</div></div>`;
   $('relBody').innerHTML=h}
 $('btnRel').onclick=()=>{if(!CMP)return;renderRel();view('relatorio')};
 $('relVoltar').onclick=()=>view('conferir');
@@ -761,17 +816,18 @@ $('btnXlsCmp').onclick=()=>{if(!CMP)return;const G=grupoCmp();
   const ord=(a,b)=>Math.abs((b.d||0)*b.v)-Math.abs((a.d||0)*a.v);
   const wb=XLSX.utils.book_new();
   const res=[['Loja',nl(CMP.loja)],['Estoque do sistema de',D.gerado],['Gerado em',new Date().toLocaleString('pt-BR')],[],['Produtos contados',G.cont.length],['Batendo',G.ok.length],['Com diferença',G.div.length],['Com estoque e não contados',G.nao.length],
-    ['Faltando (preço de venda)',Math.round(G.div.filter(x=>x.d<0).reduce((a,x)=>a+x.d*x.v,0)*100)/100],['Sobrando (preço de venda)',Math.round(G.div.filter(x=>x.d>0).reduce((a,x)=>a+x.d*x.v,0)*100)/100],[],['Contagens'],...CMP.B.map(b=>[b.setor||'sem setor',b.nome,b.m.size+' produtos'])];
+    ['Faltando (preço de venda)',Math.round(G.div.filter(x=>x.d<0).reduce((a,x)=>a+x.d*x.v,0)*100)/100],['Sobrando (preço de venda)',Math.round(G.div.filter(x=>x.d>0).reduce((a,x)=>a+x.d*x.v,0)*100)/100],[],['Contagens'],...CMP.B.map(b=>[b.nome||'sem nome',b.m.size+' produtos'])];
   const add=(n,rows,cols)=>{const ws=Array.isArray(rows[0])?XLSX.utils.aoa_to_sheet(rows):XLSX.utils.json_to_sheet(rows.length?rows:[{'Sem dados':''}]);if(cols)ws['!cols']=cols;XLSX.utils.book_append_sheet(wb,ws,n)};
   const C=[{wch:9},{wch:15},{wch:50},{wch:24},{wch:8},{wch:10},{wch:10},{wch:10},{wch:13},{wch:16},{wch:40}];
   const I=indic();
   add('Indicadores',[['Indicador','Valor','Como foi calculado'],['Loja',nl(CMP.loja),''],['Estoque do sistema de',D.gerado,''],[],
     ['Produtos contados',I.C.length,''],['Batendo',I.G.ok.length,''],['Com diferença',I.G.div.length,''],
+    ['Taxa de erro sobre o total de itens com estoque (%)',Math.round(I.errTotal*1000)/10,'itens com diferença ÷ total de itens com estoque na loja'],
     ['Acurácia por item (%)',Math.round(I.acI*1000)/10,'batendo ÷ contados'],['Acurácia em valor (%)',Math.round(I.acV*1000)/10,'1 − diferença bruta ÷ valor no sistema dos contados'],
     ['Faltando (R$, preço de venda)',Math.round(I.falta*100)/100,''],['Sobrando (R$, preço de venda)',Math.round(I.sobra*100)/100,''],['Diferença líquida (R$)',Math.round(I.liq*100)/100,'sobrando + faltando'],['Diferença bruta (R$)',Math.round(I.bruta*100)/100,'sobrando − faltando'],
     ['Valor no sistema dos contados (R$)',Math.round(I.vSis*100)/100,''],['Cobertura de itens (%)',Math.round(I.cob*1000)/10,`${I.nEstC} de ${I.nEst} produtos com estoque`],['Cobertura em valor (%)',Math.round(I.cobV*1000)/10,''],[],
     ['Grupo','Contados','Batendo','Acerto (%)','Faltando (R$)','Sobrando (R$)'],...I.grupos.map(o=>[o.g,o.cont,o.ok,o.cont?Math.round(o.ok/o.cont*1000)/10:0,Math.round(o.falta*100)/100,Math.round(o.sobra*100)/100]),[],
-    ['Setor','Contador','Itens','Bateram (%)'],...I.eq.map(e=>[e.setor,e.nome,e.n,e.n?Math.round(e.ok/e.n*1000)/10:0])],[{wch:34},{wch:18},{wch:48},{wch:12},{wch:14},{wch:14}]);
+    ['Contador','Itens','Bateram (%)'],...I.eq.map(e=>[e.nome,e.n,e.n?Math.round(e.ok/e.n*1000)/10:0])],[{wch:34},{wch:18},{wch:48},{wch:12},{wch:14},{wch:14}]);
   add('Resumo',res,[{wch:30},{wch:30},{wch:16}]);add('Com diferença',G.div.slice().sort(ord).map(linha),C);add('Batendo',G.ok.map(linha),C);add('Não contados',G.nao.slice().sort((a,b)=>b.s*b.v-a.s*a.v).map(linha),C);
   const pg=new Map();CMP.L.forEach(x=>{const g=x.p.g||'—';if(!pg.has(g))pg.set(g,{g,est:0,cont:0,dif:0,val:0});const o=pg.get(g);if(x.s>0)o.est++;if(x.k!==null){o.cont++;if(x.d!==0){o.dif++;o.val+=x.d*x.v}}});
   add('Por grupo',[...pg.values()].sort((a,b)=>a.g.localeCompare(b.g)).map(o=>({'Grupo':o.g,'Com estoque no sistema':o.est,'Contados':o.cont,'Com diferença':o.dif,'Valor das diferenças':Math.round(o.val*100)/100})),[{wch:28},{wch:20},{wch:10},{wch:14},{wch:18}]);
