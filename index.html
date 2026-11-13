@@ -495,7 +495,7 @@ let tt;function toast(m,k){const t=$('toast');t.textContent=m;t.className='toast
 const VIEWS=['inicio','contar','contados','conferir','relatorio'];
 function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='conferir'&&v!=='relatorio'&&!(S.loja&&S.nome)){v='inicio'}
   VIEWS.forEach(k=>{$('v-'+k).hidden=k!==v;const n=$('n-'+k);if(n)n.setAttribute('aria-current',(k===v||(k==='conferir'&&v==='relatorio'))?'page':'false')});
-  $('hStats').style.display=v==='relatorio'?'none':'';
+  $('hStats').style.display=(v==='relatorio'||v==='contados')?'none':'';
   if(v!=='contar')pararCamera();
   if(v==='contados')renderContados();if(v==='inicio')renderLojas();
   window.scrollTo(0,0)}
