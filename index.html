@@ -274,6 +274,20 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
   .rings{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+/* ---------- redesign: uma coisa por vez ---------- */
+#hStats{display:none!important}
+.hero{padding-bottom:14px}
+.loja .bar:has(i[style="width:0%"]){display:none}
+.lojas{gap:8px}.loja{padding:11px 12px;gap:7px}.loja .q{display:none}
+.passo{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:12px;font-weight:700;margin-right:6px;vertical-align:1px}
+.sel{display:flex;align-items:center;gap:10px;background:var(--blue-l);border:1.5px solid var(--blue);border-radius:14px;padding:10px 12px}
+.sel b{flex:1;min-width:0;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#prodCard:not([hidden]){position:fixed;left:0;right:0;bottom:0;z-index:50;margin:0 auto;max-width:640px;max-height:90dvh;overflow-y:auto;border-radius:24px 24px 0 0;border:0;padding:20px 16px calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 0 0 100vmax rgba(15,23,42,.55);animation:sobe .18s ease-out}
+#prodCard h2{font-size:19px;line-height:1.25;margin:0}
+#prodCard #btnSomar{font-size:17px;padding:16px}
+@keyframes sobe{from{transform:translateY(60px);opacity:.5}}
+nav.tabs .in{grid-template-columns:repeat(3,1fr)}
+.gerente{margin-top:4px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -291,22 +305,25 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
 <main>
 <!-- ============ LOJA ============ -->
 <section id="v-inicio" hidden>
-  <div class="card">
-    <div class="sh"><div class="ic" style="--c:var(--blue)">🏬</div><div class="tt"><div class="ttl">1 · Qual loja você vai contar?</div><div class="sub">Cada loja guarda a sua contagem separada</div></div></div>
+  <div class="card" id="cardLoja">
+    <div class="ttl"><span class="passo">1</span>Qual loja você vai contar?</div>
+    <div class="sel" id="lojaSel" hidden></div>
     <div class="lojas" id="lojas"></div>
   </div>
-  <div class="card">
-    <div class="sh"><div class="ic" style="--c:var(--indigo)">👤</div><div class="tt"><div class="ttl">2 · Quem é você</div><div class="sub">Toque no seu nome, ou adicione um novo</div></div></div>
+  <div class="card" id="cardNome" hidden>
+    <div class="ttl"><span class="passo">2</span>Quem é você? <span class="muted" style="font-weight:400">Toque no seu nome</span></div>
+    <div class="sel" id="nomeSel" hidden></div>
     <div class="chips" id="pessoas"></div>
     <div class="row" id="novoNomeRow" hidden><input id="inNovoNome" autocomplete="name" placeholder="Seu nome"><button class="btn pri" id="btnAddNome" type="button">Adicionar</button></div>
     <button class="btn sm ghost" id="btnNovoNome" type="button">+ Adicionar meu nome</button>
   </div>
   <div class="card" id="cardIniciar" hidden>
-    <div class="ttl">3 · Pronto para começar</div>
+    <div class="ttl"><span class="passo">3</span>Tudo pronto!</div>
     <p class="small" id="iniciarInfo" style="color:var(--ink2)"></p>
     <button class="btn pri big" id="btnComecar" type="button">▶️ Iniciar contagem</button>
   </div>
   <div class="note"><div class="ic">🕒</div><div id="noteDados">Carregando a lista de produtos…</div></div>
+  <button class="btn sm ghost gerente" id="btnGerente" type="button">👔 Sou gerente: juntar as contagens da equipe</button>
 </section>
 
 <!-- ============ CONTAR ============ -->
@@ -362,22 +379,13 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
 <section id="v-contados" hidden>
   <div class="stats" id="cStats"></div>
   <div id="statusFinalizar"></div>
-  <details class="card maisOpcoes" style="padding:0">
-    <summary>⚙️ Mais opções <span class="muted" style="font-weight:400">(enviar, backup)</span></summary>
-    <div style="padding:2px 16px 16px">
-      <div class="sh"><div class="ic" style="--c:var(--green)">📤</div><div class="tt"><div class="ttl">Enviar a contagem</div><div class="sub">Mande sempre que quiser. Fica só neste celular até ser enviada.</div></div></div>
+  <div class="card">
+      <div class="sh"><div class="ic" style="--c:var(--green)">📤</div><div class="tt"><div class="ttl">Enviar a contagem</div><div class="sub">Pode mandar o que já contou a qualquer hora. Fica só neste celular até ser enviada.</div></div></div>
       <div class="grid2">
         <button class="btn grn" id="btnZap" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>WhatsApp</button>
         <button class="btn tl" id="btnXls" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13l4 5M13 13l-4 5"/></svg>Excel</button>
       </div>
-      <button class="btn" id="btnOM" type="button">📥 Arquivo para o OM (F7 · coletor)</button>
-      <button class="btn sm ghost" id="btnTexto" type="button">Mostrar texto para copiar</button>
-      <textarea id="txtEnvio" readonly hidden aria-label="Texto da contagem"></textarea>
-      <div class="sh" style="margin-top:14px"><div class="ic" style="--c:var(--muted)">💾</div><div class="tt"><div class="ttl">Backup de segurança</div><div class="sub">Fica salvo neste celular automaticamente. Para contagens de vários dias, faça este backup de vez em quando.</div></div></div>
-      <div class="grid2"><button class="btn" id="btnBackup" type="button">💾 Salvar backup</button><button class="btn" id="btnRestore" type="button">📂 Restaurar backup</button></div>
-      <input id="backupIn" type="file" accept="application/json,.json" hidden>
-    </div>
-  </details>
+  </div>
   <div class="card">
     <div class="sh"><div class="ic" style="--c:var(--blue)">📋</div><div class="tt"><div class="ttl">Lista de produtos</div><div class="sub">Contados, diferenças e o que falta contar</div></div></div>
     <div class="seg" id="segC">
@@ -390,11 +398,23 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
     <div class="small muted" id="cInfo" style="margin:-4px 0 2px"></div>
     <div class="list" id="cLista"></div>
   </div>
-  <button class="btn danger" id="btnLimpar" type="button">🗑 Apagar a contagem desta loja</button>
+  <details class="card maisOpcoes" style="padding:0">
+    <summary>⚙️ Mais opções <span class="muted" style="font-weight:400">(OM, backup, apagar)</span></summary>
+    <div style="padding:2px 16px 16px;display:flex;flex-direction:column;gap:10px">
+      <button class="btn" id="btnOM" type="button">📥 Arquivo para o OM (F7 · coletor)</button>
+      <button class="btn sm ghost" id="btnTexto" type="button">Mostrar texto para copiar</button>
+      <textarea id="txtEnvio" readonly hidden aria-label="Texto da contagem"></textarea>
+      <div class="sh" style="margin-top:14px"><div class="ic" style="--c:var(--muted)">💾</div><div class="tt"><div class="ttl">Backup de segurança</div><div class="sub">Fica salvo neste celular automaticamente. Para contagens de vários dias, faça este backup de vez em quando.</div></div></div>
+      <div class="grid2"><button class="btn" id="btnBackup" type="button">💾 Salvar backup</button><button class="btn" id="btnRestore" type="button">📂 Restaurar backup</button></div>
+      <input id="backupIn" type="file" accept="application/json,.json" hidden>
+      <button class="btn danger" id="btnLimpar" type="button">🗑 Apagar a contagem desta loja</button>
+    </div>
+  </details>
 </section>
 
 <!-- ============ CONFERIR ============ -->
 <section id="v-conferir" hidden>
+  <button class="btn sm ghost" id="cfVoltar" type="button" style="align-self:flex-start">← Voltar</button>
   <div class="card">
     <div class="sh"><div class="ic" style="--c:var(--indigo)">🧮</div><div class="tt"><div class="ttl">Juntar as contagens da equipe</div><div class="sub">Contagens de pessoas diferentes do mesmo produto são somadas</div></div></div>
     <div class="grid2">
@@ -438,8 +458,7 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
   <div class="in">
     <button id="n-inicio" type="button"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></span>Loja</button>
     <button id="n-contar" type="button"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6v12M7 6v12M10 6v12M14 6v12M17 6v12M20 6v12"/></svg></span>Contar</button>
-    <button id="n-contados" type="button"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></span>Contados<span class="badge" id="nBadge" hidden>0</span></button>
-    <button id="n-conferir" type="button"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Conferir</button>
+    <button id="n-contados" type="button"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></span>Revisar e enviar<span class="badge" id="nBadge" hidden>0</span></button>
   </div>
 </nav>
 <div class="modalBack" id="modalBack" hidden>
@@ -520,7 +539,8 @@ function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='con
   if(v==='contados')renderContados();if(v==='inicio')renderLojas();if(v==='contar')renderRecentes();
   const mn=document.querySelector('main');if(mn)mn.scrollTop=0}
 VIEWS.forEach(k=>{const n=$('n-'+k);if(n)n.onclick=()=>view(k)});
-$('hLoja').onclick=()=>{if(!S.loja){view('inicio');return}
+$('btnGerente').onclick=()=>view('conferir');$('cfVoltar').onclick=()=>view('inicio');
+$('hLoja').onclick=()=>{trocaLoja=true;renderIniciar();if(!S.loja){view('inicio');return}
   confirmar('Trocar de loja?',`A contagem de ${nl(S.loja)} fica salva. Você vai escolher outra loja (ou voltar a ela depois).`,'Trocar',()=>view('inicio'))};
 function header(){$('hTitulo').textContent=S.loja?nl(S.loja):'Contagem de estoque';
   const stj=S.loja?statusLoja(S.loja):null;const tagTxt=stj==='fin'?' · ✅ finalizada':stj==='and'?' · 🟢 em andamento':'';
@@ -548,14 +568,20 @@ function renderLojas(){if(!D)return;$('lojas').innerHTML=D.lojas.map((l,i)=>{con
   const cs=[...m.keys()].filter(k=>(st.get(k)||{q:0}).q>0).length;const cor=corLoja(l,i);
   const stj=statusLoja(l);const tagLoja=stj==='fin'?'<span class="pill ok" style="margin-top:2px;align-self:flex-start">✅ finalizada</span>':stj==='and'?'<span class="pill info" style="margin-top:2px;align-self:flex-start">🟢 em andamento</span>':'';
   return`<button class="loja" type="button" data-l="${esc(l)}" aria-pressed="${l===S.loja}" style="--c:${cor}"><div class="top"><div class="ic" style="--c:${cor}">🏬</div><b>${esc(nl(l))}</b></div><div class="q">${pos.toLocaleString('pt-BR')} produtos com estoque</div><div class="bar"><i style="width:${pos?Math.min(100,cs/pos*100):0}%"></i></div><div class="cnt">${c?c.toLocaleString('pt-BR')+' já contados':'&nbsp;'}</div>${tagLoja}</button>`}).join('')}
-$('lojas').addEventListener('click',e=>{const b=e.target.closest('.loja');if(!b)return;S.loja=b.dataset.l;save();renderLojas();header();renderIniciar()});
+let trocaLoja=false,trocaNome=false;
+$('lojas').addEventListener('click',e=>{const b=e.target.closest('.loja');if(!b)return;S.loja=b.dataset.l;trocaLoja=false;save();renderLojas();header();renderIniciar()});
 function renderPessoas(){$('pessoas').innerHTML=(S.pessoas||[]).map(nm=>`<button class="chip${nm===S.nome?' on':''}" data-nome="${esc(nm)}" type="button" aria-pressed="${nm===S.nome}">${esc(nm)}</button>`).join('')}
-$('pessoas').addEventListener('click',e=>{const b=e.target.closest('[data-nome]');if(!b)return;S.nome=b.dataset.nome;save();renderPessoas();header();renderIniciar()});
+$('pessoas').addEventListener('click',e=>{const b=e.target.closest('[data-nome]');if(!b)return;S.nome=b.dataset.nome;trocaNome=false;save();renderPessoas();header();renderIniciar()});
 $('btnNovoNome').onclick=()=>{$('novoNomeRow').hidden=false;$('inNovoNome').focus()};
 $('btnAddNome').onclick=()=>{const n=$('inNovoNome').value.trim();if(!n){toast('Escreva um nome','bad');return}
-  if(!S.pessoas.includes(n))S.pessoas.push(n);S.nome=n;save();$('inNovoNome').value='';$('novoNomeRow').hidden=true;renderPessoas();header();renderIniciar();toast('Nome adicionado')};
+  if(!S.pessoas.includes(n))S.pessoas.push(n);S.nome=n;trocaNome=false;save();$('inNovoNome').value='';$('novoNomeRow').hidden=true;renderPessoas();header();renderIniciar();toast('Nome adicionado')};
 $('inNovoNome').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('btnAddNome').click()}});
-function renderIniciar(){const c=$('cardIniciar');if(!S.loja||!S.nome){c.hidden=true;return}c.hidden=false;
+function renderPassos(){const l=!!S.loja&&!trocaLoja,n=!!S.nome&&!trocaNome;
+  $('lojas').hidden=l;$('lojaSel').hidden=!l;if(l)$('lojaSel').innerHTML=`<span>🏬</span><b>${esc(nl(S.loja))}</b><button class="btn sm" data-troca="loja" type="button">Trocar</button>`;
+  $('cardNome').hidden=!l;$('pessoas').hidden=n;$('btnNovoNome').hidden=n;if(n)$('novoNomeRow').hidden=true;$('nomeSel').hidden=!n;if(n)$('nomeSel').innerHTML=`<span>👤</span><b>${esc(S.nome)}</b><button class="btn sm" data-troca="nome" type="button">Trocar</button>`;
+  return l&&n}
+$('v-inicio').addEventListener('click',e=>{const t=e.target.closest('[data-troca]');if(!t)return;if(t.dataset.troca==='loja')trocaLoja=true;else trocaNome=true;renderLojas();renderIniciar()});
+function renderIniciar(){const c=$('cardIniciar');if(!renderPassos()){c.hidden=true;return}c.hidden=false;
   const dt=ts=>new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   const st=statusLoja(S.loja);const btn=$('btnComecar');
   if(st==='fin'){$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>. <span class="pill ok">✅ Finalizada em ${dt(S.finalizadas[S.loja])}</span>`;btn.textContent='🔓 Reabrir e continuar'}
@@ -622,9 +648,9 @@ function somar(){if(!cur)return;const q=qv();if(isNaN(q)||q<0){toast('Digite uma
   if(s>0&&(tot>s*5||tot<s/5)&&Math.abs(tot-s)>=15){confirmar('Confere essa quantidade?',`O sistema tem ${fQ(s)} ${un(p.u)} e a contagem vai ficar ${fQ(tot)}. Parece bem diferente do esperado — confere de novo?`,'Sim, está certo',fim);$('modalCancelar').textContent='Corrigir';return}
   fim()}
 function tutorial(){try{localStorage.setItem('contagem-tutorial','1')}catch(e){}
-  const T=[['👋 1 de 3 · Escolha a loja','Na tela Lojas, escreva seu nome, toque na loja que vai contar e depois em "Iniciar contagem".'],
+  const T=[['👋 1 de 3 · Escolha a loja','Na tela Loja, toque na loja que vai contar, depois no seu nome e em "Iniciar contagem".'],
     ['📷 2 de 3 · Bipe os produtos','Na tela Contar, aponte a câmera pro código de barras (ou busque pelo nome) e diga quantas peças achou.'],
-    ['📤 3 de 3 · Envie quando terminar','Na tela Contados, confira a lista, toque em "Mais opções" e envie a contagem.']];
+    ['📤 3 de 3 · Envie quando terminar','Na tela Revisar e enviar, toque em "Terminei" e depois em "Enviar agora".']];
   let i=0;const go=()=>{const [t,x]=T[i];confirmar(t,x,i<2?'Próximo →':'Entendi!',()=>{if(++i<T.length)setTimeout(go)});$('modalCancelar').textContent='Pular'};go()}
 function adicionar(p,q){ent().push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),c:p.c,q,t:Date.now()});save();
   const tot=totais().get(p.c),s=sis(p.c),d=r3(tot-s);
@@ -793,7 +819,7 @@ function renderStatusFinalizar(){const fz=(S.finalizadas||{})[S.loja];const el=$
   const dt=ts=>new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   if(fz){el.innerHTML=`<div class="card" style="flex-direction:row;align-items:center;gap:10px;border-color:var(--green)"><div class="ic" style="--c:#047857">✅</div><div style="flex:1;min-width:0"><b>Finalizada</b><div class="small muted">em ${dt(fz)}</div></div><button class="btn sm" id="btnReabrir" type="button">🔓 Reabrir</button></div>`;
     $('btnReabrir').onclick=()=>confirmar('Reabrir contagem?',`Reabrir a contagem de ${nl(S.loja)} para continuar editando?`,'Reabrir',()=>{delete S.finalizadas[S.loja];save();renderContados();header()})}
-  else{el.innerHTML=`<button class="btn big" id="btnFinalizar" type="button" style="background:var(--green);border-color:var(--green);color:#fff">✅ Finalizar contagem desta loja</button>`;
+  else{el.innerHTML=`<button class="btn big" id="btnFinalizar" type="button" style="background:var(--green);border-color:var(--green);color:#fff">✅ Terminei: finalizar esta loja</button>`;
     $('btnFinalizar').onclick=()=>confirmar('Finalizar contagem?',`Finalizar a contagem de ${nl(S.loja)}? Você ainda poderá reabrir depois se precisar.`,'Finalizar',()=>{S.finalizadas=S.finalizadas||{};S.finalizadas[S.loja]=Date.now();save();renderContados();header();setTimeout(telaFim)})}}
 $('btnBackup').onclick=()=>{if(!ent().length){toast('Nada contado ainda','bad');return}
   const payload={app:'contagem-estoque',v:1,loja:S.loja,nome:S.nome,exportadoEm:new Date().toISOString(),iniciado:(S.iniciadas||{})[S.loja]||null,entries:ent()};
