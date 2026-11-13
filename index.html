@@ -27,13 +27,13 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{margin:0;background:var(--bg);min-height:100%}
+html,body{margin:0;background:var(--bg);height:100%;overflow:hidden}
 body{color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.45;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;font-variant-numeric:tabular-nums}
 button{font-family:inherit;-webkit-user-select:none;user-select:none}
-.app{max-width:640px;margin:0 auto;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 20px)}
+.app{max-width:640px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 
 /* ---------- topo navy ---------- */
-.hero{position:relative;color:#fff;background:radial-gradient(120% 140% at 100% 0%,#2563EB 0%,rgba(37,99,235,0) 55%),linear-gradient(160deg,#0F172A 0%,#1E3A8A 100%);
+.hero{position:relative;flex:0 0 auto;color:#fff;background:radial-gradient(120% 140% at 100% 0%,#2563EB 0%,rgba(37,99,235,0) 55%),linear-gradient(160deg,#0F172A 0%,#1E3A8A 100%);
   padding:calc(env(safe-area-inset-top,0px) + 14px) max(16px,env(safe-area-inset-right,0px)) 18px max(16px,env(safe-area-inset-left,0px));border-radius:0 0 26px 26px;overflow:hidden}
 .hero::after{content:"";position:absolute;right:-40px;bottom:-60px;width:220px;height:220px;border-radius:50%;border:28px solid rgba(255,255,255,.05);pointer-events:none}
 .hrow{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
@@ -50,11 +50,16 @@ button{font-family:inherit;-webkit-user-select:none;user-select:none}
 .hs .l{font-size:11.5px;color:rgba(255,255,255,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hs.ok .v{color:#6EE7B7} .hs.bad .v{color:#FCA5A5}
 
-main{padding:16px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+main{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  padding:16px max(16px,env(safe-area-inset-right,0px)) calc(var(--nav) + env(safe-area-inset-bottom,0px) + 20px) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
 section{display:flex;flex-direction:column;gap:14px}
 
 /* ---------- cartões ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0;box-shadow:var(--sh)}
+.maisOpcoes summary{list-style:none;cursor:pointer;padding:16px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.maisOpcoes summary::-webkit-details-marker{display:none}
+.maisOpcoes summary::after{content:'▾';margin-left:auto;transition:transform .15s}
+.maisOpcoes[open] summary::after{transform:rotate(180deg)}
 .sh{display:flex;align-items:center;gap:10px}
 .ic{--c:var(--blue);width:36px;height:36px;border-radius:10px;background:var(--soft);background:color-mix(in srgb,var(--c) 10%,#fff);display:grid;place-items:center;font-size:18px;flex:none;line-height:1}
 .ic.lg{width:44px;height:44px;font-size:21px;border-radius:12px}
@@ -174,7 +179,7 @@ button:focus-visible{outline:3px solid rgba(21,101,192,.45);outline-offset:2px}
 .li .r{text-align:right;white-space:nowrap;font-size:15px;font-weight:700}
 .li .r .of{color:var(--muted2);font-weight:600;font-size:13px}
 .li .r small{display:block;margin-top:3px}
-.li .act{grid-column:2/-1;display:flex;justify-content:flex-end}
+.li .act{grid-column:2/-1;display:flex;justify-content:flex-end;gap:8px}
 .li .act button{background:none;border:0;color:var(--muted);font-size:12.5px;font-weight:600;padding:2px 0;cursor:pointer}
 .pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .pill.ok{background:var(--green-l);color:var(--green)} .pill.bad{background:var(--red-l);color:var(--red)} .pill.warn{background:var(--amber-l);color:var(--amber)} .pill.info{background:var(--blue-l);color:var(--blue)} .pill.muted{background:var(--line);color:var(--muted)}
@@ -195,6 +200,8 @@ button:focus-visible{outline:3px solid rgba(21,101,192,.45);outline-offset:2px}
 .ring{width:64px;height:64px;flex:none;position:relative}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:14px;color:var(--c)}
+.hprog{position:relative;z-index:1;margin-top:10px;background:rgba(255,255,255,.14);border:0;border-radius:12px;padding:8px 12px;color:#fff;font:inherit;font-size:13px;text-align:left;width:100%;cursor:pointer}.hprog .prog{background:rgba(255,255,255,.25);margin-top:6px}.hprog .prog i{background:#fff}
+.gsep{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:14px 0 4px;border-bottom:2px solid var(--line)}
 .prog{height:8px;background:var(--soft);border-radius:99px;overflow:hidden}
 .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--blue2));border-radius:99px}
 
@@ -257,9 +264,10 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
 @media print{
   @page{size:A4;margin:12mm}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  html,body{background:#fff}
+  html,body{background:#fff;height:auto;overflow:visible}
   .hero,nav.tabs,.noprint,.toast,.foot{display:none!important}
-  .app{padding:0;max-width:none} main{padding:0}
+  .app{padding:0;max-width:none;height:auto;display:block;overflow:visible}
+  main{padding:0;overflow:visible;height:auto;display:block}
   .card{box-shadow:none}
   .stat,.rbig,.rh,.gb,.li,.resumo,tr{box-shadow:none;break-inside:avoid}
   .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -277,6 +285,7 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
     <button class="hbtn" id="hLoja" type="button">Loja</button>
   </div>
   <div class="hstats" id="hStats" hidden></div>
+  <button class="hprog" id="hProg" type="button" hidden></button>
 </header>
 
 <main>
@@ -306,6 +315,7 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
     <button class="btn" id="mQtd" type="button">Bipa e digita a qtd.</button>
     <button class="btn" id="mUni" type="button">Cada bip soma 1</button>
   </div>
+  <div class="small muted" id="modoInfo" style="margin:-6px 2px 2px"></div>
   <div class="scan" id="scanBox" hidden>
     <video id="video" playsinline muted></video>
     <div class="vig"></div><div class="mira"><i></i><i></i><i></i><i></i></div><div class="linha"></div>
@@ -352,21 +362,22 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
 <section id="v-contados" hidden>
   <div class="stats" id="cStats"></div>
   <div id="statusFinalizar"></div>
-  <div class="card">
-    <div class="sh"><div class="ic" style="--c:var(--green)">📤</div><div class="tt"><div class="ttl">Enviar a contagem</div><div class="sub">Mande sempre que quiser. Fica só neste celular até ser enviada.</div></div></div>
-    <div class="grid2">
-      <button class="btn grn" id="btnZap" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>WhatsApp</button>
-      <button class="btn tl" id="btnXls" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13l4 5M13 13l-4 5"/></svg>Excel</button>
+  <details class="card maisOpcoes" style="padding:0">
+    <summary>⚙️ Mais opções <span class="muted" style="font-weight:400">(enviar, backup)</span></summary>
+    <div style="padding:2px 16px 16px">
+      <div class="sh"><div class="ic" style="--c:var(--green)">📤</div><div class="tt"><div class="ttl">Enviar a contagem</div><div class="sub">Mande sempre que quiser. Fica só neste celular até ser enviada.</div></div></div>
+      <div class="grid2">
+        <button class="btn grn" id="btnZap" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>WhatsApp</button>
+        <button class="btn tl" id="btnXls" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13l4 5M13 13l-4 5"/></svg>Excel</button>
+      </div>
+      <button class="btn" id="btnOM" type="button">📥 Arquivo para o OM (F7 · coletor)</button>
+      <button class="btn sm ghost" id="btnTexto" type="button">Mostrar texto para copiar</button>
+      <textarea id="txtEnvio" readonly hidden aria-label="Texto da contagem"></textarea>
+      <div class="sh" style="margin-top:14px"><div class="ic" style="--c:var(--muted)">💾</div><div class="tt"><div class="ttl">Backup de segurança</div><div class="sub">Fica salvo neste celular automaticamente. Para contagens de vários dias, faça este backup de vez em quando.</div></div></div>
+      <div class="grid2"><button class="btn" id="btnBackup" type="button">💾 Salvar backup</button><button class="btn" id="btnRestore" type="button">📂 Restaurar backup</button></div>
+      <input id="backupIn" type="file" accept="application/json,.json" hidden>
     </div>
-    <button class="btn" id="btnOM" type="button">📥 Arquivo para o OM (F7 · coletor)</button>
-    <button class="btn sm ghost" id="btnTexto" type="button">Mostrar texto para copiar</button>
-    <textarea id="txtEnvio" readonly hidden aria-label="Texto da contagem"></textarea>
-  </div>
-  <div class="card">
-    <div class="sh"><div class="ic" style="--c:var(--muted)">💾</div><div class="tt"><div class="ttl">Backup de segurança</div><div class="sub">Fica salvo neste celular automaticamente. Para contagens de vários dias, faça este backup de vez em quando.</div></div></div>
-    <div class="grid2"><button class="btn" id="btnBackup" type="button">💾 Salvar backup</button><button class="btn" id="btnRestore" type="button">📂 Restaurar backup</button></div>
-    <input id="backupIn" type="file" accept="application/json,.json" hidden>
-  </div>
+  </details>
   <div class="card">
     <div class="sh"><div class="ic" style="--c:var(--blue)">📋</div><div class="tt"><div class="ttl">Lista de produtos</div><div class="sub">Contados, diferenças e o que falta contar</div></div></div>
     <div class="seg" id="segC">
@@ -435,6 +446,7 @@ nav.tabs .badge{position:absolute;top:6px;left:calc(50% + 10px);background:var(-
   <div class="modalBox">
     <b id="modalTitulo"></b>
     <p class="small muted" id="modalTexto"></p>
+    <input id="modalInput" inputmode="decimal" enterkeyhint="done" hidden style="width:100%;box-sizing:border-box;margin:2px 0 10px;font-size:18px;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--line)">
     <div class="row"><button class="btn" id="modalCancelar" type="button">Cancelar</button><button class="btn pri" id="modalOk" type="button">Confirmar</button></div>
   </div>
 </div>
@@ -480,10 +492,17 @@ const PAL=['#1565C0','#0D9488','#4F46E5','#EA580C','#7C3AED','#D97706','#475569'
 const corLoja=(l,i)=>COR_LOJA[l]||PAL[(i||0)%PAL.length];
 function statusLoja(l){if((S.finalizadas||{})[l])return 'fin';if((S.iniciadas||{})[l])return 'and';return 'novo'}
 let modalCb=null;
-function confirmar(titulo,texto,textoOk,cb,danger){$('modalTitulo').textContent=titulo;$('modalTexto').textContent=texto;const ok=$('modalOk');ok.textContent=textoOk||'Confirmar';ok.style.background=danger?'var(--red)':'';ok.style.borderColor=danger?'var(--red)':'';modalCb=cb;$('modalBack').hidden=false}
-$('modalCancelar').onclick=()=>{$('modalBack').hidden=true;modalCb=null};
-$('modalBack').addEventListener('click',e=>{if(e.target.id==='modalBack'){$('modalBack').hidden=true;modalCb=null}});
-$('modalOk').onclick=()=>{const cb=modalCb;$('modalBack').hidden=true;modalCb=null;if(cb)cb()};
+function fecharModal(){$('modalBack').hidden=true;modalCb=null;$('modalCancelar').textContent='Cancelar';$('modalInput').hidden=true}
+function confirmar(titulo,texto,textoOk,cb,danger){$('modalTitulo').textContent=titulo;$('modalTexto').textContent=texto;const ok=$('modalOk');ok.textContent=textoOk||'Confirmar';ok.style.background=danger?'var(--red)':'';ok.style.borderColor=danger?'var(--red)':'';$('modalInput').hidden=true;modalCb=cb;$('modalBack').hidden=false}
+function promptQtd(titulo,valorAtual,unidade,cb){$('modalTitulo').textContent=titulo;$('modalTexto').textContent=`Quantidade (${un(unidade)}):`;
+  const ok=$('modalOk');ok.textContent='Salvar';ok.style.background='';ok.style.borderColor='';
+  const inp=$('modalInput');inp.hidden=false;inp.value=fQ(valorAtual);
+  modalCb=()=>{const v=parseFloat(String(inp.value).replace(',','.'));if(isNaN(v)||v<0){toast('Quantidade inválida','bad');return false}cb(v)};
+  $('modalBack').hidden=false;setTimeout(()=>{inp.focus();inp.select()},50)}
+$('modalCancelar').onclick=fecharModal;
+$('modalBack').addEventListener('click',e=>{if(e.target.id==='modalBack')fecharModal()});
+$('modalOk').onclick=()=>{const cb=modalCb;if(cb){const r=cb();if(r===false)return}fecharModal()};
+$('modalInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('modalOk').click()}});
 const stCls=d=>d===0?'ok':d>0?'warn':'bad';
 const pillD=d=>d===0?'<span class="pill ok">✓ bateu</span>':d>0?`<span class="pill warn">▲ ${sinal(d)}</span>`:`<span class="pill bad">▼ ${sinal(d)}</span>`;
 const statH=(ic,c,v,l,ex)=>`<div class="stat${ex?' '+ex:''}" style="--c:${c}"><div class="ic" style="--c:${c}">${ic}</div><div class="v">${v}</div><div class="l">${l}</div></div>`;
@@ -495,10 +514,11 @@ let tt;function toast(m,k){const t=$('toast');t.textContent=m;t.className='toast
 const VIEWS=['inicio','contar','contados','conferir','relatorio'];
 function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='conferir'&&v!=='relatorio'&&!(S.loja&&S.nome)){v='inicio'}
   VIEWS.forEach(k=>{$('v-'+k).hidden=k!==v;const n=$('n-'+k);if(n)n.setAttribute('aria-current',(k===v||(k==='conferir'&&v==='relatorio'))?'page':'false')});
-  $('hStats').style.display=(v==='relatorio'||v==='contados')?'none':'';
+  $('hStats').style.display=(v==='relatorio'||v==='contados')?'none':'';$('hProg').style.display=v==='contar'?'':'none';
+  $('rodape').style.display=v==='inicio'?'none':'';
   if(v!=='contar')pararCamera();
   if(v==='contados')renderContados();if(v==='inicio')renderLojas();if(v==='contar')renderRecentes();
-  window.scrollTo(0,0)}
+  const mn=document.querySelector('main');if(mn)mn.scrollTop=0}
 VIEWS.forEach(k=>{const n=$('n-'+k);if(n)n.onclick=()=>view(k)});
 $('hLoja').onclick=()=>{if(!S.loja){view('inicio');return}
   confirmar('Trocar de loja?',`A contagem de ${nl(S.loja)} fica salva. Você vai escolher outra loja (ou voltar a ela depois).`,'Trocar',()=>view('inicio'))};
@@ -506,7 +526,8 @@ function header(){$('hTitulo').textContent=S.loja?nl(S.loja):'Contagem de estoqu
   const stj=S.loja?statusLoja(S.loja):null;const tagTxt=stj==='fin'?' · ✅ finalizada':stj==='and'?' · 🟢 em andamento':'';
   $('hSub').textContent=S.loja?(S.nome||'Contagem de estoque')+tagTxt:'Escolha a loja para começar';
   $('hLoja').innerHTML=S.loja?'🏬 Trocar':'🏬 Loja';const n=totais().size;$('nBadge').textContent=n;$('nBadge').hidden=!n;
-  const hs=$('hStats');if(!(D&&S.loja&&S.nome)){hs.hidden=true;return}const L=linhasMinhas();const dif=L.filter(x=>x.d!==0).length;
+  const hs=$('hStats');if(!(D&&S.loja&&S.nome)){hs.hidden=true;$('hProg').hidden=true;return}
+  const pr=progresso();$('hProg').hidden=false;$('hProg').innerHTML=`<b>${pr.cont.toLocaleString('pt-BR')}</b> de ${pr.pos.toLocaleString('pt-BR')} produtos (${Math.floor(pr.pc)}%) · ver o que falta ›<div class="prog"><i style="width:${Math.min(100,pr.pc)}%"></i></div>`;const L=linhasMinhas();const dif=L.filter(x=>x.d!==0).length;
   hs.hidden=false;hs.innerHTML=`<div class="hs"><div class="v">${L.length}</div><div class="l">contados</div></div><div class="hs ok"><div class="v">${L.length-dif}</div><div class="l">batendo</div></div><div class="hs bad"><div class="v">${dif}</div><div class="l">com diferença</div></div>`}
 
 /* ---------- dados ---------- */
@@ -521,6 +542,7 @@ async function init(){
   $('rodape').textContent='Estoque do sistema de '+D.gerado;
   modo(S.modo||'qtd');renderRecentes();header();
   view(S.loja&&S.nome?'contar':'inicio');
+  let viu=1;try{viu=localStorage.getItem('contagem-tutorial')}catch(e){}if(!viu)tutorial();
 }
 function renderLojas(){if(!D)return;$('lojas').innerHTML=D.lojas.map((l,i)=>{const st=ESTQ[l];const pos=[...st.values()].filter(x=>x.q>0).length;const m=totais(l);const c=m.size;
   const cs=[...m.keys()].filter(k=>(st.get(k)||{q:0}).q>0).length;const cor=corLoja(l,i);
@@ -564,7 +586,8 @@ let deb;$('busca').addEventListener('input',()=>{clearTimeout(deb);const q=$('bu
 $('results').addEventListener('click',e=>{const b=e.target.closest('.res');if(b){$('results').innerHTML='';$('busca').value='';achou(P.get(+b.dataset.c))}});
 
 /* ---------- modo ---------- */
-function modo(m){S.modo=m;save();$('mQtd').classList.toggle('on',m==='qtd');$('mUni').classList.toggle('on',m==='uni')}
+function modo(m){S.modo=m;save();$('mQtd').classList.toggle('on',m==='qtd');$('mUni').classList.toggle('on',m==='uni');
+  $('modoInfo').textContent=m==='uni'?'👉 Cada vez que bipar o mesmo produto soma +1 (pra contar peça por peça, bem rápido)':'👉 Bipa ou busca o produto, aí você digita quantas peças encontrou'}
 $('mQtd').onclick=()=>modo('qtd');$('mUni').onclick=()=>modo('uni');
 
 /* ---------- produto ---------- */
@@ -592,15 +615,29 @@ $('cxM2').onclick=()=>{S.cx=false;save();cxUI()};$('cxCx').onclick=()=>{S.cx=tru
 $('qtd').addEventListener('input',cxCalc);
 $('qtd').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();somar()}});
 $('btnSomar').onclick=somar;$('btnCancelar').onclick=()=>{cur=null;$('prodCard').hidden=true;pausado=false};
-function somar(){if(!cur)return;const q=qv();if(isNaN(q)||q<0){toast('Digite uma quantidade válida','bad');return}adicionar(cur,cur.cx&&S.cx?r3(q*cur.cx):q);cur=null;$('prodCard').hidden=true;pausado=false}
+function somar(){if(!cur)return;const q=qv();if(isNaN(q)||q<0){toast('Digite uma quantidade válida','bad');return}
+  const p=cur,v=p.cx&&S.cx?r3(q*p.cx):q,tot=(totais().get(p.c)||0)+v,s=sis(p.c);
+  const fim=()=>{adicionar(p,v);if(cur===p){cur=null;$('prodCard').hidden=true}pausado=false};
+  // aviso suave: total 5x maior/menor que o sistema e diferença de 15+ (pega erro de digitação)
+  if(s>0&&(tot>s*5||tot<s/5)&&Math.abs(tot-s)>=15){confirmar('Confere essa quantidade?',`O sistema tem ${fQ(s)} ${un(p.u)} e a contagem vai ficar ${fQ(tot)}. Parece bem diferente do esperado — confere de novo?`,'Sim, está certo',fim);$('modalCancelar').textContent='Corrigir';return}
+  fim()}
+function tutorial(){try{localStorage.setItem('contagem-tutorial','1')}catch(e){}
+  const T=[['👋 1 de 3 · Escolha a loja','Na tela Lojas, escreva seu nome, toque na loja que vai contar e depois em "Iniciar contagem".'],
+    ['📷 2 de 3 · Bipe os produtos','Na tela Contar, aponte a câmera pro código de barras (ou busque pelo nome) e diga quantas peças achou.'],
+    ['📤 3 de 3 · Envie quando terminar','Na tela Contados, confira a lista, toque em "Mais opções" e envie a contagem.']];
+  let i=0;const go=()=>{const [t,x]=T[i];confirmar(t,x,i<2?'Próximo →':'Entendi!',()=>{if(++i<T.length)setTimeout(go)});$('modalCancelar').textContent='Pular'};go()}
 function adicionar(p,q){ent().push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),c:p.c,q,t:Date.now()});save();
   const tot=totais().get(p.c),s=sis(p.c),d=r3(tot-s);
   toast(`${p.d.slice(0,40)} · contado ${fQ(tot)} · sistema ${fQ(s)} · ${d===0?'bateu ✓':'dif. '+sinal(d)}`,d===0?'ok':'');
   header();renderRecentes();if(!camAberta)$('busca').focus()}
 function renderRecentes(){const L=ent().slice(-10).reverse();$('recInfo').textContent=ent().length?`${totais().size} produtos · ${ent().length} bipes nesta loja`:'Nada contado ainda';
   $('recentes').innerHTML=L.length?L.map(e=>{const p=P.get(e.c)||{d:'Produto '+e.c,u:''};const tot=totais().get(e.c),s=sis(e.c),d=r3(tot-s);
-    return`<div class="li ${stCls(d)}"><div class="d">${esc(p.d)}<small>#${e.c} · +${fQ(e.q)} ${un(p.u)}</small></div><div class="r">${fQ(tot)} <span class="of">/ ${fQ(s)}</span><small>${pillD(d)}</small></div><div class="act"><button data-del="${e.id}" type="button">↶ desfazer este bipe</button></div></div>`}).join(''):vazio('📦','Nenhum produto contado nesta loja ainda.<br>Abra o leitor e comece a bipar.')}
-$('recentes').addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;S.L[S.loja]=ent().filter(x=>x.id!==b.dataset.del);save();header();renderRecentes();toast('Bipe desfeito')});
+    return`<div class="li ${stCls(d)}"><div class="d">${esc(p.d)}<small>#${e.c} · +${fQ(e.q)} ${un(p.u)}</small></div><div class="r">${fQ(tot)} <span class="of">/ ${fQ(s)}</span><small>${pillD(d)}</small></div><div class="act"><button data-edit="${e.id}" type="button">✏️ editar</button><button data-del="${e.id}" type="button">↶ desfazer</button></div></div>`}).join(''):vazio('📦','Nenhum produto contado nesta loja ainda.<br>Abra o leitor e comece a bipar.')}
+$('recentes').addEventListener('click',e=>{
+  const d=e.target.closest('[data-del]');if(d){S.L[S.loja]=ent().filter(x=>x.id!==d.dataset.del);save();header();renderRecentes();toast('Bipe desfeito');return}
+  const ed=e.target.closest('[data-edit]');if(ed){const id=ed.dataset.edit;const entrada=ent().find(x=>x.id===id);if(!entrada)return;const p=P.get(entrada.c)||{d:'Produto '+entrada.c,u:''};
+    promptQtd('Editar bipe',entrada.q,p.u,novo=>{entrada.q=novo;save();header();renderRecentes();toast('Bipe atualizado','ok')});return}
+});
 
 /* ---------- câmera (bip contínuo) ----------
    Motores de leitura, em ordem: leitor nativo do celular (BarcodeDetector) e zxing-wasm (zxing-cpp),
@@ -686,6 +723,8 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)pararCamera
 
 /* ---------- contados ---------- */
 function linhasMinhas(){const m=totais();return[...m].map(([c,q])=>{const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};const s=sis(c);return{p,q,s,d:r3(q-s)}})}
+function progresso(){const st=ESTQ[S.loja]||new Map(),m=totais();let pos=0,cont=0;for(const [c,x] of st)if(x.q>0){pos++;if(m.has(c))cont++}return{pos,cont,pc:pos?cont/pos*100:0}}
+$('hProg').onclick=()=>{filtroC='falta';view('contados');setFiltroC('falta')};
 function linhasFaltam(){const st=ESTQ[S.loja]||new Map();const m=totais();const out=[];
   for(const [c,x] of st){if(m.has(c))continue;const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};out.push({p,s:x.q})}
   return out}
@@ -697,16 +736,17 @@ function renderContados(){renderStatusFinalizar();const L=linhasMinhas();const s
    `<div class="stat wide tap${filtroC==='falta'?' on':''}" data-f="falta" style="--c:#1565C0">${ringH(pc,'#1565C0')}<div style="flex:1;min-width:0"><div class="l">Progresso em ${esc(nl(S.loja))}</div><div style="font-size:15px;font-weight:600;margin-top:3px">${cont.toLocaleString('pt-BR')} de ${pos.toLocaleString('pt-BR')} produtos com estoque</div><div class="prog" style="margin-top:8px"><i style="width:${Math.min(100,pc)}%"></i></div>${F.length?`<div style="margin-top:8px;font-size:13px;font-weight:700;color:#B45309">🔍 ${F.length.toLocaleString('pt-BR')} ainda faltam contar</div>`:`<div style="margin-top:8px;font-size:13px;font-weight:700;color:#047857">✅ Tudo contado</div>`}</div></div>`;
   const f=norm($('fC').value);
   if(filtroC==='falta'){
-    let RF=F.filter(x=>!f||norm(x.p.d).includes(f)||String(x.p.c).includes(f));
+    let RF=F.filter(x=>x.s>0).filter(x=>!f||norm(x.p.d).includes(f)||String(x.p.c).includes(f));
     RF.sort((a,b)=>(a.p.g||'').localeCompare(b.p.g||'')||a.p.d.localeCompare(b.p.d));
     $('cInfo').textContent=RF.length?`${RF.length.toLocaleString('pt-BR')} produtos ainda não contados`:'';
-    $('cLista').innerHTML=RF.length?RF.slice(0,300).map(x=>`<div class="li" data-code="${x.p.c}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small>${x.s<=0?'<small><span class="pill muted">sem estoque no sistema</span></small>':''}</div><div class="r"><span class="of">sistema</span> ${fQ(x.s)}</div><div style="grid-column:2/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:4px"><button class="btn sm" data-zero="${x.p.c}" type="button">É zero</button><button class="btn sm pri" data-ir="${x.p.c}" type="button">Contar →</button></div></div>`).join('')+(RF.length>300?`<div class="empty">Mostrando 300 de ${RF.length.toLocaleString('pt-BR')}. Use a busca para achar mais rápido.</div>`:''):vazio('🎉','Tudo contado nesta loja!');
+    const nG=new Map();RF.forEach(x=>nG.set(x.p.g,(nG.get(x.p.g)||0)+1));let gAnt=null;
+    $('cLista').innerHTML=RF.length?RF.slice(0,300).map(x=>(x.p.g!==gAnt?`<div class="gsep">${esc((gAnt=x.p.g)||'Sem grupo')} · ${nG.get(x.p.g)}</div>`:'')+`<div class="li" data-code="${x.p.c}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small></div><div class="r"><span class="of">sistema</span> ${fQ(x.s)}</div><div style="grid-column:2/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:4px"><button class="btn sm" data-zero="${x.p.c}" type="button">É zero</button><button class="btn sm pri" data-ir="${x.p.c}" type="button">Contar →</button></div></div>`).join('')+(RF.length>300?`<div class="empty">Mostrando 300 de ${RF.length.toLocaleString('pt-BR')}. Use a busca para achar mais rápido.</div>`:''):vazio('🎉','Tudo contado nesta loja!');
   }else{
     let R=L.filter(x=>!f||norm(x.p.d).includes(f)||String(x.p.c).includes(f));
     if(filtroC==='dif')R=R.filter(x=>x.d!==0);if(filtroC==='ok')R=R.filter(x=>x.d===0);
     R.sort((a,b)=>a.p.d.localeCompare(b.p.d));
     $('cInfo').textContent=R.length?`${R.length.toLocaleString('pt-BR')} produto${R.length===1?'':'s'}`:'';
-    $('cLista').innerHTML=R.length?R.map(x=>`<div class="li ${stCls(x.d)}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small></div><div class="r">${fQ(x.q)} <span class="of">/ ${fQ(x.s)}</span><small>${pillD(x.d)}</small></div><div class="act"><button data-zera="${x.p.c}" type="button">✕ remover</button></div></div>`).join(''):vazio('📋','Nada para mostrar.');
+    $('cLista').innerHTML=R.length?R.map(x=>`<div class="li ${stCls(x.d)}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small></div><div class="r">${fQ(x.q)} <span class="of">/ ${fQ(x.s)}</span><small>${pillD(x.d)}</small></div><div class="act"><button data-editatotal="${x.p.c}" type="button">✏️ editar</button><button data-zera="${x.p.c}" type="button">✕ remover</button></div></div>`).join(''):vazio('📋','Nada para mostrar.');
   }
   $('txtEnvio').value=L.length?textoEnvio():''}
 function setFiltroC(f){filtroC=f;[...$('segC').children].forEach(x=>x.classList.toggle('on',x.dataset.f===f));renderContados()}
@@ -717,6 +757,8 @@ $('cLista').addEventListener('click',e=>{
   const zera=e.target.closest('[data-zera]');if(zera){const c=+zera.dataset.zera;S.L[S.loja]=ent().filter(x=>x.c!==c);save();header();renderContados();renderRecentes();toast('Produto removido');return}
   const zero=e.target.closest('[data-zero]');if(zero){const c=+zero.dataset.zero;const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};adicionar(p,0);renderContados();return}
   const ir=e.target.closest('[data-ir]');if(ir){const c=+ir.dataset.ir;const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};view('contar');achou(p,false);return}
+  const edt=e.target.closest('[data-editatotal]');if(edt){const c=+edt.dataset.editatotal;const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};const atual=totais().get(c)||0;
+    promptQtd('Editar contagem',atual,p.u,novo=>{S.L[S.loja]=ent().filter(x=>x.c!==c);ent().push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),c,q:novo,t:Date.now()});save();header();renderContados();renderRecentes();toast('Contagem atualizada','ok')});return}
 });
 function textoEnvio(){const m=totais();const dt=new Date().toLocaleString('pt-BR');
   return`CONTAGEM|${S.loja}|${S.nome}|${dt}|${m.size} produtos\n`+[...m].map(([c,q])=>c+';'+String(r3(q)).replace('.',',')).join('\n')}
@@ -743,12 +785,16 @@ $('btnZap').onclick=async()=>{if(!ent().length){toast('Nada contado ainda','bad'
   const txt=textoEnvio();try{if(navigator.share){await navigator.share({text:txt});return}}catch(e){if(e&&e.name==='AbortError')return}
   try{await navigator.clipboard.writeText(txt);toast('Texto copiado. Cole no WhatsApp.','ok')}catch(e){$('txtEnvio').hidden=false;$('txtEnvio').select();toast('Copie o texto abaixo')}};
 $('btnLimpar').onclick=()=>confirmar('Apagar contagem?',`Apagar tudo o que foi contado em ${nl(S.loja)} neste celular? Confira se já enviou. Não dá para desfazer.`,'Apagar',()=>{S.L[S.loja]=[];save();header();renderContados();renderRecentes();toast('Contagem apagada')},true);
+function telaFim(){const L=linhasMinhas(),dif=L.filter(x=>x.d!==0).length,pr=progresso(),ini=(S.iniciadas||{})[S.loja];
+  const min=ini?Math.round((Date.now()-ini)/60000):0,tempo=!ini?'':min<60?min+' min':Math.floor(min/60)+'h'+String(min%60).padStart(2,'0');
+  confirmar('Contagem finalizada! 🎉','','📤 Enviar agora',()=>$('btnZap').click());$('modalCancelar').textContent='Fechar';
+  $('modalTexto').innerHTML=`<b>${esc(nl(S.loja))}</b> · ${esc(S.nome)}<br><br>📦 ${L.length.toLocaleString('pt-BR')} produtos contados<br>✅ ${(L.length-dif).toLocaleString('pt-BR')} batendo<br>⚠️ ${dif.toLocaleString('pt-BR')} com diferença<br>📊 ${Math.floor(pr.pc)}% dos produtos com estoque`+(pr.pos-pr.cont?` (faltaram ${(pr.pos-pr.cont).toLocaleString('pt-BR')})`:'')+(tempo?`<br>⏱️ ${tempo} de contagem`:'')+'<br><br>Agora é só enviar a contagem 👇'}
 function renderStatusFinalizar(){const fz=(S.finalizadas||{})[S.loja];const el=$('statusFinalizar');if(!el)return;
   const dt=ts=>new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   if(fz){el.innerHTML=`<div class="card" style="flex-direction:row;align-items:center;gap:10px;border-color:var(--green)"><div class="ic" style="--c:#047857">✅</div><div style="flex:1;min-width:0"><b>Finalizada</b><div class="small muted">em ${dt(fz)}</div></div><button class="btn sm" id="btnReabrir" type="button">🔓 Reabrir</button></div>`;
     $('btnReabrir').onclick=()=>confirmar('Reabrir contagem?',`Reabrir a contagem de ${nl(S.loja)} para continuar editando?`,'Reabrir',()=>{delete S.finalizadas[S.loja];save();renderContados();header()})}
   else{el.innerHTML=`<button class="btn big" id="btnFinalizar" type="button" style="background:var(--green);border-color:var(--green);color:#fff">✅ Finalizar contagem desta loja</button>`;
-    $('btnFinalizar').onclick=()=>confirmar('Finalizar contagem?',`Finalizar a contagem de ${nl(S.loja)}? Você ainda poderá reabrir depois se precisar.`,'Finalizar',()=>{S.finalizadas=S.finalizadas||{};S.finalizadas[S.loja]=Date.now();save();renderContados();header();toast('Contagem finalizada','ok')})}}
+    $('btnFinalizar').onclick=()=>confirmar('Finalizar contagem?',`Finalizar a contagem de ${nl(S.loja)}? Você ainda poderá reabrir depois se precisar.`,'Finalizar',()=>{S.finalizadas=S.finalizadas||{};S.finalizadas[S.loja]=Date.now();save();renderContados();header();setTimeout(telaFim)})}}
 $('btnBackup').onclick=()=>{if(!ent().length){toast('Nada contado ainda','bad');return}
   const payload={app:'contagem-estoque',v:1,loja:S.loja,nome:S.nome,exportadoEm:new Date().toISOString(),iniciado:(S.iniciadas||{})[S.loja]||null,entries:ent()};
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(payload)],{type:'application/json'}));a.download=nomeArq(`Backup_${nl(S.loja)}_${new Date().toISOString().slice(0,10)}.json`);document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('Backup salvo','ok')};
