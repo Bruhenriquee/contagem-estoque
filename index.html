@@ -962,7 +962,11 @@ $('btnXlsCmp').onclick=()=>{if(!CMP)return;const G=grupoCmp();
   add('Por grupo',[...pg.values()].sort((a,b)=>a.g.localeCompare(b.g)).map(o=>({'Grupo':o.g,'Com estoque no sistema':o.est,'Contados':o.cont,'Com diferença':o.dif,'Valor das diferenças':Math.round(o.val*100)/100})),[{wch:28},{wch:20},{wch:10},{wch:14},{wch:18}]);
   baixar(wb,nomeArq(`conferencia_${nl(CMP.loja)}_${new Date().toISOString().slice(0,10)}.xlsx`))};
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+if('serviceWorker' in navigator){const tinha=!!navigator.serviceWorker.controller;let rg=null,rl=false;
+  navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{rg=r;r.update()}).catch(()=>{});
+  // versão nova publicada: recarrega sozinho (menos no meio de um produto aberto)
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(tinha&&!rl&&!cur&&$('modalBack').hidden){rl=true;location.reload()}});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&rg)rg.update().catch(()=>{})})}
 init();
 })();
 </script>
