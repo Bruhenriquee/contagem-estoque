@@ -302,6 +302,10 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
 .ajrow label{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--ink2)}
 .ajrow input{width:100%;box-sizing:border-box;font-size:18px;text-align:center;padding:9px 6px}
 #modalTexto{white-space:pre-line}
+.cega #pNums .kpi:nth-child(1),.cega #pNums .kpi:nth-child(3),.cega #recentes .r .of,.cega #recentes .r small,.cega #cLista .r .of,.cega #cLista .r small,.cega .rs,.cega .res .sv,.cega #cStats [data-f=ok],.cega #cStats [data-f=dif],.cega #segC [data-f=ok],.cega #segC [data-f=dif]{display:none!important}
+.cega #pNums{grid-template-columns:1fr}.cega #recentes .li,.cega #cLista .li{--c:var(--line2)!important}
+.hi{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.hi small{color:var(--muted);grid-column:1/-1}
+@media(min-width:900px){body.largo .app{max-width:1000px}}
 </style>
 </head>
 <body>
@@ -337,7 +341,7 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
     <button class="btn pri big" id="btnComecar" type="button">▶️ Iniciar contagem</button>
   </div>
   <div class="note"><div class="ic">🕒</div><div id="noteDados">Carregando a lista de produtos…</div></div>
-  <button class="btn sm ghost gerente" id="btnGerente" type="button">👔 Sou gerente: juntar as contagens da equipe</button>
+  <button class="btn sm ghost gerente" id="btnGerente" type="button">👔 Painel do gerente</button>
 </section>
 
 <!-- ============ CONTAR ============ -->
@@ -449,10 +453,25 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
 
 <!-- ============ CONFERIR ============ -->
 <section id="v-conferir" hidden>
-  <button class="btn sm ghost" id="cfVoltar" type="button" style="align-self:flex-start">← Voltar</button>
+  <div class="row" style="align-items:center"><button class="btn sm ghost" id="cfVoltar" type="button">← Voltar</button><b style="flex:1;text-align:center;font-size:16px">👔 Painel do gerente</b><button class="btn sm ghost" id="admSair" type="button" hidden>Sair</button></div>
+  <div class="card" id="admLogin" hidden style="align-items:center;text-align:center">
+    <div style="font-size:40px">🔒</div><b>Só para o gerente</b>
+    <input id="admSenha" type="password" placeholder="Senha do gerente" autocomplete="current-password" style="width:100%;text-align:center;font-size:18px">
+    <button class="btn pri big" id="admEntrar" type="button" style="width:100%">Entrar</button>
+  </div>
+  <div id="admTudo" style="display:flex;flex-direction:column;gap:14px">
+  <div id="admTopo" hidden style="display:flex;flex-direction:column;gap:10px">
+    <select id="cfLoja" aria-label="Loja" style="width:100%;font-size:17px;font-weight:700"></select>
+    <div class="seg" id="admTabs"><button class="btn on" data-t="acoes" type="button">⚡ Ações</button><button class="btn" data-t="hist" type="button">🕘 Histórico</button><button class="btn" data-t="cfg" type="button">⚙️ Ajustes</button></div>
+  </div>
+  <div id="admAcoes" style="display:flex;flex-direction:column;gap:14px">
   <div class="card">
-    <div class="sh"><div class="ic" style="--c:var(--indigo)">🧮</div><div class="tt"><div class="ttl">Juntar as contagens da equipe</div><div class="sub">Contagens de pessoas diferentes do mesmo produto são somadas</div></div></div>
-    <div id="cfNuvem" hidden style="display:flex;flex-direction:column;gap:10px"><select id="cfLoja" aria-label="Loja" style="width:100%"></select><button class="btn pri big" id="btnNuvem" type="button">☁️ Buscar contagens da planilha</button><div class="small muted">Junta sozinho o que todo mundo contou nessa loja.</div><button class="btn" id="btnNovaContagem" type="button">🔁 Começar nova contagem desta loja</button><button class="btn" id="btnPedirEstoque" type="button">🔄 Atualizar o estoque do sistema agora</button><div class="small muted" id="estoqueInfo"></div></div>
+    <div class="small" id="admStatus"></div>
+    <div id="cfNuvem" hidden style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn pri big" id="btnNuvem" type="button">☁️ Buscar contagens e comparar</button>
+      <div class="grid2"><button class="btn" id="btnNovaContagem" type="button">🔁 Contagem nova</button><button class="btn" id="btnReabrirLoja" type="button">🔓 Reabrir</button></div>
+      <button class="btn" id="btnPedirEstoque" type="button">🔄 Atualizar o estoque do sistema agora</button><div class="small muted" id="estoqueInfo"></div>
+    </div>
     <details id="cfManual"><summary class="small" style="cursor:pointer;font-weight:600;padding:4px 0">📂 Juntar por arquivo ou texto (WhatsApp/Excel)</summary><div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
     <div class="grid2">
       <button class="btn" id="btnArq" type="button">📂 Abrir arquivos Excel</button>
@@ -478,6 +497,21 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
       <span class="small muted" id="tabInfo"></span>
     </div>
     <div class="card" style="padding:4px 16px"><div class="list" id="tbody"></div></div>
+  </div>
+  </div>
+  <div id="admHist" hidden style="display:flex;flex-direction:column;gap:14px">
+    <div class="card"><div class="sh"><div class="ic" style="--c:var(--indigo)">🗂️</div><div class="tt"><div class="ttl">Contagens anteriores</div><div class="sub">As que foram guardadas quando começou uma contagem nova</div></div></div><div class="list" id="histLista"></div></div>
+    <div class="card"><div class="sh"><div class="ic" style="--c:var(--teal)">📜</div><div class="tt"><div class="ttl">Registro de mudanças</div><div class="sub">Últimas 300 mudanças desta loja: quem, quando, antes → depois</div></div></div>
+      <input id="regFiltro" placeholder="Filtrar por pessoa ou produto"><div class="list" id="regLista"></div></div>
+  </div>
+  <div id="admCfg" hidden style="display:flex;flex-direction:column;gap:14px">
+    <div class="card"><div class="ttl">👥 Equipe</div><div class="small muted">Esses nomes aparecem pra escolher em todos os celulares.</div>
+      <div class="chips" id="cfgEquipe"></div><div class="row"><input id="cfgNome" placeholder="Nome"><button class="btn" id="cfgAdd" type="button">Adicionar</button></div></div>
+    <div class="card"><label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer"><input type="checkbox" id="cfgCega" style="width:24px;height:24px;flex:none;margin-top:2px"><span><b>🙈 Contagem cega</b><br><span class="small muted">Quem conta não vê quanto o sistema tem nem se "bateu". Evita só confirmar o número do sistema. O painel do gerente continua vendo tudo.</span></span></label></div>
+    <div class="card"><div class="ttl">⚠️ Aviso de contagem estranha</div><div class="small muted">Pergunta "confere?" quando a contagem fica muito longe do sistema.</div>
+      <div class="ajrow"><label>Vezes maior ou menor<input id="cfgFator" inputmode="decimal"></label><label>Diferença mínima<input id="cfgMin" inputmode="numeric"></label></div></div>
+    <button class="btn pri big" id="cfgSalvar" type="button">💾 Salvar ajustes</button>
+  </div>
   </div>
 </section>
 
@@ -542,10 +576,15 @@ function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Não consegui salvar neste navegador. Envie a contagem agora.','bad')}agendarEnvio()}
 /* ---------- envio automático pra planilha ---------- */
 let syncT=null,enviando=false,pendDesde=0;
+let CFG=Object.assign({cega:false,fator:5,minimo:15,equipe:[]},(()=>{try{return JSON.parse(localStorage.getItem('contagem-cfg')||'{}')}catch(e){return{}}})());
+function aplicarCfg(c){if(!c||typeof c!=='object')return;CFG=Object.assign({cega:false,fator:5,minimo:15,equipe:[]},c);try{localStorage.setItem('contagem-cfg',JSON.stringify(CFG))}catch(e){}
+  document.body.classList.toggle('cega',!!CFG.cega);
+  const novos=(CFG.equipe||[]).filter(n=>n&&!(S.pessoas||[]).includes(n));if(novos.length){S.pessoas=(S.pessoas||[]).concat(novos);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(typeof renderPessoas==='function')renderPessoas()}}
 let OUTROS=new Map(),outrosLoja='',outrosT=0,outrosSig='';// código -> [{nome,q}] contado por OUTROS celulares (vem da planilha)
 async function buscarOutros(forcar){if(!PLANILHA||!S.loja||navigator.onLine===false)return;if(!forcar&&outrosLoja===S.loja&&Date.now()-outrosT<25000)return;
   const loja=S.loja;outrosT=Date.now();
-  try{const j=await fetch(PLANILHA+'?acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)).then(r=>r.json());if(!j.ok||loja!==S.loja)return;if(j.rodada&&j.rodada!==(S.rodada||{})[loja])novaRodadaLocal(loja,j.rodada);
+  try{const j=await fetch(PLANILHA+'?acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)).then(r=>r.json());if(!j.ok||loja!==S.loja)return;if(j.rodada&&j.rodada!==(S.rodada||{})[loja])novaRodadaLocal(loja,j.rodada);aplicarCfg(j.config);
+    if(j.reaberta&&(S.finalizadas||{})[loja]&&S.finalizadas[loja]<Date.parse(j.reaberta)){delete S.finalizadas[loja];save();header();toast('O gerente reabriu a contagem de '+nl(loja),'ok');if(!$('v-contar').hidden)view('contar');if(!$('v-contados').hidden)renderContados()}
     const m=new Map(),eu=aparelho();j.rows.forEach(([c,nome,ap,q])=>{if(ap===eu||!q)return;if(!m.has(c))m.set(c,[]);const l=m.get(c),o=l.find(x=>x.nome===nome);o?o.q=r3(o.q+q):l.push({nome,q})});const sig=loja+JSON.stringify([...m]);OUTROS=m;outrosLoja=loja;if(sig!==outrosSig){outrosSig=sig;header();if(!$('v-contados').hidden)renderContados()}}catch(e){}}
 setInterval(()=>{if(!document.hidden&&(!$('v-contar').hidden||!$('v-contados').hidden))buscarOutros()},30000);
 // Nova contagem da loja (o gerente começou outra rodada): guarda o que este celular tinha de ANTES e segue só com o que é mais novo.
@@ -616,7 +655,7 @@ function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='con
   $('hStats').style.display=(v==='relatorio'||v==='contados')?'none':'';$('hProg').style.display=v==='contar'?'':'none';
   $('rodape').style.display=v==='inicio'?'none':'';
   if(v!=='contar')pararCamera();
-  if(v==='contados'){renderContados();buscarOutros(true)}if(v==='inicio')renderLojas();if(v==='contar'){renderRecentes();const t=fechada();$('v-contar').classList.toggle('trancada',t);$('lockCard').hidden=!t;if(t)$('lockInfo').textContent=`${nl(S.loja)} foi finalizada em ${new Date(S.finalizadas[S.loja]).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}. Ninguém altera mais nada.`;else buscarOutros(true)}
+  if(v==='contados'){renderContados();buscarOutros(true)}if(v==='conferir')painel();document.body.classList.toggle('largo',v==='conferir'||v==='relatorio');if(v==='inicio')renderLojas();if(v==='contar'){renderRecentes();const t=fechada();$('v-contar').classList.toggle('trancada',t);$('lockCard').hidden=!t;if(t)$('lockInfo').textContent=`${nl(S.loja)} foi finalizada em ${new Date(S.finalizadas[S.loja]).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}. Ninguém altera mais nada.`;buscarOutros(true)}
   const mn=document.querySelector('main');if(mn)mn.scrollTop=0}
 VIEWS.forEach(k=>{const n=$('n-'+k);if(n)n.onclick=()=>view(k)});
 $('btnGerente').onclick=()=>view('conferir');$('cfVoltar').onclick=()=>view('inicio');
@@ -640,10 +679,11 @@ async function init(){
   $('fGrupo').innerHTML='<option value="">Todos os grupos</option>'+[...D.grupos].sort().map(g=>`<option>${esc(g)}</option>`).join('');
   $('noteDados').innerHTML=`Estoque do sistema de <b>${esc(D.gerado)}</b>. Vendas e entradas feitas depois desse horário aparecem como diferença: conte com a loja fechada.`;
   $('rodape').textContent='Estoque do sistema de '+D.gerado;
-  modo(S.modo||'qtd');renderRecentes();header();
+  modo(S.modo||'qtd');renderRecentes();header();aplicarCfg(CFG);
+  if(PLANILHA)fetch(PLANILHA+'?acao=config&chave='+encodeURIComponent(CHAVE_ENVIO)).then(r=>r.json()).then(j=>{if(j.ok)aplicarCfg(j.config)}).catch(()=>{});
   if(!PLANILHA)$('cfManual').open=true;
-  if(PLANILHA){$('cfNuvem').hidden=false;$('estoqueInfo').textContent='Estoque atual do app: '+D.gerado;$('cfLoja').innerHTML=D.lojas.map(l=>`<option value="${esc(l)}">${esc(nl(l))}</option>`).join('');if(S.loja)$('cfLoja').value=S.loja;Object.keys(S.L||{}).forEach(l=>{if((S.L[l]||[]).length&&!(S.envOk||{})[l]){S.pend=S.pend||{};S.pend[l]=1}});syncUI();enviarPlanilha()}
-  view(S.loja&&S.nome?'contar':'inicio');
+  if(PLANILHA){$('cfNuvem').hidden=false;$('admTopo').hidden=false;$('estoqueInfo').textContent='Estoque atual do app: '+D.gerado;$('cfLoja').innerHTML=D.lojas.map(l=>`<option value="${esc(l)}">${esc(nl(l))}</option>`).join('');if(S.loja)$('cfLoja').value=S.loja;Object.keys(S.L||{}).forEach(l=>{if((S.L[l]||[]).length&&!(S.envOk||{})[l]){S.pend=S.pend||{};S.pend[l]=1}});syncUI();enviarPlanilha()}
+  view(location.hash==='#admin'?'conferir':S.loja&&S.nome?'contar':'inicio');
   let viu=1;try{viu=localStorage.getItem('contagem-tutorial')}catch(e){}if(!viu)tutorial();
 }
 function renderLojas(){if(!D)return;$('lojas').innerHTML=D.lojas.map((l,i)=>{const st=ESTQ[l];const pos=[...st.values()].filter(x=>x.q>0).length;const m=totais(l);const c=m.size;
@@ -779,7 +819,7 @@ function somar(){if(!cur)return;const q=qv();if(isNaN(q)||q<0){toast('Digite uma
   const p=cur,v=p.cx&&S.cx?r3(q*p.cx):q,tot=(totais().get(p.c)||0)+v,s=sis(p.c);
   const fim=()=>{adicionar(p,v);if(cur===p){cur=null;$('prodCard').hidden=true}pausado=false};
   // aviso suave: total 5x maior/menor que o sistema e diferença de 15+ (pega erro de digitação)
-  if(s>0&&(tot>s*5||tot<s/5)&&Math.abs(tot-s)>=15){confirmar('Confere essa quantidade?',`O sistema tem ${fQ(s)} ${un(p.u)} e a contagem vai ficar ${fQ(tot)}. Parece bem diferente do esperado — confere de novo?`,'Sim, está certo',fim);$('modalCancelar').textContent='Corrigir';return}
+  const F=+CFG.fator||5,M=+CFG.minimo||15;if(s>0&&(tot>s*F||tot<s/F)&&Math.abs(tot-s)>=M){confirmar('Confere essa quantidade?',CFG.cega?`A contagem vai ficar ${fQ(tot)} ${un(p.u)}. Parece bem diferente do esperado — confere de novo?`:`O sistema tem ${fQ(s)} ${un(p.u)} e a contagem vai ficar ${fQ(tot)}. Parece bem diferente do esperado — confere de novo?`,'Sim, está certo',fim);$('modalCancelar').textContent='Corrigir';return}
   fim()}
 function tutorial(){try{localStorage.setItem('contagem-tutorial','1')}catch(e){}
   const T=[['👋 1 de 3 · Escolha a loja','Na tela Loja, toque na loja que vai contar, depois no seu nome e em "Iniciar contagem".'],
@@ -788,7 +828,7 @@ function tutorial(){try{localStorage.setItem('contagem-tutorial','1')}catch(e){}
   let i=0;const go=()=>{const [t,x]=T[i];confirmar(t,x,i<2?'Próximo →':'Entendi!',()=>{if(++i<T.length)setTimeout(go)});$('modalCancelar').textContent='Pular'};go()}
 function adicionar(p,q){ent().push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),c:p.c,q,t:Date.now()});save();
   const tot=totais().get(p.c),s=sis(p.c),d=r3(tot-s);
-  const out=quemContou(p.c);toast(`${p.d.slice(0,40)} · contado ${fQ(tot)} · sistema ${fQ(s)} · ${d===0?'bateu ✓':'dif. '+sinal(d)}`+(out.length?` · ⚠️ ${out.map(o=>o.nome).join(', ')} também contou`:''),d===0?'ok':'');
+  const out=quemContou(p.c);toast(CFG.cega?`${p.d.slice(0,40)} · contado ${fQ(tot)}`:`${p.d.slice(0,40)} · contado ${fQ(tot)} · sistema ${fQ(s)} · ${d===0?'bateu ✓':'dif. '+sinal(d)}`+(out.length?` · ⚠️ ${out.map(o=>o.nome).join(', ')} também contou`:''),d===0?'ok':'');
   header();renderRecentes();if(!camAberta)$('busca').focus()}
 function renderRecentes(){const L=ent().slice(-10).reverse();$('recInfo').textContent=ent().length?`${totais().size} produtos · ${ent().length} bipes nesta loja`:'Nada contado ainda';
   $('recentes').innerHTML=L.length?L.map(e=>{const p=P.get(e.c)||{d:'Produto '+e.c,u:''};const tot=totais().get(e.c),s=sis(e.c),d=r3(tot-s);
@@ -900,7 +940,7 @@ function renderContados(){renderStatusFinalizar();syncUI();const L=linhasMinhas(
     let RF=F.filter(x=>x.s>0).filter(x=>!f||norm(x.p.d).includes(f)||String(x.p.c).includes(f));
     RF.sort((a,b)=>(a.p.g||'').localeCompare(b.p.g||'')||a.p.d.localeCompare(b.p.d));
     $('cInfo').textContent=RF.length?`${RF.length.toLocaleString('pt-BR')} produtos ainda não contados`:'';
-    const itemF=x=>`<div class="li" data-code="${x.p.c}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small></div><div class="r"><span class="of">sistema</span> ${fQ(x.s)}</div><div style="grid-column:2/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:4px"><button class="btn sm" data-zero="${x.p.c}" type="button">É zero</button><button class="btn sm pri" data-ir="${x.p.c}" type="button">Contar →</button></div></div>`;const G=new Map();RF.forEach(x=>{const g=x.p.g||'Sem grupo';if(!G.has(g))G.set(g,[]);G.get(g).push(x)});FALTA_G=G;
+    const itemF=x=>`<div class="li" data-code="${x.p.c}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small></div><div class="r rs"><span class="of">sistema</span> ${fQ(x.s)}</div><div style="grid-column:2/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:4px"><button class="btn sm" data-zero="${x.p.c}" type="button">É zero</button><button class="btn sm pri" data-ir="${x.p.c}" type="button">Contar →</button></div></div>`;const G=new Map();RF.forEach(x=>{const g=x.p.g||'Sem grupo';if(!G.has(g))G.set(g,[]);G.get(g).push(x)});FALTA_G=G;
     $('cLista').innerHTML=!RF.length?vazio('🎉','Tudo contado nesta loja!'):f?[...G].map(([g,l])=>`<div class="gsep">${esc(g)} · ${l.length}</div>`+l.slice(0,100).map(itemF).join('')).join('')
       :[...G].map(([g,l])=>`<details class="gfalta" data-g="${esc(g)}"><summary>${esc(g)}<span class="n">${l.length} faltando</span></summary><div class="list"></div></details>`).join('');
     ITEMF=itemF;
@@ -953,7 +993,7 @@ $('btnLimpar').onclick=()=>trancado()||confirmar('Apagar contagem?',`Apagar tudo
 function telaFim(){const L=linhasMinhas(),dif=L.filter(x=>x.d!==0).length,pr=progresso(),ini=(S.iniciadas||{})[S.loja];
   const min=ini?Math.round((Date.now()-ini)/60000):0,tempo=!ini?'':min<60?min+' min':Math.floor(min/60)+'h'+String(min%60).padStart(2,'0');
   confirmar('Contagem finalizada! 🎉','','📤 Enviar agora',()=>$('btnZap').click());$('modalCancelar').textContent='Fechar';
-  $('modalTexto').innerHTML=`<b>${esc(nl(S.loja))}</b> · ${esc(S.nome)}<br><br>📦 ${L.length.toLocaleString('pt-BR')} produtos contados<br>✅ ${(L.length-dif).toLocaleString('pt-BR')} batendo<br>⚠️ ${dif.toLocaleString('pt-BR')} com diferença<br>📊 ${Math.floor(pr.pc)}% dos produtos com estoque`+(pr.pos-pr.cont?` (faltaram ${(pr.pos-pr.cont).toLocaleString('pt-BR')})`:'')+(tempo?`<br>⏱️ ${tempo} de contagem`:'')+'<br><br>Agora é só enviar a contagem 👇'}
+  $('modalTexto').innerHTML=`<b>${esc(nl(S.loja))}</b> · ${esc(S.nome)}<br><br>📦 ${L.length.toLocaleString('pt-BR')} produtos contados${CFG.cega?'':`<br>✅ ${(L.length-dif).toLocaleString('pt-BR')} batendo<br>⚠️ ${dif.toLocaleString('pt-BR')} com diferença`}<br>📊 ${Math.floor(pr.pc)}% dos produtos com estoque`+(pr.pos-pr.cont?` (faltaram ${(pr.pos-pr.cont).toLocaleString('pt-BR')})`:'')+(tempo?`<br>⏱️ ${tempo} de contagem`:'')+'<br><br>Agora é só enviar a contagem 👇'}
 function renderStatusFinalizar(){const fz=(S.finalizadas||{})[S.loja];const el=$('statusFinalizar');if(!el)return;
   const dt=ts=>new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   if(fz){el.innerHTML=`<div class="card" style="flex-direction:row;align-items:center;gap:10px;border-color:var(--green)"><div class="ic" style="--c:#047857">✅</div><div style="flex:1;min-width:0"><b>Finalizada</b><div class="small muted">em ${dt(fz)}</div></div><button class="btn sm" id="btnReabrir" type="button">🔓 Reabrir</button></div>`;
@@ -980,6 +1020,53 @@ $('arq').addEventListener('change',async()=>{const fs=[...$('arq').files];$('arq
     for(const [k,m] of by){const [loja,nome]=k.split('|');$('txtJuntar').value+=(($('txtJuntar').value?'\n':'')+`CONTAGEM|${loja}|${nome}|arquivo|${m.size} produtos\n`+[...m].map(([c,q])=>c+';'+String(r3(q)).replace('.',',')).join('\n'))}n++}
    catch(e){toast('Não consegui ler '+f.name,'bad')}}
   if(n)toast(n+' arquivo(s) adicionado(s). Toque em Comparar.','ok')});
+/* ---------- painel do gerente ---------- */
+const senhaGer=()=>{try{return localStorage.getItem('contagem-senha-gerente')||''}catch(e){return''}};
+const getPl=q=>fetch(PLANILHA+'?'+q).then(r=>r.json());
+function postPl(o){return fetch(PLANILHA,{method:'POST',body:JSON.stringify(Object.assign({senha:senhaGer()},o))}).then(r=>r.text()).then(t=>{try{return JSON.parse(t)}catch(e){return{ok:false,erro:'planilha'}}})}
+function erroPl(j){if(j.erro==='senha'){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}toast('Senha errada. Entre de novo.','bad');painel()}else toast('A planilha deu erro','bad')}
+function painel(){const precisa=PLANILHA&&!senhaGer();$('admLogin').hidden=!precisa;$('admTudo').hidden=precisa;$('admSair').hidden=!PLANILHA||precisa;if(!precisa&&PLANILHA)admStatus()}
+$('admEntrar').onclick=async()=>{const s=$('admSenha').value.trim();if(!s)return;
+  try{const j=await getPl('senha='+encodeURIComponent(s));if(!j.ok){toast('Senha errada','bad');return}}catch(e){toast('Sem internet','bad');return}
+  try{localStorage.setItem('contagem-senha-gerente',s)}catch(e){}$('admSenha').value='';painel()};
+$('admSenha').addEventListener('keydown',e=>{if(e.key==='Enter')$('admEntrar').click()});
+$('admSair').onclick=()=>{try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}painel()};
+$('admTabs').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b)return;admAba(b.dataset.t)});
+function admAba(t){[...$('admTabs').children].forEach(x=>x.classList.toggle('on',x.dataset.t===t));$('admAcoes').hidden=t!=='acoes';$('admHist').hidden=t!=='hist';$('admCfg').hidden=t!=='cfg';
+  if(t==='hist')admHist();if(t==='cfg')admCfg();if(t==='acoes')admStatus()}
+$('cfLoja').addEventListener('change',()=>{$('cmpOut').hidden=true;const t=[...$('admTabs').children].find(x=>x.classList.contains('on')).dataset.t;admAba(t)});
+async function admStatus(){const el=$('admStatus'),loja=$('cfLoja').value;if(!PLANILHA||!loja)return;el.textContent='Carregando…';
+  try{const j=await getPl('acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja));if(!j.ok)throw 0;
+    const p=new Map(),fin=new Set();j.rows.forEach(([c,nome,ap,q,f])=>{p.set(nome,(p.get(nome)||0)+1);if(f)fin.add(nome)});
+    const dt=j.rodada?new Date(j.rodada).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+    el.innerHTML=(dt?`📅 Contagem atual começou ${dt}<br>`:'')+(p.size?`👥 ${[...p].map(([n,k])=>`<b>${esc(n||'sem nome')}</b> ${k} itens${fin.has(n)?' ✅':''}`).join(' · ')}`:'Ninguém mandou contagem desta loja ainda.')+(fin.size?'<br><span class="muted">✅ = finalizou</span>':'')}
+  catch(e){el.textContent='Sem internet pra ver a situação da loja.'}}
+$('btnReabrirLoja').onclick=()=>{const loja=$('cfLoja').value;confirmar('Reabrir a contagem?',`Destrava ${nl(loja)} em todos os celulares que finalizaram, pra continuarem a MESMA contagem (somando). Pra começar do zero, use "Contagem nova".`,'Reabrir',async()=>{
+  let j;try{j=await postPl({acao:'reabrirLoja',loja})}catch(e){toast('Sem internet','bad');return}if(!j.ok)return erroPl(j);
+  if((S.finalizadas||{})[loja]){delete S.finalizadas[loja];save();header()}toast('Reaberta. Os celulares destravam em até 30 segundos.','ok')})};
+let HIST=[];
+async function admHist(){const loja=$('cfLoja').value;$('histLista').innerHTML='<div class="empty">Carregando…</div>';$('regLista').innerHTML='';
+  try{const [h,r]=await Promise.all([getPl('acao=historico&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer())),getPl('acao=registro&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer()))]);
+    if(!h.ok)return erroPl(h);const f=d=>new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+    $('histLista').innerHTML=h.contagens.length?h.contagens.map(c=>`<div class="hi"><div><b>${c.inicio?f(c.inicio)+' → ':''}${f(c.quando)}</b><br><span class="muted">${Object.entries(c.pessoas).map(([n,k])=>esc(n)+' '+k).join(' · ')}</span></div><button class="btn sm pri" data-antiga="${esc(c.quando)}" type="button">📊 Ver</button></div>`).join(''):vazio('🗂️','Nenhuma contagem anterior guardada desta loja ainda.');
+    HIST=r.ok?r.rows:[];renderReg()}catch(e){$('histLista').innerHTML=vazio('📡','Sem internet.')}}
+function renderReg(){const q=norm($('regFiltro').value);const L=HIST.filter(r=>!q||norm(r[1]+' '+r[3]+' '+r[2]).includes(q));
+  $('regLista').innerHTML=L.length?L.slice(0,300).map(([t,nome,c,prod,a,d,dif])=>`<div class="hi"><div>${esc(prod||'')}${c!==''?` <span class="muted">#${c}</span>`:''}</div><div style="white-space:nowrap">${a!==''?`${fQ(+a)} → <b>${fQ(+d)}</b>`:''}</div><small>${new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})} · ${esc(nome)}</small></div>`).join(''):vazio('📜','Nada no registro.')}
+$('regFiltro').addEventListener('input',renderReg);
+$('histLista').addEventListener('click',async e=>{const b=e.target.closest('[data-antiga]');if(!b)return;const loja=$('cfLoja').value;toast('Buscando a contagem antiga…');
+  try{const j=await getPl('acao=contagemAntiga&loja='+encodeURIComponent(loja)+'&quando='+encodeURIComponent(b.dataset.antiga)+'&senha='+encodeURIComponent(senhaGer()));if(!j.ok)return erroPl(j);
+    const g=new Map();j.rows.forEach(([nome,ap,c,q])=>{const k=nome+'|'+ap;if(!g.has(k))g.set(k,{nome,l:[]});g.get(k).l.push(c+';'+String(q).replace('.',','))});
+    $('txtJuntar').value=[...g.values()].map(x=>`CONTAGEM|${loja}|${x.nome}|arquivo|${x.l.length} produtos\n`+x.l.join('\n')).join('\n');admAba('acoes');$('btnJuntar').click();
+    toast('Contagem antiga comparada com o estoque de HOJE','ok')}catch(e){toast('Sem internet','bad')}});
+let EQ=[];
+async function admCfg(){try{const j=await getPl('acao=config&chave='+encodeURIComponent(CHAVE_ENVIO));if(j.ok)aplicarCfg(j.config)}catch(e){}
+  EQ=[...(CFG.equipe||[])];$('cfgCega').checked=!!CFG.cega;$('cfgFator').value=CFG.fator||5;$('cfgMin').value=CFG.minimo||15;renderEq()}
+function renderEq(){$('cfgEquipe').innerHTML=EQ.length?EQ.map((n,i)=>`<button class="chip" data-rm="${i}" type="button">${esc(n)} ✕</button>`).join(''):'<span class="small muted">Nenhum nome ainda.</span>'}
+$('cfgEquipe').addEventListener('click',e=>{const b=e.target.closest('[data-rm]');if(b){EQ.splice(+b.dataset.rm,1);renderEq()}});
+$('cfgAdd').onclick=()=>{const n=$('cfgNome').value.trim();if(n&&!EQ.includes(n))EQ.push(n);$('cfgNome').value='';renderEq()};
+$('cfgNome').addEventListener('keydown',e=>{if(e.key==='Enter')$('cfgAdd').click()});
+$('cfgSalvar').onclick=async()=>{const config={equipe:EQ,cega:$('cfgCega').checked,fator:Math.max(1.5,parseFloat(String($('cfgFator').value).replace(',','.'))||5),minimo:Math.max(1,parseInt($('cfgMin').value)||15)};
+  let j;try{j=await postPl({acao:'salvarConfig',config})}catch(e){toast('Sem internet','bad');return}if(!j.ok)return erroPl(j);aplicarCfg(config);toast('Ajustes salvos. Os celulares pegam ao abrir o app.','ok')};
 $('btnNuvem').onclick=async()=>{let senha='';try{senha=localStorage.getItem('contagem-senha-gerente')||''}catch(e){}
   if(!senha){senha=(prompt('Senha do gerente (a mesma que está no script da planilha):')||'').trim();if(!senha)return}
   const loja=$('cfLoja').value;toast('Buscando na planilha…');
