@@ -306,6 +306,50 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
 .cega #pNums{grid-template-columns:1fr}.cega #recentes .li,.cega #cLista .li{--c:var(--line2)!important}
 .hi{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.hi small{color:var(--muted);grid-column:1/-1}
 @media(min-width:900px){body.largo .app{max-width:1000px}}
+/* ---------- painel do gerente ---------- */
+body.adm .hero,body.adm nav.tabs,body.adm #rodape{display:none!important}
+body.adm main{padding:0 0 32px;gap:0}
+@media(min-width:900px){body.adm .app{max-width:1180px}}
+.admbar{position:sticky;top:0;z-index:20;background:#0F172A;color:#fff;padding:12px 16px 0;display:flex;flex-direction:column;gap:10px}
+.admrow{display:flex;align-items:center;gap:12px}
+.admback,.admsair{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;border-radius:10px;padding:8px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.admbrand{flex:1;display:flex;align-items:center;gap:10px;min-width:0}.admbrand small{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:700}.admbrand b{font-size:17px}
+.admlogo{width:36px;height:36px;border-radius:10px;background:var(--blue2);display:grid;place-items:center;flex:none}.admlogo svg{width:20px;height:20px}.admlogo.big{width:56px;height:56px;border-radius:16px}.admlogo.big svg{width:30px;height:30px}
+.admtopo{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 18px}
+.admloja{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.6);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.admloja select{background:#1E293B;color:#fff;border:1px solid #334155;border-radius:10px;padding:8px 12px;font-size:15px;font-weight:700;width:auto;min-width:180px;text-transform:none;letter-spacing:0}
+.admnav{display:flex;gap:4px;margin-left:auto}
+.admnav button{background:none;border:0;color:rgba(255,255,255,.65);font:inherit;font-size:14px;font-weight:600;padding:10px 14px;border-bottom:3px solid transparent;cursor:pointer}
+.admnav button.on{color:#fff;border-bottom-color:#60A5FA}
+.admbody{padding:18px 16px;display:flex;flex-direction:column;gap:16px}
+.admsec{display:flex;flex-direction:column;gap:16px}
+.admlogin{margin:40px auto;max-width:360px;width:calc(100% - 32px);background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh2);padding:28px 22px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.admlogin input{text-align:center;font-size:18px}.admlogin .btn{width:100%}
+.kpis4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kpi4{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:4px;min-width:0}
+.kpi4 .l{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.kpi4 .v{font-size:24px;font-weight:700;color:var(--ink);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi4 .s{font-size:12.5px;color:var(--muted)}
+.kpi4 .bar{height:6px;background:var(--soft);border-radius:99px;overflow:hidden;margin-top:4px}.kpi4 .bar i{display:block;height:100%;background:var(--blue2);border-radius:99px}
+.admgrid{display:grid;grid-template-columns:1fr;gap:12px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--sh);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}
+.tile.prim{border-color:color-mix(in srgb,var(--blue2) 40%,var(--line));background:linear-gradient(180deg,#F5F9FF,#fff)}
+.tile .ti{width:40px;height:40px;border-radius:10px;background:var(--soft);display:grid;place-items:center;font-size:20px}
+.tt2{display:flex;flex-direction:column;gap:2px;min-width:0}.tt2 b{font-size:15px}.tt2 span{font-size:13px;color:var(--muted)}
+.tile .btn{white-space:nowrap;padding:10px 14px;font-size:14px}
+.admcard{gap:12px}.admh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}.admh b{font-size:15px}
+.atbl td,.atbl th{padding:10px 12px}.atbl tbody tr:hover{background:var(--soft2)}.atbl .num{font-variant-numeric:tabular-nums}
+.dpos{color:var(--green);font-weight:700}.dneg{color:var(--red2);font-weight:700}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:99px}
+.st.fin{background:var(--green-l);color:var(--green)}.st.and{background:var(--blue-l);color:var(--blue)}
+.admset{display:grid;grid-template-columns:1fr;gap:12px}.admset>div:first-child{display:flex;flex-direction:column;gap:4px}
+.admctl{display:flex;flex-direction:column;gap:10px}
+.admsalvar{display:flex;justify-content:flex-end}
+.sw{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-weight:600}.sw input{display:none}
+.sw i{width:44px;height:26px;border-radius:99px;background:var(--line);position:relative;transition:.2s;flex:none}.sw i::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.2s}
+.sw input:checked+i{background:var(--blue2)}.sw input:checked+i::after{left:21px}
+@media(min-width:900px){.kpis4{grid-template-columns:repeat(4,minmax(0,1fr))}.admgrid{grid-template-columns:1fr 1fr}.admset{grid-template-columns:300px 1fr;align-items:start}.admbody{padding:24px}.admbar{padding:14px 24px 0}}
+@media(max-width:899px){.admnav{margin-left:0;width:100%}.admnav button{flex:1;padding:10px 6px}.admloja{width:100%}.admloja select{flex:1}.admback{padding:8px 10px}.tile{grid-template-columns:auto 1fr}.tile .btn{grid-column:1/-1}.admbrand small,.admback .lg{display:none}.kpi4 .v{font-size:20px;white-space:normal}.admbrand b{font-size:16px}}
 </style>
 </head>
 <body>
@@ -453,25 +497,34 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
 
 <!-- ============ CONFERIR ============ -->
 <section id="v-conferir" hidden>
-  <div class="row" style="align-items:center"><button class="btn sm ghost" id="cfVoltar" type="button">← Voltar</button><b style="flex:1;text-align:center;font-size:16px">👔 Painel do gerente</b><button class="btn sm ghost" id="admSair" type="button" hidden>Sair</button></div>
-  <div class="card" id="admLogin" hidden style="align-items:center;text-align:center">
-    <div style="font-size:40px">🔒</div><b>Só para o gerente</b>
-    <input id="admSenha" type="password" placeholder="Senha do gerente" autocomplete="current-password" style="width:100%;text-align:center;font-size:18px">
-    <button class="btn pri big" id="admEntrar" type="button" style="width:100%">Entrar</button>
-  </div>
-  <div id="admTudo" style="display:flex;flex-direction:column;gap:14px">
-  <div id="admTopo" hidden style="display:flex;flex-direction:column;gap:10px">
-    <select id="cfLoja" aria-label="Loja" style="width:100%;font-size:17px;font-weight:700"></select>
-    <div class="seg" id="admTabs"><button class="btn on" data-t="acoes" type="button">⚡ Ações</button><button class="btn" data-t="hist" type="button">🕘 Histórico</button><button class="btn" data-t="cfg" type="button">⚙️ Ajustes</button></div>
-  </div>
-  <div id="admAcoes" style="display:flex;flex-direction:column;gap:14px">
-  <div class="card">
-    <div class="small" id="admStatus"></div>
-    <div id="cfNuvem" hidden style="display:flex;flex-direction:column;gap:10px">
-      <button class="btn pri big" id="btnNuvem" type="button">☁️ Buscar contagens e comparar</button>
-      <div class="grid2"><button class="btn" id="btnNovaContagem" type="button">🔁 Contagem nova</button><button class="btn" id="btnReabrirLoja" type="button">🔓 Reabrir</button></div>
-      <button class="btn" id="btnPedirEstoque" type="button">🔄 Atualizar o estoque do sistema agora</button><div class="small muted" id="estoqueInfo"></div>
+  <header class="admbar">
+    <div class="admrow">
+      <button class="admback" id="cfVoltar" type="button">←<span class="lg"> Voltar ao app</span></button>
+      <div class="admbrand"><span class="admlogo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 6v12M7 6v12M10 6v12M14 6v12M16.5 6v12M20 6v12"/></svg></span><div><small>Cervantes · Estoque</small><b>Painel do gerente</b></div></div>
+      <button class="admsair" id="admSair" type="button" hidden>Sair</button>
     </div>
+    <div class="admtopo" id="admTopo" hidden>
+      <label class="admloja"><span>Loja</span><select id="cfLoja" aria-label="Loja"></select></label>
+      <nav class="admnav" id="admTabs"><button class="on" data-t="acoes" type="button">Visão geral</button><button data-t="hist" type="button">Histórico</button><button data-t="cfg" type="button">Ajustes</button></nav>
+    </div>
+  </header>
+  <div class="admlogin" id="admLogin" hidden>
+    <div class="admlogo big"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 6v12M7 6v12M10 6v12M14 6v12M16.5 6v12M20 6v12"/></svg></div>
+    <b>Painel do gerente</b><span class="muted small">Acesso restrito. Digite a senha do gerente.</span>
+    <input id="admSenha" type="password" placeholder="Senha" autocomplete="current-password">
+    <button class="btn pri big" id="admEntrar" type="button">Entrar</button>
+  </div>
+  <div id="admTudo" class="admbody">
+  <div id="admAcoes" class="admsec">
+    <div class="kpis4" id="admKpis"></div>
+    <div id="cfNuvem" hidden class="admgrid">
+      <div class="tile prim"><div class="ti">📊</div><div class="tt2"><b>Comparar com o sistema</b><span>Junta o que toda a equipe contou e mostra diferenças, relatório e arquivo do OM.</span></div><button class="btn pri" id="btnNuvem" type="button">Comparar agora</button></div>
+      <div class="tile"><div class="ti">🔄</div><div class="tt2"><b>Estoque do sistema</b><span id="estoqueInfo">—</span></div><button class="btn" id="btnPedirEstoque" type="button">Atualizar agora</button></div>
+      <div class="tile"><div class="ti">🔁</div><div class="tt2"><b>Contagem nova</b><span>Começa do zero em todos os celulares. A atual fica guardada no histórico.</span></div><button class="btn" id="btnNovaContagem" type="button">Começar nova</button></div>
+      <div class="tile"><div class="ti">🔓</div><div class="tt2"><b>Reabrir contagem</b><span>Destrava quem finalizou, pra continuar a mesma contagem.</span></div><button class="btn" id="btnReabrirLoja" type="button">Reabrir</button></div>
+    </div>
+    <div class="card admcard"><div class="admh"><b>Equipe nesta contagem</b><span class="muted small" id="admAtual"></span></div><div id="admStatus"></div></div>
+    <div class="card admcard">
     <details id="cfManual"><summary class="small" style="cursor:pointer;font-weight:600;padding:4px 0">📂 Juntar por arquivo ou texto (WhatsApp/Excel)</summary><div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
     <div class="grid2">
       <button class="btn" id="btnArq" type="button">📂 Abrir arquivos Excel</button>
@@ -480,8 +533,7 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
     <input id="arq" type="file" accept=".xlsx,.xls,.csv,.txt" multiple hidden>
     <textarea id="txtJuntar" placeholder="Ou cole aqui os textos (CONTAGEM|...)"></textarea>
     <button class="btn pri big" id="btnJuntar" type="button">Comparar com o estoque do sistema</button></div></details>
-    <div class="small muted" id="juntarInfo"></div>
-  </div>
+    <div class="small muted" id="juntarInfo"></div></div>
   <div id="cmpOut" hidden style="display:flex;flex-direction:column;gap:14px">
     <div class="stats" id="cmpStats"></div>
     <button class="scanbtn" id="btnRel" type="button"><span class="bi" style="font-size:24px">📊</span><span><b>Relatório para a direção</b><span>Taxa de erro, cobertura, grupos e equipe · salva em PDF</span></span></button>
@@ -499,18 +551,20 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
     <div class="card" style="padding:4px 16px"><div class="list" id="tbody"></div></div>
   </div>
   </div>
-  <div id="admHist" hidden style="display:flex;flex-direction:column;gap:14px">
-    <div class="card"><div class="sh"><div class="ic" style="--c:var(--indigo)">🗂️</div><div class="tt"><div class="ttl">Contagens anteriores</div><div class="sub">As que foram guardadas quando começou uma contagem nova</div></div></div><div class="list" id="histLista"></div></div>
-    <div class="card"><div class="sh"><div class="ic" style="--c:var(--teal)">📜</div><div class="tt"><div class="ttl">Registro de mudanças</div><div class="sub">Últimas 300 mudanças desta loja: quem, quando, antes → depois</div></div></div>
-      <input id="regFiltro" placeholder="Filtrar por pessoa ou produto"><div class="list" id="regLista"></div></div>
+  <div id="admHist" hidden class="admsec">
+    <div class="card admcard"><div class="admh"><b>Contagens anteriores</b><span class="muted small">Guardadas quando começou uma contagem nova</span></div><div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Período</th><th>Quem contou</th><th class="n">Itens</th><th></th></tr></thead><tbody id="histLista"></tbody></table></div></div>
+    <div class="card admcard"><div class="admh"><b>Registro de mudanças</b><span class="muted small">Últimas 300 desta loja</span></div>
+      <input id="regFiltro" placeholder="Filtrar por pessoa ou produto">
+      <div class="tblwrap"><table class="tbl atbl"><thead><tr><th>Quando</th><th>Pessoa</th><th>Produto</th><th class="n">Antes</th><th class="n">Depois</th><th class="n">Dif.</th></tr></thead><tbody id="regLista"></tbody></table></div></div>
   </div>
-  <div id="admCfg" hidden style="display:flex;flex-direction:column;gap:14px">
-    <div class="card"><div class="ttl">👥 Equipe</div><div class="small muted">Esses nomes aparecem pra escolher em todos os celulares.</div>
-      <div class="chips" id="cfgEquipe"></div><div class="row"><input id="cfgNome" placeholder="Nome"><button class="btn" id="cfgAdd" type="button">Adicionar</button></div></div>
-    <div class="card"><label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer"><input type="checkbox" id="cfgCega" style="width:24px;height:24px;flex:none;margin-top:2px"><span><b>🙈 Contagem cega</b><br><span class="small muted">Quem conta não vê quanto o sistema tem nem se "bateu". Evita só confirmar o número do sistema. O painel do gerente continua vendo tudo.</span></span></label></div>
-    <div class="card"><div class="ttl">⚠️ Aviso de contagem estranha</div><div class="small muted">Pergunta "confere?" quando a contagem fica muito longe do sistema.</div>
-      <div class="ajrow"><label>Vezes maior ou menor<input id="cfgFator" inputmode="decimal"></label><label>Diferença mínima<input id="cfgMin" inputmode="numeric"></label></div></div>
-    <button class="btn pri big" id="cfgSalvar" type="button">💾 Salvar ajustes</button>
+  <div id="admCfg" hidden class="admsec">
+    <div class="card admcard admset"><div><b>Equipe</b><span class="muted small">Nomes que aparecem pra escolher em todos os celulares.</span></div>
+      <div class="admctl"><div class="chips" id="cfgEquipe"></div><div class="row"><input id="cfgNome" placeholder="Nome da pessoa"><button class="btn" id="cfgAdd" type="button">Adicionar</button></div></div></div>
+    <div class="card admcard admset"><div><b>Contagem cega</b><span class="muted small">Quem conta não vê quanto o sistema tem nem se "bateu". O painel continua vendo tudo.</span></div>
+      <div class="admctl"><label class="sw"><input type="checkbox" id="cfgCega"><i></i><span>Ativar contagem cega</span></label></div></div>
+    <div class="card admcard admset"><div><b>Aviso de contagem estranha</b><span class="muted small">Pergunta "confere?" quando a contagem fica muito longe do sistema.</span></div>
+      <div class="admctl"><div class="ajrow"><label>Vezes maior ou menor<input id="cfgFator" inputmode="decimal"></label><label>Diferença mínima<input id="cfgMin" inputmode="numeric"></label></div></div></div>
+    <div class="admsalvar"><button class="btn pri" id="cfgSalvar" type="button">Salvar ajustes</button></div>
   </div>
   </div>
 </section>
@@ -655,7 +709,7 @@ function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='con
   $('hStats').style.display=(v==='relatorio'||v==='contados')?'none':'';$('hProg').style.display=v==='contar'?'':'none';
   $('rodape').style.display=v==='inicio'?'none':'';
   if(v!=='contar')pararCamera();
-  if(v==='contados'){renderContados();buscarOutros(true)}if(v==='conferir')painel();document.body.classList.toggle('largo',v==='conferir'||v==='relatorio');if(v==='inicio')renderLojas();if(v==='contar'){renderRecentes();const t=fechada();$('v-contar').classList.toggle('trancada',t);$('lockCard').hidden=!t;if(t)$('lockInfo').textContent=`${nl(S.loja)} foi finalizada em ${new Date(S.finalizadas[S.loja]).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}. Ninguém altera mais nada.`;buscarOutros(true)}
+  if(v==='contados'){renderContados();buscarOutros(true)}if(v==='conferir')painel();document.body.classList.toggle('largo',v==='relatorio');document.body.classList.toggle('adm',v==='conferir');if(v==='inicio')renderLojas();if(v==='contar'){renderRecentes();const t=fechada();$('v-contar').classList.toggle('trancada',t);$('lockCard').hidden=!t;if(t)$('lockInfo').textContent=`${nl(S.loja)} foi finalizada em ${new Date(S.finalizadas[S.loja]).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}. Ninguém altera mais nada.`;buscarOutros(true)}
   const mn=document.querySelector('main');if(mn)mn.scrollTop=0}
 VIEWS.forEach(k=>{const n=$('n-'+k);if(n)n.onclick=()=>view(k)});
 $('btnGerente').onclick=()=>view('conferir');$('cfVoltar').onclick=()=>view('inicio');
@@ -1025,7 +1079,7 @@ const senhaGer=()=>{try{return localStorage.getItem('contagem-senha-gerente')||'
 const getPl=q=>fetch(PLANILHA+'?'+q).then(r=>r.json());
 function postPl(o){return fetch(PLANILHA,{method:'POST',body:JSON.stringify(Object.assign({senha:senhaGer()},o))}).then(r=>r.text()).then(t=>{try{return JSON.parse(t)}catch(e){return{ok:false,erro:'planilha'}}})}
 function erroPl(j){if(j.erro==='senha'){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}toast('Senha errada. Entre de novo.','bad');painel()}else toast('A planilha deu erro','bad')}
-function painel(){const precisa=PLANILHA&&!senhaGer();$('admLogin').hidden=!precisa;$('admTudo').hidden=precisa;$('admSair').hidden=!PLANILHA||precisa;if(!precisa&&PLANILHA)admStatus()}
+function painel(){const precisa=PLANILHA&&!senhaGer();$('admLogin').hidden=!precisa;$('admTudo').hidden=precisa;$('admSair').hidden=!PLANILHA||precisa;$('admTopo').hidden=!PLANILHA||precisa;if(!precisa&&PLANILHA)admStatus()}
 $('admEntrar').onclick=async()=>{const s=$('admSenha').value.trim();if(!s)return;
   try{const j=await getPl('senha='+encodeURIComponent(s));if(!j.ok){toast('Senha errada','bad');return}}catch(e){toast('Sem internet','bad');return}
   try{localStorage.setItem('contagem-senha-gerente',s)}catch(e){}$('admSenha').value='';painel()};
@@ -1035,23 +1089,32 @@ $('admTabs').addEventListener('click',e=>{const b=e.target.closest('[data-t]');i
 function admAba(t){[...$('admTabs').children].forEach(x=>x.classList.toggle('on',x.dataset.t===t));$('admAcoes').hidden=t!=='acoes';$('admHist').hidden=t!=='hist';$('admCfg').hidden=t!=='cfg';
   if(t==='hist')admHist();if(t==='cfg')admCfg();if(t==='acoes')admStatus()}
 $('cfLoja').addEventListener('change',()=>{$('cmpOut').hidden=true;const t=[...$('admTabs').children].find(x=>x.classList.contains('on')).dataset.t;admAba(t)});
-async function admStatus(){const el=$('admStatus'),loja=$('cfLoja').value;if(!PLANILHA||!loja)return;el.textContent='Carregando…';
+async function admStatus(){const loja=$('cfLoja').value;if(!PLANILHA||!loja)return;
+  $('estoqueInfo').textContent=D?'Versão no app: '+D.gerado:'—';
+  const kp=(l,v,sub,bar)=>`<div class="kpi4"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${sub||'&nbsp;'}</div>${bar!=null?`<div class="bar"><i style="width:${Math.min(100,bar)}%"></i></div>`:''}</div>`;
+  $('admStatus').innerHTML='<div class="empty">Carregando…</div>';
   try{const j=await getPl('acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja));if(!j.ok)throw 0;
-    const p=new Map(),fin=new Set();j.rows.forEach(([c,nome,ap,q,f])=>{p.set(nome,(p.get(nome)||0)+1);if(f)fin.add(nome)});
-    const dt=j.rodada?new Date(j.rodada).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
-    el.innerHTML=(dt?`📅 Contagem atual começou ${dt}<br>`:'')+(p.size?`👥 ${[...p].map(([n,k])=>`<b>${esc(n||'sem nome')}</b> ${k} itens${fin.has(n)?' ✅':''}`).join(' · ')}`:'Ninguém mandou contagem desta loja ainda.')+(fin.size?'<br><span class="muted">✅ = finalizou</span>':'')}
-  catch(e){el.textContent='Sem internet pra ver a situação da loja.'}}
+    const pes=new Map(),cods=new Set();j.rows.forEach(([c,nome,ap,q,f,t])=>{cods.add(c);const o=pes.get(nome)||{n:0,fin:true,t:0};o.n++;o.fin=o.fin&&!!f;o.t=Math.max(o.t,t||0);pes.set(nome,o)});
+    const st=ESTQ[loja]||new Map();let pos=0,cob=0;for(const [c,x] of st)if(x.q>0){pos++;if(cods.has(c))cob++}const pc=pos?cob/pos*100:0;
+    const fins=[...pes.values()].filter(o=>o.fin).length,dt=t=>new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    const ult=Math.max(0,...[...pes.values()].map(o=>o.t));
+    $('admAtual').textContent=j.rodada?'Contagem iniciada em '+dt(j.rodada):'';
+    $('admKpis').innerHTML=kp('Situação',!pes.size?'Sem contagem':fins===pes.size?'Finalizada':'Em andamento',ult?'Última atividade '+dt(ult):'Ninguém enviou ainda')+
+      kp('Produtos contados',cods.size.toLocaleString('pt-BR'),'pela equipe toda')+kp('Cobertura',pc.toFixed(0)+'%',`${cob.toLocaleString('pt-BR')} de ${pos.toLocaleString('pt-BR')} com estoque`,pc)+
+      kp('Equipe',pes.size+(pes.size===1?' pessoa':' pessoas'),fins?`${fins} finalizou${fins>1?'ram':''}`:'');
+    $('admStatus').innerHTML=pes.size?`<div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Pessoa</th><th class="n">Itens</th><th>Situação</th><th class="n">Última atividade</th></tr></thead><tbody>${[...pes].sort((a,b)=>b[1].n-a[1].n).map(([n,o])=>`<tr><td><b>${esc(n||'sem nome')}</b></td><td class="n num">${o.n.toLocaleString('pt-BR')}</td><td>${o.fin?'<span class="st fin">✓ Finalizou</span>':'<span class="st and">● Contando</span>'}</td><td class="n">${o.t?dt(o.t):'—'}</td></tr>`).join('')}</tbody></table></div>`:vazio('👥','Ninguém mandou contagem desta loja ainda.')}
+  catch(e){$('admKpis').innerHTML='';$('admStatus').innerHTML=vazio('📡','Sem internet pra ver a situação da loja.')}}
 $('btnReabrirLoja').onclick=()=>{const loja=$('cfLoja').value;confirmar('Reabrir a contagem?',`Destrava ${nl(loja)} em todos os celulares que finalizaram, pra continuarem a MESMA contagem (somando). Pra começar do zero, use "Contagem nova".`,'Reabrir',async()=>{
   let j;try{j=await postPl({acao:'reabrirLoja',loja})}catch(e){toast('Sem internet','bad');return}if(!j.ok)return erroPl(j);
   if((S.finalizadas||{})[loja]){delete S.finalizadas[loja];save();header()}toast('Reaberta. Os celulares destravam em até 30 segundos.','ok')})};
 let HIST=[];
-async function admHist(){const loja=$('cfLoja').value;$('histLista').innerHTML='<div class="empty">Carregando…</div>';$('regLista').innerHTML='';
+async function admHist(){const loja=$('cfLoja').value;$('histLista').innerHTML='<tr><td colspan="4" class="empty">Carregando…</td></tr>';$('regLista').innerHTML='';
   try{const [h,r]=await Promise.all([getPl('acao=historico&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer())),getPl('acao=registro&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer()))]);
     if(!h.ok)return erroPl(h);const f=d=>new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
-    $('histLista').innerHTML=h.contagens.length?h.contagens.map(c=>`<div class="hi"><div><b>${c.inicio?f(c.inicio)+' → ':''}${f(c.quando)}</b><br><span class="muted">${Object.entries(c.pessoas).map(([n,k])=>esc(n)+' '+k).join(' · ')}</span></div><button class="btn sm pri" data-antiga="${esc(c.quando)}" type="button">📊 Ver</button></div>`).join(''):vazio('🗂️','Nenhuma contagem anterior guardada desta loja ainda.');
-    HIST=r.ok?r.rows:[];renderReg()}catch(e){$('histLista').innerHTML=vazio('📡','Sem internet.')}}
+    $('histLista').innerHTML=h.contagens.length?h.contagens.map(c=>`<tr><td><b>${c.inicio?f(c.inicio)+' → ':''}${f(c.quando)}</b></td><td>${Object.entries(c.pessoas).map(([n,k])=>esc(n)+' <span class="muted">('+k+')</span>').join(', ')}</td><td class="n num">${c.itens.toLocaleString('pt-BR')}</td><td class="n"><button class="btn sm" data-antiga="${esc(c.quando)}" type="button">Comparar</button></td></tr>`).join(''):`<tr><td colspan="4">${vazio('🗂️','Nenhuma contagem anterior ainda. Elas aparecem aqui quando você usa "Contagem nova".')}</td></tr>`;
+    HIST=r.ok?r.rows:[];renderReg()}catch(e){$('histLista').innerHTML=`<tr><td colspan="4">${vazio('📡','Sem internet.')}</td></tr>`}}
 function renderReg(){const q=norm($('regFiltro').value);const L=HIST.filter(r=>!q||norm(r[1]+' '+r[3]+' '+r[2]).includes(q));
-  $('regLista').innerHTML=L.length?L.slice(0,300).map(([t,nome,c,prod,a,d,dif])=>`<div class="hi"><div>${esc(prod||'')}${c!==''?` <span class="muted">#${c}</span>`:''}</div><div style="white-space:nowrap">${a!==''?`${fQ(+a)} → <b>${fQ(+d)}</b>`:''}</div><small>${new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})} · ${esc(nome)}</small></div>`).join(''):vazio('📜','Nada no registro.')}
+  $('regLista').innerHTML=L.length?L.slice(0,300).map(([t,nome,c,prod,a,d,dif])=>{const ev=a==='';return`<tr${ev?' style="background:var(--soft2)"':''}><td style="white-space:nowrap">${new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td><td>${esc(nome)}</td><td>${ev?'<b>'+esc(prod||'')+'</b>':esc(prod||'')+(c!==''?` <span class="muted">#${c}</span>`:'')}</td><td class="n num">${ev?'':fQ(+a)}</td><td class="n num">${ev?'':'<b>'+fQ(+d)+'</b>'}</td><td class="n num ${ev?'':+dif>0?'dpos':+dif<0?'dneg':''}">${ev?'':(+dif>0?'+':'')+fQ(+dif)}</td></tr>`}).join(''):`<tr><td colspan="6">${vazio('📜','Nada no registro desta loja ainda.')}</td></tr>`}
 $('regFiltro').addEventListener('input',renderReg);
 $('histLista').addEventListener('click',async e=>{const b=e.target.closest('[data-antiga]');if(!b)return;const loja=$('cfLoja').value;toast('Buscando a contagem antiga…');
   try{const j=await getPl('acao=contagemAntiga&loja='+encodeURIComponent(loja)+'&quando='+encodeURIComponent(b.dataset.antiga)+'&senha='+encodeURIComponent(senhaGer()));if(!j.ok)return erroPl(j);
@@ -1061,7 +1124,7 @@ $('histLista').addEventListener('click',async e=>{const b=e.target.closest('[dat
 let EQ=[];
 async function admCfg(){try{const j=await getPl('acao=config&chave='+encodeURIComponent(CHAVE_ENVIO));if(j.ok)aplicarCfg(j.config)}catch(e){}
   EQ=[...(CFG.equipe||[])];$('cfgCega').checked=!!CFG.cega;$('cfgFator').value=CFG.fator||5;$('cfgMin').value=CFG.minimo||15;renderEq()}
-function renderEq(){$('cfgEquipe').innerHTML=EQ.length?EQ.map((n,i)=>`<button class="chip" data-rm="${i}" type="button">${esc(n)} ✕</button>`).join(''):'<span class="small muted">Nenhum nome ainda.</span>'}
+function renderEq(){$('cfgEquipe').innerHTML=EQ.length?EQ.map((n,i)=>`<span class="chip">${esc(n)} <button data-rm="${i}" type="button" aria-label="Remover ${esc(n)}" style="border:0;background:none;color:var(--muted);cursor:pointer;padding:0 0 0 4px">✕</button></span>`).join(''):'<span class="small muted">Nenhum nome ainda.</span>'}
 $('cfgEquipe').addEventListener('click',e=>{const b=e.target.closest('[data-rm]');if(b){EQ.splice(+b.dataset.rm,1);renderEq()}});
 $('cfgAdd').onclick=()=>{const n=$('cfgNome').value.trim();if(n&&!EQ.includes(n))EQ.push(n);$('cfgNome').value='';renderEq()};
 $('cfgNome').addEventListener('keydown',e=>{if(e.key==='Enter')$('cfgAdd').click()});
