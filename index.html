@@ -917,7 +917,9 @@ $('btnNuvem').onclick=async()=>{let senha='';try{senha=localStorage.getItem('con
   catch(e){toast('Sem internet ou a planilha está fora do ar','bad')}};
 $('btnPedirEstoque').onclick=()=>confirmar('Atualizar o estoque?','O estoque atual vai ser puxado do OM e publicado no app em poucos minutos. Atenção: se alguém estiver contando agora, as diferenças passam a ser calculadas com o estoque novo.','Atualizar',async()=>{
   let senha='';try{senha=localStorage.getItem('contagem-senha-gerente')||''}catch(e){}if(!senha){senha=(prompt('Senha do gerente:')||'').trim();if(!senha)return}
-  try{const j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({acao:'pedirEstoque',senha})}).then(r=>r.json());
+  let j;try{j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({acao:'pedirEstoque',senha})}).then(r=>r.text())}catch(e){toast('Sem internet','bad');return}
+  try{j=JSON.parse(j)}catch(e){toast('A planilha deu erro (veja as Execuções no Apps Script)','bad');return}
+  try{
     if(!j.ok){if(j.erro==='senha'){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}toast('Senha errada','bad')}else toast('A planilha deu erro','bad');return}
     try{localStorage.setItem('contagem-senha-gerente',senha)}catch(e){}$('estoqueInfo').textContent='✅ Pedido feito às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+(j.via==='github'?'. Em uns 3 minutos, feche e abra o app pra pegar o estoque novo.':'. O computador do escritório atualiza em até 10 minutos (precisa estar ligado).');toast('Pedido de atualização enviado','ok')}
   catch(e){toast('Sem internet','bad')}});
