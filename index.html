@@ -308,9 +308,11 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
 @media(min-width:900px){body.largo .app{max-width:1000px}}
 /* ---------- painel do gerente ---------- */
 body.adm .hero,body.adm nav.tabs,body.adm #rodape{display:none!important}
-body.adm main{padding:0 0 32px;gap:0}
-@media(min-width:900px){body.adm .app{max-width:1180px}}
-.admbar{position:sticky;top:0;z-index:20;background:#0F172A;color:#fff;padding:12px 16px 0;display:flex;flex-direction:column;gap:10px}
+body.adm main{padding:0 0 40px;gap:0}
+body.adm .app{max-width:none}
+.admwrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.admbody{max-width:1180px;width:100%;margin:0 auto}
+.admbar{position:sticky;top:0;z-index:20;background:#0F172A;color:#fff;padding:12px 16px 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
 .admrow{display:flex;align-items:center;gap:12px}
 .admback,.admsair{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;border-radius:10px;padding:8px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
 .admbrand{flex:1;display:flex;align-items:center;gap:10px;min-width:0}.admbrand small{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:700}.admbrand b{font-size:17px}
@@ -326,15 +328,16 @@ body.adm main{padding:0 0 32px;gap:0}
 .admlogin{margin:40px auto;max-width:360px;width:calc(100% - 32px);background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh2);padding:28px 22px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
 .admlogin input{text-align:center;font-size:18px}.admlogin .btn{width:100%}
 .kpis4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.kpi4{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:4px;min-width:0}
+.kpi4{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--sh);display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:4px;min-width:0;align-content:start}.kpi4>*:not(.ki){grid-column:1}.kpi4 .ki{grid-column:2;grid-row:1/3}
 .kpi4 .l{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .kpi4 .v{font-size:24px;font-weight:700;color:var(--ink);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kpi4 .s{font-size:12.5px;color:var(--muted)}
 .kpi4 .bar{height:6px;background:var(--soft);border-radius:99px;overflow:hidden;margin-top:4px}.kpi4 .bar i{display:block;height:100%;background:var(--blue2);border-radius:99px}
 .admgrid{display:grid;grid-template-columns:1fr;gap:12px}
 .tile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--sh);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}
-.tile.prim{border-color:color-mix(in srgb,var(--blue2) 40%,var(--line));background:linear-gradient(180deg,#F5F9FF,#fff)}
-.tile .ti{width:40px;height:40px;border-radius:10px;background:var(--soft);display:grid;place-items:center;font-size:20px}
+.tile.prim{border-color:color-mix(in srgb,var(--blue2) 45%,var(--line));box-shadow:0 0 0 3px color-mix(in srgb,var(--blue2) 8%,transparent),var(--sh)}
+.tile{transition:box-shadow .15s,border-color .15s}.tile:hover{border-color:color-mix(in srgb,var(--c,#94A3B8) 35%,var(--line))}
+.tile .ti,.kpi4 .ki{width:40px;height:40px;border-radius:10px;background:color-mix(in srgb,var(--c) 12%,#fff);color:var(--c);display:grid;place-items:center;flex:none}.tile .ti svg,.kpi4 .ki svg{width:20px;height:20px}
 .tt2{display:flex;flex-direction:column;gap:2px;min-width:0}.tt2 b{font-size:15px}.tt2 span{font-size:13px;color:var(--muted)}
 .tile .btn{white-space:nowrap;padding:10px 14px;font-size:14px}
 .admcard{gap:12px}.admh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}.admh b{font-size:15px}
@@ -349,7 +352,13 @@ body.adm main{padding:0 0 32px;gap:0}
 .sw i{width:44px;height:26px;border-radius:99px;background:var(--line);position:relative;transition:.2s;flex:none}.sw i::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.2s}
 .sw input:checked+i{background:var(--blue2)}.sw input:checked+i::after{left:21px}
 @media(min-width:900px){.kpis4{grid-template-columns:repeat(4,minmax(0,1fr))}.admgrid{grid-template-columns:1fr 1fr}.admset{grid-template-columns:300px 1fr;align-items:start}.admbody{padding:24px}.admbar{padding:14px 24px 0}}
-@media(max-width:899px){.admnav{margin-left:0;width:100%}.admnav button{flex:1;padding:10px 6px}.admloja{width:100%}.admloja select{flex:1}.admback{padding:8px 10px}.tile{grid-template-columns:auto 1fr}.tile .btn{grid-column:1/-1}.admbrand small,.admback .lg{display:none}.kpi4 .v{font-size:20px;white-space:normal}.admbrand b{font-size:16px}}
+@media(max-width:899px){.admnav{margin-left:0;width:100%}.admnav button{flex:1;padding:10px 6px}.admloja{width:100%}.admloja select{flex:1}.admback{padding:8px 10px}.tile{grid-template-columns:auto 1fr}.tile .btn{grid-column:1/-1}.admbrand small,.admback .lg{display:none}.kpi4 .v{font-size:19px;white-space:normal;overflow:visible}.kpi4 .ki{display:none}.kpi4{grid-template-columns:1fr;padding:14px}.admbrand b{font-size:16px}}
+.admlbl{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:6px 2px -6px}
+.admmanual summary{list-style:none;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--blue);padding:6px 2px}
+.admmanual summary::-webkit-details-marker{display:none}.admmanual summary svg{width:16px;height:16px}
+.admmanual details[open]{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;box-shadow:var(--sh)}
+.sk{display:block;height:14px;border-radius:6px;background:linear-gradient(90deg,var(--soft) 25%,#E8EEF5 50%,var(--soft) 75%);background-size:200% 100%;animation:sk 1.2s infinite}@keyframes sk{to{background-position:-200% 0}}
+.vazio2{display:flex;flex-direction:column;align-items:center;gap:6px;padding:26px 8px;color:var(--muted);font-size:14px;text-align:center}.vazio2 svg{width:28px;height:28px;color:var(--muted2)}
 </style>
 </head>
 <body>
@@ -497,7 +506,7 @@ body.adm main{padding:0 0 32px;gap:0}
 
 <!-- ============ CONFERIR ============ -->
 <section id="v-conferir" hidden>
-  <header class="admbar">
+  <header class="admbar"><div class="admwrap">
     <div class="admrow">
       <button class="admback" id="cfVoltar" type="button">←<span class="lg"> Voltar ao app</span></button>
       <div class="admbrand"><span class="admlogo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 6v12M7 6v12M10 6v12M14 6v12M16.5 6v12M20 6v12"/></svg></span><div><small>Cervantes · Estoque</small><b>Painel do gerente</b></div></div>
@@ -507,7 +516,7 @@ body.adm main{padding:0 0 32px;gap:0}
       <label class="admloja"><span>Loja</span><select id="cfLoja" aria-label="Loja"></select></label>
       <nav class="admnav" id="admTabs"><button class="on" data-t="acoes" type="button">Visão geral</button><button data-t="hist" type="button">Histórico</button><button data-t="cfg" type="button">Ajustes</button></nav>
     </div>
-  </header>
+  </div></header>
   <div class="admlogin" id="admLogin" hidden>
     <div class="admlogo big"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 6v12M7 6v12M10 6v12M14 6v12M16.5 6v12M20 6v12"/></svg></div>
     <b>Painel do gerente</b><span class="muted small">Acesso restrito. Digite a senha do gerente.</span>
@@ -517,15 +526,17 @@ body.adm main{padding:0 0 32px;gap:0}
   <div id="admTudo" class="admbody">
   <div id="admAcoes" class="admsec">
     <div class="kpis4" id="admKpis"></div>
+    <div class="admlbl">Ações</div>
     <div id="cfNuvem" hidden class="admgrid">
-      <div class="tile prim"><div class="ti">📊</div><div class="tt2"><b>Comparar com o sistema</b><span>Junta o que toda a equipe contou e mostra diferenças, relatório e arquivo do OM.</span></div><button class="btn pri" id="btnNuvem" type="button">Comparar agora</button></div>
-      <div class="tile"><div class="ti">🔄</div><div class="tt2"><b>Estoque do sistema</b><span id="estoqueInfo">—</span></div><button class="btn" id="btnPedirEstoque" type="button">Atualizar agora</button></div>
-      <div class="tile"><div class="ti">🔁</div><div class="tt2"><b>Contagem nova</b><span>Começa do zero em todos os celulares. A atual fica guardada no histórico.</span></div><button class="btn" id="btnNovaContagem" type="button">Começar nova</button></div>
-      <div class="tile"><div class="ti">🔓</div><div class="tt2"><b>Reabrir contagem</b><span>Destrava quem finalizou, pra continuar a mesma contagem.</span></div><button class="btn" id="btnReabrirLoja" type="button">Reabrir</button></div>
+      <div class="tile prim"><div class="ti" style="--c:#2563EB"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20v-6M2 20h20"/></svg></div><div class="tt2"><b>Comparar com o sistema</b><span>Junta o que toda a equipe contou e mostra diferenças, relatório e arquivo do OM.</span></div><button class="btn pri" id="btnNuvem" type="button">Comparar agora</button></div>
+      <div class="tile"><div class="ti" style="--c:#0D9488"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/></svg></div><div class="tt2"><b>Estoque do sistema</b><span id="estoqueInfo">—</span></div><button class="btn" id="btnPedirEstoque" type="button">Atualizar agora</button></div>
+      <div class="tile"><div class="ti" style="--c:#7C3AED"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 8v4l3 2"/></svg></div><div class="tt2"><b>Contagem nova</b><span>Começa do zero em todos os celulares. A atual fica guardada no histórico.</span></div><button class="btn" id="btnNovaContagem" type="button">Começar nova</button></div>
+      <div class="tile"><div class="ti" style="--c:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.7"/></svg></div><div class="tt2"><b>Reabrir contagem</b><span>Destrava quem finalizou, pra continuar a mesma contagem.</span></div><button class="btn" id="btnReabrirLoja" type="button">Reabrir</button></div>
     </div>
-    <div class="card admcard"><div class="admh"><b>Equipe nesta contagem</b><span class="muted small" id="admAtual"></span></div><div id="admStatus"></div></div>
-    <div class="card admcard">
-    <details id="cfManual"><summary class="small" style="cursor:pointer;font-weight:600;padding:4px 0">📂 Juntar por arquivo ou texto (WhatsApp/Excel)</summary><div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+    <div class="admlbl">Equipe</div>
+    <div class="card admcard"><div class="admh"><b>Quem está contando</b><span class="muted small" id="admAtual"></span></div><div id="admStatus"></div></div>
+    <div class="admmanual">
+    <details id="cfManual"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Juntar por arquivo ou texto (contagens recebidas por WhatsApp ou Excel)</summary><div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
     <div class="grid2">
       <button class="btn" id="btnArq" type="button">📂 Abrir arquivos Excel</button>
       <button class="btn" id="btnDeste" type="button">📱 Usar a deste celular</button>
@@ -1089,21 +1100,24 @@ $('admTabs').addEventListener('click',e=>{const b=e.target.closest('[data-t]');i
 function admAba(t){[...$('admTabs').children].forEach(x=>x.classList.toggle('on',x.dataset.t===t));$('admAcoes').hidden=t!=='acoes';$('admHist').hidden=t!=='hist';$('admCfg').hidden=t!=='cfg';
   if(t==='hist')admHist();if(t==='cfg')admCfg();if(t==='acoes')admStatus()}
 $('cfLoja').addEventListener('change',()=>{$('cmpOut').hidden=true;const t=[...$('admTabs').children].find(x=>x.classList.contains('on')).dataset.t;admAba(t)});
-async function admStatus(){const loja=$('cfLoja').value;if(!PLANILHA||!loja)return;
+let admSeq=0;
+async function admStatus(){const loja=$('cfLoja').value;if(!PLANILHA||!loja)return;const seq=++admSeq;
   $('estoqueInfo').textContent=D?'Versão no app: '+D.gerado:'—';
-  const kp=(l,v,sub,bar)=>`<div class="kpi4"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${sub||'&nbsp;'}</div>${bar!=null?`<div class="bar"><i style="width:${Math.min(100,bar)}%"></i></div>`:''}</div>`;
-  $('admStatus').innerHTML='<div class="empty">Carregando…</div>';
-  try{const j=await getPl('acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja));if(!j.ok)throw 0;
+  const KI={"Situação": ["#2563EB", "<path d=\"M3 12h4l3-8 4 16 3-8h4\"/>"], "Produtos contados": ["#0D9488", "<path d=\"M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8\"/>"], "Cobertura": ["#7C3AED", "<circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"1\"/>"], "Equipe": ["#D97706", "<circle cx=\"9\" cy=\"8\" r=\"3.5\"/><path d=\"M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6\"/>"]};
+  const kp=(l,v,sub,bar)=>`<div class="kpi4"><span class="ki" style="--c:${KI[l][0]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${KI[l][1]}</svg></span><div class="l">${l}</div><div class="v">${v}</div><div class="s">${sub||'&nbsp;'}</div>${bar!=null?`<div class="bar"><i style="width:${Math.min(100,bar)}%"></i></div>`:''}</div>`;
+  if(!$('admKpis').childElementCount)$('admKpis').innerHTML=Object.keys(KI).map(l=>`<div class="kpi4"><div class="l">${l}</div><span class="sk" style="width:60%;height:24px;margin:4px 0"></span><span class="sk" style="width:80%"></span></div>`).join('');
+  $('admStatus').innerHTML='<span class="sk" style="height:40px"></span>';
+  try{const j=await getPl('acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja));if(seq!==admSeq)return;if(!j.ok)throw 0;
     const pes=new Map(),cods=new Set();j.rows.forEach(([c,nome,ap,q,f,t])=>{cods.add(c);const o=pes.get(nome)||{n:0,fin:true,t:0};o.n++;o.fin=o.fin&&!!f;o.t=Math.max(o.t,t||0);pes.set(nome,o)});
     const st=ESTQ[loja]||new Map();let pos=0,cob=0;for(const [c,x] of st)if(x.q>0){pos++;if(cods.has(c))cob++}const pc=pos?cob/pos*100:0;
     const fins=[...pes.values()].filter(o=>o.fin).length,dt=t=>new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
     const ult=Math.max(0,...[...pes.values()].map(o=>o.t));
     $('admAtual').textContent=j.rodada?'Contagem iniciada em '+dt(j.rodada):'';
     $('admKpis').innerHTML=kp('Situação',!pes.size?'Sem contagem':fins===pes.size?'Finalizada':'Em andamento',ult?'Última atividade '+dt(ult):'Ninguém enviou ainda')+
-      kp('Produtos contados',cods.size.toLocaleString('pt-BR'),'pela equipe toda')+kp('Cobertura',pc.toFixed(0)+'%',`${cob.toLocaleString('pt-BR')} de ${pos.toLocaleString('pt-BR')} com estoque`,pc)+
-      kp('Equipe',pes.size+(pes.size===1?' pessoa':' pessoas'),fins?`${fins} finalizou${fins>1?'ram':''}`:'');
-    $('admStatus').innerHTML=pes.size?`<div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Pessoa</th><th class="n">Itens</th><th>Situação</th><th class="n">Última atividade</th></tr></thead><tbody>${[...pes].sort((a,b)=>b[1].n-a[1].n).map(([n,o])=>`<tr><td><b>${esc(n||'sem nome')}</b></td><td class="n num">${o.n.toLocaleString('pt-BR')}</td><td>${o.fin?'<span class="st fin">✓ Finalizou</span>':'<span class="st and">● Contando</span>'}</td><td class="n">${o.t?dt(o.t):'—'}</td></tr>`).join('')}</tbody></table></div>`:vazio('👥','Ninguém mandou contagem desta loja ainda.')}
-  catch(e){$('admKpis').innerHTML='';$('admStatus').innerHTML=vazio('📡','Sem internet pra ver a situação da loja.')}}
+      kp('Produtos contados',cods.size.toLocaleString('pt-BR'),'pela equipe toda')+kp('Cobertura',pc.toFixed(0)+'%',`${cob.toLocaleString('pt-BR')} de ${pos.toLocaleString('pt-BR')} com estoque`,pc>0?pc:null)+
+      kp('Equipe',pes.size?pes.size+(pes.size===1?' pessoa':' pessoas'):'—',fins?`${fins} finalizou${fins>1?'ram':''}`:pes.size?'ninguém finalizou ainda':'');
+    $('admStatus').innerHTML=pes.size?`<div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Pessoa</th><th class="n">Itens</th><th>Situação</th><th class="n">Última atividade</th></tr></thead><tbody>${[...pes].sort((a,b)=>b[1].n-a[1].n).map(([n,o])=>`<tr><td><b>${esc(n||'sem nome')}</b></td><td class="n num">${o.n.toLocaleString('pt-BR')}</td><td>${o.fin?'<span class="st fin">✓ Finalizou</span>':'<span class="st and">● Contando</span>'}</td><td class="n">${o.t?dt(o.t):'—'}</td></tr>`).join('')}</tbody></table></div>`:`<div class="vazio2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/></svg><b style="color:var(--ink2)">Ninguém contou esta loja ainda</b>Quando alguém começar a bipar, aparece aqui em até 30 segundos.</div>`}
+  catch(e){if(seq!==admSeq)return;$('admKpis').innerHTML='';$('admStatus').innerHTML='<div class="vazio2"><b style="color:var(--ink2)">Sem conexão com a planilha</b>Confira a internet e troque de aba pra tentar de novo.</div>'}}
 $('btnReabrirLoja').onclick=()=>{const loja=$('cfLoja').value;confirmar('Reabrir a contagem?',`Destrava ${nl(loja)} em todos os celulares que finalizaram, pra continuarem a MESMA contagem (somando). Pra começar do zero, use "Contagem nova".`,'Reabrir',async()=>{
   let j;try{j=await postPl({acao:'reabrirLoja',loja})}catch(e){toast('Sem internet','bad');return}if(!j.ok)return erroPl(j);
   if((S.finalizadas||{})[loja]){delete S.finalizadas[loja];save();header()}toast('Reaberta. Os celulares destravam em até 30 segundos.','ok')})};
