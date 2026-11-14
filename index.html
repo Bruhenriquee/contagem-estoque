@@ -297,6 +297,11 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
 .gfalta>summary .n{margin-left:auto;white-space:nowrap;flex:none;background:var(--soft);border-radius:99px;padding:2px 10px;font-size:13px;color:var(--ink2)}
 .gfalta>summary::after{content:'▾';color:var(--muted);transition:transform .15s}
 .gfalta[open]>summary::after{transform:rotate(180deg)}
+.aj{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.ajrow{display:flex;align-items:flex-end;gap:8px}.ajrow span{font-weight:700;padding-bottom:12px;color:var(--muted)}
+.ajrow label{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--ink2)}
+.ajrow input{width:100%;box-sizing:border-box;font-size:18px;text-align:center;padding:9px 6px}
+#modalTexto{white-space:pre-line}
 </style>
 </head>
 <body>
@@ -361,6 +366,8 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
     <input id="busca" inputmode="search" autocomplete="off" enterkeyhint="search" placeholder="Código, EAN ou nome do produto">
     <button class="go" id="btnBusca" type="button" aria-label="Buscar">OK</button>
   </div>
+  <button class="btn sm ghost" id="btnOcr" type="button" style="align-self:center">📝 Sem código de barras? Fotografe a etiqueta</button>
+  <input id="ocrIn" type="file" accept="image/*" capture="environment" hidden>
   <div class="results" id="results"></div>
 
   <div class="card prod" id="prodCard" hidden>
@@ -378,6 +385,17 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
       </div>
       <div class="cxinfo" id="cxInfo"></div>
       <div class="chips" id="quick"></div>
+      <div class="grid2"><button class="btn sm" id="ajPac" type="button">📦 Contar por pacote</button><button class="btn sm" id="ajPeso" type="button">⚖️ Contar na balança</button></div>
+      <div class="aj" id="boxPac" hidden>
+        <div class="ajrow"><label>Pacotes<input id="pacN" inputmode="numeric"></label><span>×</span><label>Peças em cada<input id="pacQ" inputmode="numeric"></label><span>+</span><label>Soltas<input id="pacS" inputmode="numeric"></label></div>
+        <button class="btn pri" id="pacOk" type="button" disabled>= 0 peças</button>
+      </div>
+      <div class="aj" id="boxPeso" hidden>
+        <div class="small" id="pesoDica">1) Pese algumas peças (sem o pote/saco) 2) Pese todas juntas. Use a mesma unidade nas duas (g ou kg).</div>
+        <div class="ajrow"><label>Peças na amostra<input id="amN" inputmode="numeric" value="10"></label><label>Peso da amostra<input id="amP" inputmode="decimal"></label></div>
+        <div class="ajrow"><label>Peso de tudo<input id="totP" inputmode="decimal"></label></div>
+        <button class="btn pri" id="pesoOk" type="button" disabled>= 0 peças</button>
+      </div>
     </div>
     <div class="row">
       <button class="btn" id="btnCancelar" type="button">Cancelar</button>
@@ -531,20 +549,21 @@ async function buscarOutros(forcar){if(!PLANILHA||!S.loja||navigator.onLine===fa
     const m=new Map(),eu=aparelho();j.rows.forEach(([c,nome,ap,q])=>{if(ap===eu||!q)return;if(!m.has(c))m.set(c,[]);const l=m.get(c),o=l.find(x=>x.nome===nome);o?o.q=r3(o.q+q):l.push({nome,q})});const sig=loja+JSON.stringify([...m]);OUTROS=m;outrosLoja=loja;if(sig!==outrosSig){outrosSig=sig;header();if(!$('v-contados').hidden)renderContados()}}catch(e){}}
 setInterval(()=>{if(!document.hidden&&(!$('v-contar').hidden||!$('v-contados').hidden))buscarOutros()},30000);
 // Nova contagem da loja (o gerente começou outra rodada): guarda o que este celular tinha de ANTES e segue só com o que é mais novo.
-function novaRodadaLocal(loja,rod){const ts=Date.parse(rod)||Date.now();S.rodada=S.rodada||{};if(S.rodada[loja]===rod)return;S.rodada[loja]=rod;
+function novaRodadaLocal(loja,rod,meu){const ts=Date.parse(rod)||Date.now();S.rodada=S.rodada||{};if(S.rodada[loja]===rod)return;S.rodada[loja]=rod;
   const L=S.L[loja]||[],velhos=L.filter(e=>e.t<ts);S.L[loja]=L.filter(e=>e.t>=ts);
   if(velhos.length){S.arq=S.arq||{};S.arq[loja]={ate:rod,L:velhos}}
-  const fin=(S.finalizadas||{})[loja]<ts;if(fin)delete S.finalizadas[loja];if((S.iniciadas||{})[loja]<ts)delete S.iniciadas[loja];
+  const fin=(S.finalizadas||{})[loja]<ts;if(fin)delete S.finalizadas[loja];S.iniciadas=S.iniciadas||{};if(!(S.iniciadas[loja]>=ts))S.iniciadas[loja]=ts;
   S.pend=S.pend||{};S.pend[loja]=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
   if(loja===S.loja){header();renderRecentes();if(!$('v-contar').hidden)view('contar');if(!$('v-contados').hidden)renderContados()}
-  if(velhos.length||fin)toast(`Começou uma nova contagem de ${nl(loja)}. A anterior ficou guardada.`,'ok');clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,2000)}
+  if(velhos.length||fin||meu){const ant=velhos.length?new Date(Math.min(...velhos.map(e=>e.t))).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'';
+    setTimeout(()=>{confirmar(`🆕 Contagem nova de ${nl(loja)}`,`A lista foi zerada e a contagem começa do zero agora (${dataContagem(loja,1)}).\n\nA contagem anterior${ant?' (de '+ant+')':''} NÃO foi apagada: ficou guardada${PLANILHA?' na aba "Arquivo" da planilha':''}.`,'▶️ Começar a contar',()=>{if(S.loja===loja)view('contar')});$('modalCancelar').textContent='Fechar'},300)}clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,2000)}
 async function novaContagem(loja){
   confirmar('Contar a loja de novo?',`Começa uma contagem nova de ${nl(loja)} do zero, em todos os celulares. A contagem anterior não se perde: fica guardada na aba "Arquivo" da planilha. Use quando for fazer outro inventário desta loja.`,'Começar nova',async()=>{
     let senha='';try{senha=localStorage.getItem('contagem-senha-gerente')||''}catch(e){}if(!senha){senha=(prompt('Senha do gerente:')||'').trim();if(!senha)return}
     let j;try{j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({acao:'novaContagem',loja,senha})}).then(r=>r.text())}catch(e){toast('Sem internet','bad');return}
     try{j=JSON.parse(j)}catch(e){toast('A planilha deu erro','bad');return}
     if(!j.ok){if(j.erro==='senha'){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}toast('Senha errada','bad')}else toast('A planilha deu erro','bad');return}
-    try{localStorage.setItem('contagem-senha-gerente',senha)}catch(e){}novaRodadaLocal(loja,j.rodada);toast(`Nova contagem de ${nl(loja)} começou`,'ok')})}
+    try{localStorage.setItem('contagem-senha-gerente',senha)}catch(e){}novaRodadaLocal(loja,j.rodada,true)})}
 function quemContou(c){return outrosLoja===S.loja?(OUTROS.get(c)||[]):[]}
 function aparelho(){try{let a=localStorage.getItem('contagem-aparelho');if(!a){a=Math.random().toString(36).slice(2,8);localStorage.setItem('contagem-aparelho',a)}return a}catch(e){return 'sem-id'}}
 function agendarEnvio(){if(!PLANILHA||!S.loja||!S.nome)return;S.pend=S.pend||{};if(!S.pend[S.loja]){S.pend[S.loja]=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}if(!pendDesde)pendDesde=Date.now();clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,Math.max(0,Math.min(15000,pendDesde+30000-Date.now())));syncUI()}
@@ -568,6 +587,8 @@ const PAL=['#1565C0','#0D9488','#4F46E5','#EA580C','#7C3AED','#D97706','#475569'
 const corLoja=(l,i)=>COR_LOJA[l]||PAL[(i||0)%PAL.length];
 const fechada=l=>!!(S.finalizadas||{})[l||S.loja];
 function trancado(){if(!fechada())return false;toast('Contagem finalizada. Só o gerente pode reabrir.','bad');return true}
+// data da contagem atual da loja (começo da rodada nova, ou quando começou a contar)
+function dataContagem(l,hora){const r=(S.rodada||{})[l],ts=r?Date.parse(r):(S.iniciadas||{})[l];if(!ts)return'';return new Date(ts).toLocaleString('pt-BR',hora?{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}:{day:'2-digit',month:'2-digit'})}
 function statusLoja(l){if((S.finalizadas||{})[l])return 'fin';if((S.iniciadas||{})[l])return 'and';return 'novo'}
 let modalCb=null;
 function fecharModal(){$('modalBack').hidden=true;modalCb=null;$('modalCancelar').textContent='Cancelar';$('modalInput').hidden=true}
@@ -602,7 +623,7 @@ $('btnGerente').onclick=()=>view('conferir');$('cfVoltar').onclick=()=>view('ini
 $('hLoja').onclick=()=>{trocaLoja=true;renderIniciar();if(!S.loja){view('inicio');return}
   confirmar('Trocar de loja?',`A contagem de ${nl(S.loja)} fica salva. Você vai escolher outra loja (ou voltar a ela depois).`,'Trocar',()=>view('inicio'))};
 function header(){$('hTitulo').textContent=S.loja?nl(S.loja):'Contagem de estoque';
-  const stj=S.loja?statusLoja(S.loja):null;const tagTxt=stj==='fin'?' · ✅ finalizada':stj==='and'?' · 🟢 em andamento':'';
+  const stj=S.loja?statusLoja(S.loja):null;const dc=dataContagem(S.loja||''),tagTxt=(stj==='fin'?' · ✅ finalizada':stj==='and'?' · 🟢 em andamento':'')+(dc&&stj!=='novo'?' · contagem de '+dc:'');
   $('hSub').textContent=S.loja?(S.nome||'Contagem de estoque')+tagTxt:'Escolha a loja para começar';
   $('hLoja').innerHTML=S.loja?'🏬 Trocar':'🏬 Loja';const n=totais().size;$('nBadge').textContent=n;$('nBadge').hidden=!n;
   const hs=$('hStats');if(!(D&&S.loja&&S.nome)){hs.hidden=true;$('hProg').hidden=true;return}
@@ -680,6 +701,29 @@ $('btnBusca').onclick=buscaEnter;
 let deb;$('busca').addEventListener('input',()=>{clearTimeout(deb);const q=$('busca').value;if(/^\d+$/.test(q.trim())){$('results').innerHTML='';return}deb=setTimeout(()=>{q.trim().length>=3?mostrar(buscar(q),q):($('results').innerHTML='')},250)});
 $('results').addEventListener('click',e=>{const b=e.target.closest('.res');if(b){$('results').innerHTML='';$('busca').value='';achou(P.get(+b.dataset.c))}});
 
+/* ---------- ler etiqueta (OCR) ----------
+   Só carrega o leitor quando a pessoa toca no botão: não mexe no leitor de código de barras. */
+let tessW=null;
+async function leitorTexto(){if(tessW)return tessW;
+  if(!window.Tesseract)await new Promise((ok,err)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';sc.onload=ok;sc.onerror=err;document.head.appendChild(sc)});
+  tessW=await Tesseract.createWorker('por');return tessW}
+function reduzirFoto(f){return new Promise((ok,err)=>{const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{const k=Math.min(1,1600/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*k);cv.height=Math.round(im.height*k);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);URL.revokeObjectURL(u);ok(cv)};im.onerror=err;im.src=u})}
+// texto lido -> produtos do catálogo mais parecidos (EAN ou código achado no texto vem primeiro)
+function porTexto(txt){
+  for(const e of (txt.match(/\d{8,14}/g)||[])){const l=EAN.get(e.replace(/^0+/,''));if(l&&l.length)return{lst:l.map(c=>P.get(c)),tok:[e]}}
+  const tok=[...new Set(norm(txt).split(/[^a-z0-9]+/).filter(w=>w.length>=3||(w.length>=2&&/^\d+$/.test(w))))].slice(0,40);if(!tok.length)return{lst:[],tok};
+  const st=ESTQ[S.loja]||new Map(),sc=[];
+  for(const [n,c] of IDX){let k=0;for(const w of tok)if(n.includes(w))k+=w.length>=4?2:1;if(k>=3)sc.push([k+((st.get(c)||{q:0}).q>0?1:0),c])}
+  return{lst:sc.sort((a,b)=>b[0]-a[0]).slice(0,15).map(x=>P.get(x[1])),tok}}
+$('btnOcr').onclick=()=>{if(trancado())return;$('ocrIn').value='';$('ocrIn').click()};
+$('ocrIn').addEventListener('change',async()=>{const f=$('ocrIn').files[0];$('ocrIn').value='';if(!f)return;
+  toast(tessW?'Lendo a etiqueta…':'Lendo a etiqueta… (a primeira vez demora mais, precisa de internet)');
+  let txt='';try{const w=await leitorTexto();const r=await w.recognize(await reduzirFoto(f));txt=(r.data&&r.data.text)||''}
+  catch(e){toast('Não consegui ler agora. Confira a internet (só na 1ª vez) e tente de novo.','bad');return}
+  const {lst,tok}=porTexto(txt);$('busca').value=tok.slice(0,6).join(' ');
+  if(!lst.length){$('results').innerHTML=vazio('📝','Não achei nenhum produto com o que está escrito na etiqueta.<br>Tente uma foto mais de perto e com boa luz, ou digite parte do nome.');return}
+  mostrar(lst,'etiqueta');toast(lst.length===1?'Achei o produto: toque nele pra contar':'Toque no produto certo da lista','ok')});
+
 /* ---------- modo ---------- */
 function modo(m){S.modo=m;save();$('mQtd').classList.toggle('on',m==='qtd');$('mUni').classList.toggle('on',m==='uni');
   $('modoInfo').textContent=m==='uni'?'👉 Cada vez que bipar o mesmo produto soma +1 (pra contar peça por peça, bem rápido)':'👉 Bipa ou busca o produto, aí você digita quantas peças encontrou'}
@@ -703,9 +747,23 @@ function achou(p,viaScan){
     $('jaPular').onclick=()=>{cur=null;$('prodCard').hidden=true;pausado=false};
     if(meu)$('jaAlterar').onclick=()=>promptQtd('Alterar a sua contagem',meu,p.u,novo=>{S.L[S.loja]=ent().filter(x=>x.c!==p.c);ent().push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),c:p.c,q:novo,t:Date.now()});save();header();renderRecentes();cur=null;$('prodCard').hidden=true;pausado=false;toast('Contagem alterada','ok')})}
   $('cxBox').hidden=!p.cx;cxUI();
+  $('boxPac').hidden=$('boxPeso').hidden=true;['pacN','pacQ','pacS'].forEach(i=>$(i).value='');pacCalc();
   $('qtd').value='1';$('quick').innerHTML=[0,2,5,10,12,20,50,100].map(n=>`<button class="chip" data-n="${n}" type="button">${n}</button>`).join('');
   $('prodCard').hidden=false;$('prodCard').scrollIntoView({block:'nearest',behavior:'smooth'});
   if(!viaScan){$('qtd').focus();$('qtd').select()}}
+/* ---------- miudezas: por pacote e na balança ---------- */
+const nv=id=>{const v=parseFloat(String($(id).value).replace(/\s/g,'').replace(',','.'));return isNaN(v)?0:v};
+function usarQtd(q){$('qtd').value=fQ(q);$('boxPac').hidden=$('boxPeso').hidden=true;cxCalc();toast('Quantidade preenchida: '+fQ(q)+' — confira e toque em Somar','ok')}
+$('ajPac').onclick=()=>{$('boxPeso').hidden=true;$('boxPac').hidden=!$('boxPac').hidden;if(!$('boxPac').hidden)$('pacN').focus()};
+$('ajPeso').onclick=()=>{$('boxPac').hidden=true;const b=$('boxPeso');b.hidden=!b.hidden;if(b.hidden||!cur)return;
+  const un=(S.pesoUn||{})[cur.c];$('amN').value=un?'1':'10';$('amP').value=un?fQ(un):'';$('totP').value='';
+  $('pesoDica').textContent=un?`Já está guardado o peso de 1 peça deste produto (${fQ(un)}). É só pesar tudo junto (sem o pote/saco), na mesma unidade.`:'1) Pese algumas peças (sem o pote/saco)  2) Pese todas juntas. Use a mesma unidade nas duas (g ou kg).';
+  (un?$('totP'):$('amP')).focus();pesoCalc()};
+function pacCalc(){const q=Math.round(nv('pacN')*nv('pacQ')+nv('pacS'));$('pacOk').textContent=`= ${fQ(q)} peças · usar`;$('pacOk').disabled=!q;return q}
+function pesoCalc(){const n=nv('amN'),pa=nv('amP'),pt=nv('totP');const q=n>0&&pa>0&&pt>0?Math.round(pt/(pa/n)):0;$('pesoOk').textContent=q?`≈ ${fQ(q)} peças · usar`:'= 0 peças';$('pesoOk').disabled=!q;return q}
+['pacN','pacQ','pacS'].forEach(i=>$(i).addEventListener('input',pacCalc));['amN','amP','totP'].forEach(i=>$(i).addEventListener('input',pesoCalc));
+$('pacOk').onclick=()=>{const q=pacCalc();if(q)usarQtd(q)};
+$('pesoOk').onclick=()=>{const q=pesoCalc();if(!q)return;S.pesoUn=S.pesoUn||{};S.pesoUn[cur.c]=r3(nv('amP')/nv('amN')*1000)/1000;save();usarQtd(q)};
 $('quick').addEventListener('click',e=>{const b=e.target.closest('[data-n]');if(b){$('qtd').value=b.dataset.n;cxCalc()}});
 const qv=()=>parseFloat(String($('qtd').value).replace(/\s/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.'));
 $('qMais').onclick=()=>{$('qtd').value=fQ((qv()||0)+1);cxCalc()};$('qMenos').onclick=()=>{$('qtd').value=fQ(Math.max(0,(qv()||0)-1));cxCalc()};
@@ -734,7 +792,7 @@ function adicionar(p,q){ent().push({id:Date.now().toString(36)+Math.random().toS
   header();renderRecentes();if(!camAberta)$('busca').focus()}
 function renderRecentes(){const L=ent().slice(-10).reverse();$('recInfo').textContent=ent().length?`${totais().size} produtos · ${ent().length} bipes nesta loja`:'Nada contado ainda';
   $('recentes').innerHTML=L.length?L.map(e=>{const p=P.get(e.c)||{d:'Produto '+e.c,u:''};const tot=totais().get(e.c),s=sis(e.c),d=r3(tot-s);
-    return`<div class="li ${stCls(d)}"><div class="d">${esc(p.d)}<small>#${e.c} · +${fQ(e.q)} ${un(p.u)}</small></div><div class="r">${fQ(tot)} <span class="of">/ ${fQ(s)}</span><small>${pillD(d)}</small></div><div class="act"><button data-edit="${e.id}" type="button">✏️ editar</button><button data-del="${e.id}" type="button">↶ desfazer</button></div></div>`}).join(''):vazio('📦','Nenhum produto contado nesta loja ainda.<br>Abra o leitor e comece a bipar.')}
+    return`<div class="li ${stCls(d)}"><div class="d">${esc(p.d)}<small>#${e.c} · +${fQ(e.q)} ${un(p.u)}</small></div><div class="r">${fQ(tot)} <span class="of">/ ${fQ(s)}</span><small>${pillD(d)}</small></div><div class="act"><button data-edit="${e.id}" type="button">✏️ editar</button><button data-del="${e.id}" type="button">↶ desfazer</button></div></div>`}).join(''):((S.rodada||{})[S.loja]?vazio('🆕',`<b>Contagem nova</b> de ${esc(nl(S.loja))}, começou ${dataContagem(S.loja,1)}.<br>A anterior está guardada. Bipe o primeiro produto.`):vazio('📦','Nenhum produto contado nesta loja ainda.<br>Abra o leitor e comece a bipar.'))}
 $('recentes').addEventListener('click',e=>{
   if(e.target.closest('[data-del],[data-edit]')&&trancado())return;
   const d=e.target.closest('[data-del]');if(d){S.L[S.loja]=ent().filter(x=>x.id!==d.dataset.del);save();header();renderRecentes();toast('Bipe desfeito');return}
