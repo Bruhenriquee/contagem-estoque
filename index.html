@@ -340,7 +340,8 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
   <div class="card" id="lockCard" hidden style="align-items:center;text-align:center;border-color:var(--green)">
     <div style="font-size:44px">🔒</div><b style="font-size:18px">Contagem finalizada</b>
     <div class="small muted" id="lockInfo"></div>
-    <button class="btn" id="btnLockReabrir" type="button">🔓 Reabrir (precisa da senha do gerente)</button>
+    <button class="btn pri" id="btnLockNova" type="button">🔁 Contar esta loja de novo (gerente)</button>
+    <button class="btn sm ghost" id="btnLockReabrir" type="button">🔓 Reabrir esta mesma contagem (gerente)</button>
   </div>
   <div class="seg" role="group" aria-label="Modo de contagem">
     <button class="btn" id="mQtd" type="button">Bipa e digita a qtd.</button>
@@ -433,7 +434,7 @@ nav.tabs .in{grid-template-columns:repeat(3,1fr)}
   <button class="btn sm ghost" id="cfVoltar" type="button" style="align-self:flex-start">← Voltar</button>
   <div class="card">
     <div class="sh"><div class="ic" style="--c:var(--indigo)">🧮</div><div class="tt"><div class="ttl">Juntar as contagens da equipe</div><div class="sub">Contagens de pessoas diferentes do mesmo produto são somadas</div></div></div>
-    <div id="cfNuvem" hidden style="display:flex;flex-direction:column;gap:10px"><select id="cfLoja" aria-label="Loja" style="width:100%"></select><button class="btn pri big" id="btnNuvem" type="button">☁️ Buscar contagens da planilha</button><div class="small muted">Junta sozinho o que todo mundo contou nessa loja.</div><button class="btn" id="btnPedirEstoque" type="button">🔄 Atualizar o estoque do sistema agora</button><div class="small muted" id="estoqueInfo"></div></div>
+    <div id="cfNuvem" hidden style="display:flex;flex-direction:column;gap:10px"><select id="cfLoja" aria-label="Loja" style="width:100%"></select><button class="btn pri big" id="btnNuvem" type="button">☁️ Buscar contagens da planilha</button><div class="small muted">Junta sozinho o que todo mundo contou nessa loja.</div><button class="btn" id="btnNovaContagem" type="button">🔁 Começar nova contagem desta loja</button><button class="btn" id="btnPedirEstoque" type="button">🔄 Atualizar o estoque do sistema agora</button><div class="small muted" id="estoqueInfo"></div></div>
     <details id="cfManual"><summary class="small" style="cursor:pointer;font-weight:600;padding:4px 0">📂 Juntar por arquivo ou texto (WhatsApp/Excel)</summary><div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
     <div class="grid2">
       <button class="btn" id="btnArq" type="button">📂 Abrir arquivos Excel</button>
@@ -522,19 +523,34 @@ function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&
   if(old&&old.ent&&old.ent.length&&old.loja&&!(S.L[old.loja]&&S.L[old.loja].length)){S.L[old.loja]=old.ent.map(e=>({id:e.id,c:e.c,q:e.q,t:e.t}));S.nome=S.nome||old.nome||'';if(S.nome&&!S.pessoas.includes(S.nome))S.pessoas.push(S.nome);S.loja=S.loja||old.loja;save()}}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Não consegui salvar neste navegador. Envie a contagem agora.','bad')}agendarEnvio()}
 /* ---------- envio automático pra planilha ---------- */
-let syncT=null,enviando=false;
-let OUTROS=new Map(),outrosLoja='',outrosT=0;// código -> [{nome,q}] contado por OUTROS celulares (vem da planilha)
+let syncT=null,enviando=false,pendDesde=0;
+let OUTROS=new Map(),outrosLoja='',outrosT=0,outrosSig='';// código -> [{nome,q}] contado por OUTROS celulares (vem da planilha)
 async function buscarOutros(forcar){if(!PLANILHA||!S.loja||navigator.onLine===false)return;if(!forcar&&outrosLoja===S.loja&&Date.now()-outrosT<25000)return;
   const loja=S.loja;outrosT=Date.now();
-  try{const j=await fetch(PLANILHA+'?acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)).then(r=>r.json());if(!j.ok||loja!==S.loja)return;
-    const m=new Map(),eu=aparelho();j.rows.forEach(([c,nome,ap,q])=>{if(ap===eu||!q)return;if(!m.has(c))m.set(c,[]);const l=m.get(c),o=l.find(x=>x.nome===nome);o?o.q=r3(o.q+q):l.push({nome,q})});OUTROS=m;outrosLoja=loja}catch(e){}}
-setInterval(()=>{if(!document.hidden&&!$('v-contar').hidden)buscarOutros()},30000);
+  try{const j=await fetch(PLANILHA+'?acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)).then(r=>r.json());if(!j.ok||loja!==S.loja)return;if(j.rodada&&j.rodada!==(S.rodada||{})[loja])novaRodadaLocal(loja,j.rodada);
+    const m=new Map(),eu=aparelho();j.rows.forEach(([c,nome,ap,q])=>{if(ap===eu||!q)return;if(!m.has(c))m.set(c,[]);const l=m.get(c),o=l.find(x=>x.nome===nome);o?o.q=r3(o.q+q):l.push({nome,q})});const sig=loja+JSON.stringify([...m]);OUTROS=m;outrosLoja=loja;if(sig!==outrosSig){outrosSig=sig;header();if(!$('v-contados').hidden)renderContados()}}catch(e){}}
+setInterval(()=>{if(!document.hidden&&(!$('v-contar').hidden||!$('v-contados').hidden))buscarOutros()},30000);
+// Nova contagem da loja (o gerente começou outra rodada): guarda o que este celular tinha de ANTES e segue só com o que é mais novo.
+function novaRodadaLocal(loja,rod){const ts=Date.parse(rod)||Date.now();S.rodada=S.rodada||{};if(S.rodada[loja]===rod)return;S.rodada[loja]=rod;
+  const L=S.L[loja]||[],velhos=L.filter(e=>e.t<ts);S.L[loja]=L.filter(e=>e.t>=ts);
+  if(velhos.length){S.arq=S.arq||{};S.arq[loja]={ate:rod,L:velhos}}
+  const fin=(S.finalizadas||{})[loja]<ts;if(fin)delete S.finalizadas[loja];if((S.iniciadas||{})[loja]<ts)delete S.iniciadas[loja];
+  S.pend=S.pend||{};S.pend[loja]=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  if(loja===S.loja){header();renderRecentes();if(!$('v-contar').hidden)view('contar');if(!$('v-contados').hidden)renderContados()}
+  if(velhos.length||fin)toast(`Começou uma nova contagem de ${nl(loja)}. A anterior ficou guardada.`,'ok');clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,2000)}
+async function novaContagem(loja){
+  confirmar('Contar a loja de novo?',`Começa uma contagem nova de ${nl(loja)} do zero, em todos os celulares. A contagem anterior não se perde: fica guardada na aba "Arquivo" da planilha. Use quando for fazer outro inventário desta loja.`,'Começar nova',async()=>{
+    let senha='';try{senha=localStorage.getItem('contagem-senha-gerente')||''}catch(e){}if(!senha){senha=(prompt('Senha do gerente:')||'').trim();if(!senha)return}
+    let j;try{j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({acao:'novaContagem',loja,senha})}).then(r=>r.text())}catch(e){toast('Sem internet','bad');return}
+    try{j=JSON.parse(j)}catch(e){toast('A planilha deu erro','bad');return}
+    if(!j.ok){if(j.erro==='senha'){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}toast('Senha errada','bad')}else toast('A planilha deu erro','bad');return}
+    try{localStorage.setItem('contagem-senha-gerente',senha)}catch(e){}novaRodadaLocal(loja,j.rodada);toast(`Nova contagem de ${nl(loja)} começou`,'ok')})}
 function quemContou(c){return outrosLoja===S.loja?(OUTROS.get(c)||[]):[]}
 function aparelho(){try{let a=localStorage.getItem('contagem-aparelho');if(!a){a=Math.random().toString(36).slice(2,8);localStorage.setItem('contagem-aparelho',a)}return a}catch(e){return 'sem-id'}}
-function agendarEnvio(){if(!PLANILHA||!S.loja||!S.nome)return;S.pend=S.pend||{};if(!S.pend[S.loja]){S.pend[S.loja]=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,15000);syncUI()}
-async function enviarPlanilha(){clearTimeout(syncT);if(!PLANILHA||!D||enviando||navigator.onLine===false)return syncUI();enviando=true;
+function agendarEnvio(){if(!PLANILHA||!S.loja||!S.nome)return;S.pend=S.pend||{};if(!S.pend[S.loja]){S.pend[S.loja]=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}if(!pendDesde)pendDesde=Date.now();clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,Math.max(0,Math.min(15000,pendDesde+30000-Date.now())));syncUI()}
+async function enviarPlanilha(){clearTimeout(syncT);pendDesde=0;if(!PLANILHA||!D||enviando||navigator.onLine===false)return syncUI();enviando=true;
   for(const loja of Object.keys(S.pend||{})){const itens=[...totais(loja)].map(([c,q])=>[c,r3(q),(P.get(c)||{}).d||'']);const v=JSON.stringify(itens);
-    try{const r=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({chave:CHAVE_ENVIO,loja,nome:S.nome,aparelho:aparelho(),finalizada:!!(S.finalizadas||{})[loja],itens})});const j=await r.json();if(!j.ok)throw 0;
+    try{const r=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({chave:CHAVE_ENVIO,loja,nome:S.nome,aparelho:aparelho(),finalizada:!!(S.finalizadas||{})[loja],rodada:(S.rodada||{})[loja]||'',itens})});const j=await r.json();if(j.erro==='rodada'){novaRodadaLocal(loja,j.rodada);continue}if(!j.ok)throw 0;
       if(JSON.stringify([...totais(loja)].map(([c,q])=>[c,r3(q),(P.get(c)||{}).d||'']))===v)delete S.pend[loja];S.envioOk=Date.now();S.envOk=S.envOk||{};S.envOk[loja]=S.envioOk;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}catch(e){}}
   enviando=false;syncUI();if(Object.keys(S.pend||{}).length)syncT=setTimeout(enviarPlanilha,60000)}
 function syncUI(){const el=$('syncSt');if(!el)return;if(!PLANILHA){el.hidden=true;return}el.hidden=false;const n=Object.keys(S.pend||{}).length;
@@ -579,7 +595,7 @@ function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='con
   $('hStats').style.display=(v==='relatorio'||v==='contados')?'none':'';$('hProg').style.display=v==='contar'?'':'none';
   $('rodape').style.display=v==='inicio'?'none':'';
   if(v!=='contar')pararCamera();
-  if(v==='contados')renderContados();if(v==='inicio')renderLojas();if(v==='contar'){renderRecentes();const t=fechada();$('v-contar').classList.toggle('trancada',t);$('lockCard').hidden=!t;if(t)$('lockInfo').textContent=`${nl(S.loja)} foi finalizada em ${new Date(S.finalizadas[S.loja]).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}. Ninguém altera mais nada.`;else buscarOutros(true)}
+  if(v==='contados'){renderContados();buscarOutros(true)}if(v==='inicio')renderLojas();if(v==='contar'){renderRecentes();const t=fechada();$('v-contar').classList.toggle('trancada',t);$('lockCard').hidden=!t;if(t)$('lockInfo').textContent=`${nl(S.loja)} foi finalizada em ${new Date(S.finalizadas[S.loja]).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}. Ninguém altera mais nada.`;else buscarOutros(true)}
   const mn=document.querySelector('main');if(mn)mn.scrollTop=0}
 VIEWS.forEach(k=>{const n=$('n-'+k);if(n)n.onclick=()=>view(k)});
 $('btnGerente').onclick=()=>view('conferir');$('cfVoltar').onclick=()=>view('inicio');
@@ -590,7 +606,7 @@ function header(){$('hTitulo').textContent=S.loja?nl(S.loja):'Contagem de estoqu
   $('hSub').textContent=S.loja?(S.nome||'Contagem de estoque')+tagTxt:'Escolha a loja para começar';
   $('hLoja').innerHTML=S.loja?'🏬 Trocar':'🏬 Loja';const n=totais().size;$('nBadge').textContent=n;$('nBadge').hidden=!n;
   const hs=$('hStats');if(!(D&&S.loja&&S.nome)){hs.hidden=true;$('hProg').hidden=true;return}
-  const pr=progresso();$('hProg').hidden=false;$('hProg').innerHTML=`<b>${pr.cont.toLocaleString('pt-BR')}</b> de ${pr.pos.toLocaleString('pt-BR')} produtos (${Math.floor(pr.pc)}%) · ver o que falta ›<div class="prog"><i style="width:${Math.min(100,pr.pc)}%"></i></div>`;const L=linhasMinhas();const dif=L.filter(x=>x.d!==0).length;
+  const pr=progresso();$('hProg').hidden=false;$('hProg').innerHTML=`<b>${pr.cont.toLocaleString('pt-BR')}</b> de ${pr.pos.toLocaleString('pt-BR')} produtos (${Math.floor(pr.pc)}%)${pr.equipe?` · você ${pr.meu.toLocaleString('pt-BR')}`:''} · ver o que falta ›<div class="prog"><i style="width:${Math.min(100,pr.pc)}%"></i></div>`;const L=linhasMinhas();const dif=L.filter(x=>x.d!==0).length;
   hs.hidden=false;hs.innerHTML=`<div class="hs"><div class="v">${L.length}</div><div class="l">contados</div></div><div class="hs ok"><div class="v">${L.length-dif}</div><div class="l">batendo</div></div><div class="hs bad"><div class="v">${dif}</div><div class="l">com diferença</div></div>`}
 
 /* ---------- dados ---------- */
@@ -638,6 +654,7 @@ async function reabrir(l,depois){
   try{const j=await fetch(PLANILHA+'?senha='+encodeURIComponent(senha)).then(r=>r.json());if(!j.ok){toast('Senha errada','bad');return}}
   catch(e){toast('Precisa de internet pra reabrir','bad');return}
   delete S.finalizadas[l];save();header();toast('Contagem reaberta','ok');depois&&depois()}
+$('btnLockNova').onclick=()=>PLANILHA?novaContagem(S.loja):toast('Precisa da planilha ligada','bad');
 $('btnLockReabrir').onclick=()=>reabrir(S.loja,()=>view('contar'));
 $('btnComecar').onclick=()=>{if(!S.loja||!S.nome)return;const l=S.loja;
   const doStart=()=>{S.iniciadas=S.iniciadas||{};if(!S.iniciadas[l])S.iniciadas[l]=Date.now();save();header();
@@ -809,17 +826,17 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)pararCamera
 
 /* ---------- contados ---------- */
 function linhasMinhas(){const m=totais();return[...m].map(([c,q])=>{const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};const s=sis(c);return{p,q,s,d:r3(q-s)}})}
-function progresso(){const st=ESTQ[S.loja]||new Map(),m=totais();let pos=0,cont=0;for(const [c,x] of st)if(x.q>0){pos++;if(m.has(c))cont++}return{pos,cont,pc:pos?cont/pos*100:0}}
+function progresso(){const st=ESTQ[S.loja]||new Map(),m=totais();let pos=0,cont=0,meu=0;for(const [c,x] of st)if(x.q>0){pos++;if(m.has(c))meu++;if(m.has(c)||quemContou(c).length)cont++}return{pos,cont,meu,equipe:cont>meu,pc:pos?cont/pos*100:0}}
 $('hProg').onclick=()=>{filtroC='falta';view('contados');setFiltroC('falta')};
 function linhasFaltam(){const st=ESTQ[S.loja]||new Map();const m=totais();const out=[];
-  for(const [c,x] of st){if(m.has(c))continue;const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};out.push({p,s:x.q})}
+  for(const [c,x] of st){if(m.has(c)||quemContou(c).length)continue;const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};out.push({p,s:x.q})}
   return out}
 const statTap=(ic,c,v,l,f,on)=>`<div class="stat tap${on?' on':''}" data-f="${f}" style="--c:${c}"><div class="ic" style="--c:${c}">${ic}</div><div class="v">${v}</div><div class="l">${l}</div></div>`;
 function renderContados(){renderStatusFinalizar();syncUI();const L=linhasMinhas();const st=ESTQ[S.loja]||new Map();const pos=[...st.values()].filter(x=>x.q>0).length;
-  const cont=L.filter(x=>x.s>0).length;const dif=L.filter(x=>x.d!==0).length;const F=linhasFaltam();
-  const pc=pos?cont/pos*100:0;
+  const pr=progresso(),cont=pr.cont;const dif=L.filter(x=>x.d!==0).length;const F=linhasFaltam();
+  const pc=pr.pc;
   $('cStats').innerHTML=statTap('📦','#1565C0',L.length,'contados','todos',filtroC==='todos')+statTap('✅','#047857',L.length-dif,'batendo','ok',filtroC==='ok')+statTap('⚠️','#DC2626',dif,'diferença','dif',filtroC==='dif')+
-   `<div class="stat wide tap${filtroC==='falta'?' on':''}" data-f="falta" style="--c:#1565C0">${ringH(pc,'#1565C0')}<div style="flex:1;min-width:0"><div class="l">Progresso em ${esc(nl(S.loja))}</div><div style="font-size:15px;font-weight:600;margin-top:3px">${cont.toLocaleString('pt-BR')} de ${pos.toLocaleString('pt-BR')} produtos com estoque</div><div class="prog" style="margin-top:8px"><i style="width:${Math.min(100,pc)}%"></i></div>${F.length?`<div style="margin-top:8px;font-size:13px;font-weight:700;color:#B45309">🔍 ${F.length.toLocaleString('pt-BR')} ainda faltam contar</div>`:`<div style="margin-top:8px;font-size:13px;font-weight:700;color:#047857">✅ Tudo contado</div>`}</div></div>`;
+   `<div class="stat wide tap${filtroC==='falta'?' on':''}" data-f="falta" style="--c:#1565C0">${ringH(pc,'#1565C0')}<div style="flex:1;min-width:0"><div class="l">Progresso em ${esc(nl(S.loja))}</div><div style="font-size:15px;font-weight:600;margin-top:3px">${cont.toLocaleString('pt-BR')} de ${pos.toLocaleString('pt-BR')} produtos com estoque${pr.equipe?` <span class="muted" style="font-weight:400">(equipe · você ${pr.meu.toLocaleString('pt-BR')})</span>`:''}</div><div class="prog" style="margin-top:8px"><i style="width:${Math.min(100,pc)}%"></i></div>${F.length?`<div style="margin-top:8px;font-size:13px;font-weight:700;color:#B45309">🔍 ${F.length.toLocaleString('pt-BR')} ainda faltam contar</div>`:`<div style="margin-top:8px;font-size:13px;font-weight:700;color:#047857">✅ Tudo contado</div>`}</div></div>`;
   const f=norm($('fC').value);
   if(filtroC==='falta'){
     let RF=F.filter(x=>x.s>0).filter(x=>!f||norm(x.p.d).includes(f)||String(x.p.c).includes(f));
@@ -915,6 +932,7 @@ $('btnNuvem').onclick=async()=>{let senha='';try{senha=localStorage.getItem('con
     const g=new Map();j.rows.forEach(([nome,ap,c,q])=>{const k=nome+'|'+ap;if(!g.has(k))g.set(k,{nome,l:[]});g.get(k).l.push(c+';'+String(q).replace('.',','))});
     $('txtJuntar').value=[...g.values()].map(b=>`CONTAGEM|${loja}|${b.nome}|planilha|${b.l.length} produtos\n`+b.l.join('\n')).join('\n');$('btnJuntar').click()}
   catch(e){toast('Sem internet ou a planilha está fora do ar','bad')}};
+$('btnNovaContagem').onclick=()=>novaContagem($('cfLoja').value);
 $('btnPedirEstoque').onclick=()=>confirmar('Atualizar o estoque?','O estoque atual vai ser puxado do OM e publicado no app em poucos minutos. Atenção: se alguém estiver contando agora, as diferenças passam a ser calculadas com o estoque novo.','Atualizar',async()=>{
   let senha='';try{senha=localStorage.getItem('contagem-senha-gerente')||''}catch(e){}if(!senha){senha=(prompt('Senha do gerente:')||'').trim();if(!senha)return}
   let j;try{j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({acao:'pedirEstoque',senha})}).then(r=>r.text())}catch(e){toast('Sem internet','bad');return}
