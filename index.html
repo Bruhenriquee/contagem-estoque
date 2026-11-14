@@ -915,11 +915,11 @@ $('btnNuvem').onclick=async()=>{let senha='';try{senha=localStorage.getItem('con
     const g=new Map();j.rows.forEach(([nome,ap,c,q])=>{const k=nome+'|'+ap;if(!g.has(k))g.set(k,{nome,l:[]});g.get(k).l.push(c+';'+String(q).replace('.',','))});
     $('txtJuntar').value=[...g.values()].map(b=>`CONTAGEM|${loja}|${b.nome}|planilha|${b.l.length} produtos\n`+b.l.join('\n')).join('\n');$('btnJuntar').click()}
   catch(e){toast('Sem internet ou a planilha está fora do ar','bad')}};
-$('btnPedirEstoque').onclick=()=>confirmar('Atualizar o estoque?','O computador do escritório vai puxar o estoque atual do OM e publicar no app. Leva uns 5 a 10 minutos e o computador precisa estar ligado. Atenção: se alguém estiver contando agora, as diferenças passam a ser calculadas com o estoque novo.','Atualizar',async()=>{
+$('btnPedirEstoque').onclick=()=>confirmar('Atualizar o estoque?','O estoque atual vai ser puxado do OM e publicado no app em poucos minutos. Atenção: se alguém estiver contando agora, as diferenças passam a ser calculadas com o estoque novo.','Atualizar',async()=>{
   let senha='';try{senha=localStorage.getItem('contagem-senha-gerente')||''}catch(e){}if(!senha){senha=(prompt('Senha do gerente:')||'').trim();if(!senha)return}
   try{const j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({acao:'pedirEstoque',senha})}).then(r=>r.json());
     if(!j.ok){if(j.erro==='senha'){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}toast('Senha errada','bad')}else toast('A planilha deu erro','bad');return}
-    try{localStorage.setItem('contagem-senha-gerente',senha)}catch(e){}$('estoqueInfo').textContent='✅ Pedido feito às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'. Em uns 10 minutos, feche e abra o app pra pegar o estoque novo.';toast('Pedido de atualização enviado','ok')}
+    try{localStorage.setItem('contagem-senha-gerente',senha)}catch(e){}$('estoqueInfo').textContent='✅ Pedido feito às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+(j.via==='github'?'. Em uns 3 minutos, feche e abra o app pra pegar o estoque novo.':'. O computador do escritório atualiza em até 10 minutos (precisa estar ligado).');toast('Pedido de atualização enviado','ok')}
   catch(e){toast('Sem internet','bad')}});
 $('btnDeste').onclick=()=>{if(!ent().length){toast('Este celular não tem contagem desta loja','bad');return}$('txtJuntar').value=($('txtJuntar').value.trim()?$('txtJuntar').value.trim()+'\n':'')+textoEnvio();toast('Contagem deste celular adicionada')};
 $('btnJuntar').onclick=()=>{const blocos=[];let b=null;

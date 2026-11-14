@@ -1,0 +1,44 @@
+name: Atualizar estoque
+
+on:
+  workflow_dispatch:        # botao "Run workflow" no GitHub, ou o botao do gerente no app
+  schedule:
+    - cron: '10 8 * * *'    # todo dia 05:10 (horario de Brasilia)
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: estoque
+  cancel-in-progress: false
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install mysql-connector-python==9.1.0
+      - name: Gerar dados.json a partir do OM
+        env:
+          OM_HOST: ${{ secrets.OM_HOST }}
+          OM_PORT: ${{ secrets.OM_PORT }}
+          OM_USER: ${{ secrets.OM_USER }}
+          OM_PASSWORD: ${{ secrets.OM_PASSWORD }}
+          OM_DATABASE: ${{ secrets.OM_DATABASE }}
+        run: python ferramentas/gerar_dados.py
+      - name: Publicar no app
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "estoque-automatico"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dados.json sw.js
+          if git diff --cached --quiet; then echo "Estoque igual, nada pra publicar."; exit 0; fi
+          git commit -m "Atualiza estoque (automatico pelo GitHub)"
+          git push
+          gh api -X POST "repos/${{ github.repository }}/pages/builds" >/dev/null || true
