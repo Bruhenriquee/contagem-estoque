@@ -699,10 +699,12 @@ async function novaContagem(loja){
 function quemContou(c){return outrosLoja===S.loja?(OUTROS.get(c)||[]):[]}
 function aparelho(){try{let a=localStorage.getItem('contagem-aparelho');if(!a){a=Math.random().toString(36).slice(2,8);localStorage.setItem('contagem-aparelho',a)}return a}catch(e){return 'sem-id'}}
 function agendarEnvio(){if(!PLANILHA||!S.loja||!S.nome)return;S.pend=S.pend||{};if(!S.pend[S.loja]){S.pend[S.loja]=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}if(!pendDesde)pendDesde=Date.now();clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,Math.max(0,Math.min(15000,pendDesde+30000-Date.now())));syncUI()}
+// cada item vai com o estoque do sistema daquela loja, pra planilha mostrar Sistema e Diferença
+function itensDe(loja){const st=ESTQ[loja]||new Map();return[...totais(loja)].map(([c,q])=>[c,r3(q),(P.get(c)||{}).d||'',(st.get(c)||{q:0}).q])}
 async function enviarPlanilha(){clearTimeout(syncT);pendDesde=0;if(!PLANILHA||!D||enviando||navigator.onLine===false)return syncUI();enviando=true;
-  for(const loja of Object.keys(S.pend||{})){const itens=[...totais(loja)].map(([c,q])=>[c,r3(q),(P.get(c)||{}).d||'']);const v=JSON.stringify(itens);
+  for(const loja of Object.keys(S.pend||{})){const itens=itensDe(loja);const v=JSON.stringify(itens);
     try{const r=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({chave:CHAVE_ENVIO,loja,nome:S.nome,aparelho:aparelho(),finalizada:!!(S.finalizadas||{})[loja],rodada:(S.rodada||{})[loja]||'',itens})});const j=await r.json();if(j.erro==='rodada'){novaRodadaLocal(loja,j.rodada);continue}if(!j.ok)throw 0;
-      if(JSON.stringify([...totais(loja)].map(([c,q])=>[c,r3(q),(P.get(c)||{}).d||'']))===v)delete S.pend[loja];S.envioOk=Date.now();S.envOk=S.envOk||{};S.envOk[loja]=S.envioOk;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}catch(e){}}
+      if(JSON.stringify(itensDe(loja))===v)delete S.pend[loja];S.envioOk=Date.now();S.envOk=S.envOk||{};S.envOk[loja]=S.envioOk;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}catch(e){}}
   enviando=false;syncUI();if(Object.keys(S.pend||{}).length)syncT=setTimeout(enviarPlanilha,60000)}
 function syncUI(){const el=$('syncSt');if(!el)return;if(!PLANILHA){el.hidden=true;return}el.hidden=false;const n=Object.keys(S.pend||{}).length;
   const h=S.envioOk?new Date(S.envioOk).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
@@ -779,7 +781,7 @@ async function init(){
   if(!PLANILHA)$('cfManual').open=true;
   if(PLANILHA){$('cfNuvem').hidden=false;$('admTopo').hidden=false;$('estoqueInfo').textContent='Estoque atual do app: '+D.gerado;$('cfLoja').innerHTML=D.lojas.map(l=>`<option value="${esc(l)}">${esc(nl(l))}</option>`).join('');if(S.loja)$('cfLoja').value=S.loja;Object.keys(S.L||{}).forEach(l=>{if((S.L[l]||[]).length&&!(S.envOk||{})[l]){S.pend=S.pend||{};S.pend[l]=1}});syncUI();enviarPlanilha()}
   view(location.hash==='#admin'?'conferir':S.loja&&S.nome?'contar':'inicio');
-  let viu=1;try{viu=localStorage.getItem('contagem-tutorial')}catch(e){}if(!viu)tutorial();
+  let viu=1;try{viu=localStorage.getItem('contagem-tutorial')}catch(e){}if(!viu&&location.hash!=='#admin')tutorial();
 }
 function renderLojas(){if(!D)return;$('lojas').innerHTML=D.lojas.map((l,i)=>{const st=ESTQ[l];const pos=[...st.values()].filter(x=>x.q>0).length;const m=totais(l);const c=m.size;
   const cs=[...m.keys()].filter(k=>(st.get(k)||{q:0}).q>0).length;const cor=corLoja(l,i);
