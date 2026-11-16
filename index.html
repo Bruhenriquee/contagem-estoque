@@ -287,7 +287,7 @@ nav.tabs .badge{position:absolute;top:7px;left:calc(50% + 8px);background:var(--
 @media (min-width:560px){.lojas{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 /* ---------- telas travada / contagem cega ---------- */
-#v-contar.trancada>:not(#lockCard):not(#lockGer){display:none!important}
+#v-contar.trancada>:not(#lockCard):not(#lockGer):not(#recBan){display:none!important}
 .lockic{width:56px;height:56px;border-radius:50%;background:var(--green-l);color:var(--green);display:grid;place-items:center}.lockic svg{width:26px;height:26px}
 .cega #pNums .kpi:nth-child(1),.cega #pNums .kpi:nth-child(3),.cega #recentes .r .of,.cega #recentes .r small,.cega #cLista .r .of,.cega #cLista .r small,.cega .rs,.cega .res .sv,.cega #cStats [data-f=ok],.cega #cStats [data-f=dif],.cega #segC [data-f=ok],.cega #segC [data-f=dif]{display:none!important}
 .cega #pNums{grid-template-columns:1fr}.cega #pNums .kpi{border-left:0}.cega #recentes .li,.cega #cLista .li{--c:var(--line2)!important}
@@ -371,7 +371,7 @@ body.adm .app{max-width:none}
 .atbl td,.atbl th{padding:10px 12px}.atbl tbody tr:hover{background:var(--soft2)}.atbl .num{font-variant-numeric:tabular-nums}
 .dpos{color:var(--green);font-weight:700}.dneg{color:var(--red2);font-weight:700}
 .st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px}
-.st.fin{background:var(--green-l);color:var(--green)}.st.and{background:var(--blue-l);color:var(--blue)}
+.st.fin{background:var(--green-l);color:var(--green)}.st.par{background:var(--soft);color:var(--muted)}.st.and{background:var(--blue-l);color:var(--blue)}
 .admset{display:grid;grid-template-columns:1fr;gap:12px}.admset>div:first-child{display:flex;flex-direction:column;gap:4px}
 .admctl{display:flex;flex-direction:column;gap:10px}
 .admsalvar{display:flex;justify-content:flex-end}
@@ -390,6 +390,28 @@ body.adm .app{max-width:none}
 .atbl td{vertical-align:middle}
 @media print{.admbar,.admlogin{display:none!important}.admbody{padding:0!important;max-width:none!important}.tblwrap{max-height:none!important;overflow:visible!important}.kpis4{grid-template-columns:repeat(4,minmax(0,1fr))!important}.kpi4,.admcard{box-shadow:none!important;break-inside:avoid}}
 @media(max-width:899px){.hm{display:none}.kpi4.dest .v{font-size:28px}.atbl td,.atbl th{padding:9px 6px}.atbl thead th,.atbl thead th.n{letter-spacing:0;white-space:normal;line-height:1.2;font-size:10px}.atbl td:first-child,.atbl th:first-child{padding-left:10px}.atbl td:last-child,.atbl th:last-child{padding-right:10px}}
+.admnav{overflow-x:auto;scrollbar-width:none}.admnav::-webkit-scrollbar{display:none}.admnav button{flex:none;white-space:nowrap}
+.lojagrid{display:grid;grid-template-columns:1fr;gap:12px}
+.lc{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:10px;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:border-color .15s}
+.lc:hover{border-color:var(--blue)}.lc .top{display:flex;align-items:center;gap:8px}.lc .top b{font-size:16px;flex:1}
+.lc .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.lc .nums div{display:flex;flex-direction:column}.lc .nums small{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.lc .nums b{font-size:19px}
+.lc .who{font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px}.lc .who span b{color:var(--ink2);font-weight:600}
+.admtopo.semloja .admloja{visibility:hidden}@media(max-width:899px){.admtopo.semloja .admloja{display:none}}
+.lc .alr{font-size:12.5px;font-weight:600;color:var(--amber)}
+.st.sem{background:var(--soft);color:var(--muted2)}
+.alerta{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:10px 12px;font-size:13.5px}
+.alerta .btn{margin-left:auto;flex:none}
+.filtros{display:flex;flex-wrap:wrap;gap:8px}.filtros>*{flex:1 1 160px;width:auto}.filtros .btn{flex:0 0 auto}
+.filtros select,.filtros input{padding:9px 10px;font-size:14px}
+.fdata{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--muted)}.fdata input{flex:1}
+.selbar{display:flex;align-items:center;gap:10px;background:var(--blue-l);border:1px solid #BFD3F5;border-radius:10px;padding:8px 10px;font-size:13.5px;font-weight:600;color:var(--blue)}.selbar span{flex:1}
+.atbl input[type=checkbox]{width:18px;height:18px;padding:0;margin:0;accent-color:var(--blue)}
+.tagrc{display:inline-block;font-size:11px;font-weight:600;padding:1px 6px;border-radius:5px;background:var(--amber-l);color:var(--amber);margin-left:4px}.tagrc.ok{background:var(--green-l);color:var(--green)}
+.evo svg{width:100%;height:auto;display:block}.evo text{font-family:var(--font)}
+.recban{border-color:#FCD34D;background:#FFFBEB}
+.recban .li .r{font-weight:600}
+@media(min-width:700px){.lojagrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1050px){.lojagrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(min-width:900px){.kpis4{grid-template-columns:repeat(4,minmax(0,1fr))}.admgrid{grid-template-columns:1fr 1fr}.admset{grid-template-columns:300px 1fr;align-items:start}.admbody{padding:24px}.admbar{padding:12px 24px 0}}
 @media(max-width:899px){.admnav{margin-left:0;width:100%}.admnav button{flex:1;padding:11px 6px}.admloja{width:100%;padding-bottom:0}.admloja select{flex:1}.admback{padding:8px 10px}.tile{grid-template-columns:auto 1fr}.tile .btn{grid-column:1/-1}.admbrand small,.admback .lg{display:none}.kpi4 .v{font-size:19px;white-space:normal;overflow:visible}.kpi4 .ki{display:none}.kpi4{grid-template-columns:1fr;padding:14px}.admbrand b{font-size:16px}}
 </style>
@@ -443,6 +465,10 @@ body.adm .app{max-width:none}
     <div class="ttl">Precisa mexer nesta contagem?</div>
     <div class="small muted" id="lockGerInfo">Só o gerente pode. Ele faz pelo Painel do gerente (este celular destrava sozinho) ou aqui mesmo, com a senha:</div>
     <div class="grid2"><button class="btn sm" id="btnLockReabrir" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.7"/></svg> Reabrir pra corrigir</button><button class="btn sm" id="btnLockNova" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg> Contagem nova</button></div>
+  </div>
+  <div class="card recban" id="recBan" hidden>
+    <div class="sh"><div class="ic" style="--c:#D97706"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg></div><div class="tt"><div class="ttl" id="recBanT"></div><div class="sub" id="recBanS"></div></div><button class="btn sm" id="recBanVer" type="button">Ver lista</button></div>
+    <div class="list" id="recBanLista" hidden></div>
   </div>
   <div class="seg" role="group" aria-label="Modo de contagem">
     <button class="btn" id="mQtd" type="button">Bipa e digita a qtd.</button>
@@ -553,7 +579,7 @@ body.adm .app{max-width:none}
     </div>
     <div class="admtopo" id="admTopo" hidden>
       <label class="admloja"><span>Loja</span><select id="cfLoja" aria-label="Loja"></select></label>
-      <nav class="admnav" id="admTabs"><button class="on" data-t="acoes" type="button">Visão geral</button><button data-t="rel" type="button">Relatório</button><button data-t="hist" type="button">Histórico</button><button data-t="cfg" type="button">Ajustes</button></nav>
+      <nav class="admnav" id="admTabs"><button class="on" data-t="lojas" type="button">Todas as lojas</button><button data-t="acoes" type="button">Visão geral</button><button data-t="rel" type="button">Relatório</button><button data-t="dif" type="button">Diferenças</button><button data-t="hist" type="button">Histórico</button><button data-t="cfg" type="button">Ajustes</button></nav>
     </div>
   </div></header>
   <div class="admlogin" id="admLogin" hidden>
@@ -563,13 +589,21 @@ body.adm .app{max-width:none}
     <button class="btn pri big" id="admEntrar" type="button">Entrar</button>
   </div>
   <div id="admTudo" class="admbody">
-  <div id="admAcoes" class="admsec">
+  <div id="admLojas" class="admsec">
+    <div class="admh" style="align-items:center"><div><b style="font-size:19px">Todas as lojas</b><div class="small muted" id="lojasSub"></div></div><button class="btn sm" id="lojasAtualizar" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/></svg> Atualizar</button></div>
+    <div id="alertas" class="admsec" style="gap:8px"></div>
+    <div class="kpis4" id="redeKpis"></div>
+    <div class="lojagrid" id="lojasGrid"></div>
+  </div>
+  <div id="admAcoes" class="admsec" hidden>
+    <div id="alertasLoja" class="admsec" style="gap:8px"></div>
     <div class="kpis4" id="admKpis"></div>
+    <div class="card admcard" id="recCard" hidden></div>
     <div class="admlbl">Ações</div>
     <div id="cfNuvem" hidden class="admgrid">
       <div class="tile prim"><div class="ti" style="--c:#2563EB"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20v-6M2 20h20"/></svg></div><div class="tt2"><b>Comparar com o sistema</b><span>Junta o que toda a equipe contou e mostra diferenças, relatório e arquivo do OM.</span></div><button class="btn pri" id="btnNuvem" type="button">Comparar agora</button></div>
       <div class="tile"><div class="ti" style="--c:#0D9488"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/></svg></div><div class="tt2"><b>Estoque do sistema</b><span id="estoqueInfo">—</span></div><button class="btn" id="btnPedirEstoque" type="button">Atualizar agora</button></div>
-      <div class="tile"><div class="ti" style="--c:#7C3AED"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 8v4l3 2"/></svg></div><div class="tt2"><b>Contagem nova</b><span>Começa do zero em todos os celulares. A atual fica guardada no histórico.</span></div><button class="btn" id="btnNovaContagem" type="button">Começar nova</button></div>
+      <div class="tile"><div class="ti" style="--c:#7C3AED"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 8v4l3 2"/></svg></div><div class="tt2"><b>Zerar a loja</b><span>Contagem nova do zero, pra todo mundo. A atual vai pro histórico. Pra limpar só uma pessoa, use "Limpar" na tabela abaixo.</span></div><button class="btn" id="btnNovaContagem" type="button">Começar nova</button></div>
       <div class="tile"><div class="ti" style="--c:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.7"/></svg></div><div class="tt2"><b>Reabrir contagem</b><span>Destrava quem finalizou, pra continuar a mesma contagem.</span></div><button class="btn" id="btnReabrirLoja" type="button">Reabrir</button></div>
     </div>
     <div class="admlbl">Equipe</div>
@@ -603,14 +637,26 @@ body.adm .app{max-width:none}
   </div>
   <div id="admRel" hidden class="admsec">
     <div class="admh" style="align-items:center"><div><b style="font-size:19px">Relatório da contagem</b><div class="small muted" id="relSub"></div></div>
-      <div class="row noprint"><button class="btn sm" id="relAtualizar" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/></svg> Atualizar</button><button class="btn sm pri" id="relPdf" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><path d="M7 14h10v7H7z"/></svg> Salvar em PDF</button></div></div>
+      <div class="row noprint"><button class="btn sm" id="relAtualizar" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/></svg> Atualizar</button><button class="btn sm" id="relXls" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg> Excel</button><button class="btn sm pri" id="relPdf" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><path d="M7 14h10v7H7z"/></svg> Salvar em PDF</button></div></div>
     <div id="relGer" class="admsec"></div>
   </div>
+  <div id="admDif" hidden class="admsec">
+    <div class="admh" style="align-items:center"><div><b style="font-size:19px">Diferenças</b><div class="small muted" id="difSub"></div></div><button class="btn sm" id="difXls" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg> Excel desta lista</button></div>
+    <div class="card admcard">
+      <div class="seg" id="difTipo"><button class="btn on" data-f="dif" type="button">Com diferença</button><button class="btn" data-f="falta" type="button">Faltando</button><button class="btn" data-f="sobra" type="button">Sobrando</button><button class="btn" data-f="nao" type="button">Não contados</button><button class="btn" data-f="ok" type="button">Batendo</button></div>
+      <div class="filtros"><select id="difCat" aria-label="Categoria"></select><select id="difOrd" aria-label="Ordenar"><option value="valor">Maior valor</option><option value="qtd">Maior quantidade</option><option value="nome">Nome</option><option value="cat">Categoria</option></select><input id="difBusca" placeholder="Buscar produto ou código"></div>
+      <div class="selbar" id="difSel" hidden><span id="difSelN"></span><button class="btn sm pri" id="difRecontar" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg> Pedir recontagem</button><button class="btn sm ghost" id="difLimparSel" type="button">Desmarcar</button></div>
+      <div class="tblwrap"><table class="tbl atbl"><thead><tr><th style="width:34px"><input type="checkbox" id="difTodos" aria-label="Marcar todos"></th><th>Produto</th><th class="hm">Categoria</th><th class="n">Sistema</th><th class="n">Contado</th><th class="n">Dif.</th><th class="n hm">Valor</th></tr></thead><tbody id="difLista"></tbody></table></div>
+      <div class="small muted" id="difInfo"></div>
+    </div>
+  </div>
   <div id="admHist" hidden class="admsec">
+    <div class="card admcard"><div class="admh"><b>Evolução</b><span class="muted small">erro e cobertura de cada contagem fechada desta loja</span></div><div id="evoGraf"></div></div>
     <div class="card admcard"><div class="admh"><b>Contagens anteriores</b><span class="muted small">Guardadas quando começou uma contagem nova</span></div><div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Período</th><th>Quem contou</th><th class="n">Itens</th><th></th></tr></thead><tbody id="histLista"></tbody></table></div></div>
-    <div class="card admcard"><div class="admh"><b>Registro de mudanças</b><span class="muted small">Últimas 300 desta loja</span></div>
-      <input id="regFiltro" placeholder="Filtrar por pessoa ou produto">
-      <div class="tblwrap"><table class="tbl atbl"><thead><tr><th>Quando</th><th>Pessoa</th><th>Produto</th><th class="n">Antes</th><th class="n">Depois</th><th class="n">Dif.</th></tr></thead><tbody id="regLista"></tbody></table></div></div>
+    <div class="card admcard"><div class="admh"><b>Registro de mudanças</b><button class="btn sm" id="regXls" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg> Excel</button></div>
+      <div class="filtros"><label class="fdata">De<input type="date" id="regDe"></label><label class="fdata">Até<input type="date" id="regAte"></label><select id="regPes" aria-label="Pessoa"></select><select id="regCat" aria-label="Categoria"></select><input id="regFiltro" placeholder="Buscar produto"><button class="btn sm pri" id="regBuscar" type="button">Filtrar</button></div>
+      <div class="small muted" id="regInfo"></div>
+      <div class="tblwrap"><table class="tbl atbl"><thead><tr><th>Quando</th><th>Pessoa</th><th>Produto</th><th class="n">Antes</th><th class="n">Agora</th><th class="n">Mudança</th><th class="n hm">Sistema</th></tr></thead><tbody id="regLista"></tbody></table></div></div>
   </div>
   <div id="admCfg" hidden class="admsec">
     <div class="card admcard admset"><div><b>Equipe</b><span class="muted small">Nomes que aparecem pra escolher em todos os celulares.</span></div>
@@ -694,25 +740,40 @@ let EQUIPE=new Map();// nome -> true se já finalizou (outros celulares)
 let OUTROS=new Map(),outrosLoja='',outrosT=0,outrosSig='';// código -> [{nome,q}] contado por OUTROS celulares (vem da planilha)
 async function buscarOutros(forcar){if(!PLANILHA||!S.loja||navigator.onLine===false)return;if(!forcar&&outrosLoja===S.loja&&Date.now()-outrosT<25000)return;
   const loja=S.loja;outrosT=Date.now();
-  try{const j=await fetch(PLANILHA+'?acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)).then(r=>r.json());if(!j.ok||loja!==S.loja)return;if(j.rodada&&j.rodada!==(S.rodada||{})[loja])novaRodadaLocal(loja,j.rodada);aplicarCfg(j.config);
+  try{const j=await fetch(PLANILHA+'?acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)+'&aparelho='+encodeURIComponent(aparelho())).then(r=>r.json());if(!j.ok||loja!==S.loja)return;if(j.rodada&&j.rodada!==(S.rodada||{})[loja])novaRodadaLocal(loja,j.rodada,false,j.limpo);aplicarCfg(j.config);RECP=j.recontar?Object.assign({loja},j.recontar):null;renderRecBan();
     if(j.reaberta&&(S.finalizadas||{})[loja]&&S.finalizadas[loja]<Date.parse(j.reaberta)){delete S.finalizadas[loja];save();header();toast('O gerente reabriu a contagem de '+nl(loja),'ok');if(!$('v-contar').hidden)view('contar');if(!$('v-contados').hidden)renderContados()}
     const m=new Map(),eq=new Map(),eu=aparelho();j.rows.forEach(([c,nome,ap,q,f])=>{if(ap!==eu)eq.set(nome,(eq.has(nome)?eq.get(nome):true)&&!!f);if(ap===eu||!q)return;if(!m.has(c))m.set(c,[]);const l=m.get(c),o=l.find(x=>x.nome===nome);o?o.q=r3(o.q+q):l.push({nome,q})});const sig=loja+JSON.stringify([...m])+JSON.stringify([...eq]);OUTROS=m;EQUIPE=eq;outrosLoja=loja;if(sig!==outrosSig){outrosSig=sig;header();renderLock();if(!$('v-contados').hidden)renderContados()}}catch(e){}}
 setInterval(()=>{if(!document.hidden&&(!$('v-contar').hidden||!$('v-contados').hidden))buscarOutros()},30000);
 // Nova contagem da loja (o gerente começou outra rodada): guarda o que este celular tinha de ANTES e segue só com o que é mais novo.
-function novaRodadaLocal(loja,rod,meu){const ts=Date.parse(rod)||Date.now();S.rodada=S.rodada||{};if(S.rodada[loja]===rod)return;S.rodada[loja]=rod;
+function novaRodadaLocal(loja,rod,meu,limpo){const ts=Date.parse(rod)||Date.now();S.rodada=S.rodada||{};if(S.rodada[loja]===rod)return;S.rodada[loja]=rod;
   const L=S.L[loja]||[],velhos=L.filter(e=>e.t<ts);S.L[loja]=L.filter(e=>e.t>=ts);
   if(velhos.length){S.arq=S.arq||{};S.arq[loja]={ate:rod,L:velhos}}
   const fin=(S.finalizadas||{})[loja]<ts;if(fin)delete S.finalizadas[loja];S.iniciadas=S.iniciadas||{};if(!(S.iniciadas[loja]>=ts))S.iniciadas[loja]=ts;
   S.pend=S.pend||{};S.pend[loja]=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
   if(loja===S.loja){header();renderRecentes();if(!$('v-contar').hidden)view('contar');if(!$('v-contados').hidden)renderContados()}
   if(velhos.length||fin||meu){const ant=velhos.length?new Date(Math.min(...velhos.map(e=>e.t))).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'';
-    setTimeout(()=>{confirmar(`Contagem nova de ${nl(loja)}`,`A lista foi zerada e a contagem começa do zero agora (${dataContagem(loja,1)}).\n\nA contagem anterior${ant?' (de '+ant+')':''} NÃO foi apagada: ficou guardada${PLANILHA?' na aba "Arquivo" da planilha':''}.`,'Começar a contar',()=>{if(S.loja===loja)view('contar')});$('modalCancelar').textContent='Fechar'},300)}clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,2000)}
+    setTimeout(()=>{if(limpo){confirmar(`Sua contagem de ${nl(loja)} foi limpa`,`O gerente tirou a sua contagem de ${nl(loja)} da contagem atual. O que você tinha bipado não foi perdido: ficou guardado no histórico.\n\nSe for contar esta loja, é só começar de novo.`,'Entendi',()=>{});$('modalCancelar').hidden=true;return}confirmar(`Contagem nova de ${nl(loja)}`,`A lista foi zerada e a contagem começa do zero agora (${dataContagem(loja,1)}).\n\nA contagem anterior${ant?' (de '+ant+')':''} NÃO foi apagada: ficou guardada${PLANILHA?' na aba "Arquivo" da planilha':''}.`,'Começar a contar',()=>{if(S.loja===loja)view('contar')});$('modalCancelar').textContent='Fechar'},300)}clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,2000)}
 function novaContagem(loja){
   confirmar('Começar contagem nova?',`Zera a contagem de ${nl(loja)} em TODOS os celulares e começa outro inventário do zero. A contagem atual não se perde: fica guardada no histórico. Só o gerente pode.`,'Começar nova',()=>setTimeout(()=>comSenha(async senha=>{
-    let j;try{j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({acao:'novaContagem',loja,senha})}).then(r=>r.text())}catch(e){toast('Sem internet','bad');return}
+    let resumo=null;try{const q=await fetch(PLANILHA+'?acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)).then(r=>r.json());
+      let rcm=null;try{const rr=await fetch(PLANILHA+'?acao=recontagens&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senha)).then(r=>r.json());if(rr.ok&&rr.recontar)rcm=rr.recontar.res}catch(e){}
+      if(q.ok&&q.rows.length){const c=calcLoja(loja,q.rows,rcm),r1=v=>Math.round(v*1000)/10,r2=v=>Math.round(v*100)/100;resumo={inicio:q.rodada||Math.min(...q.rows.map(x=>x[5]||Date.now())),T:c.T,C:c.C,E:c.E,erro:r1(c.erro),erroC:r1(c.erroC),cob:r1(c.cob),falta:r2(c.falta),sobra:r2(c.sobra),pessoas:c.pes.map(o=>o.nome).join(', ')}}}catch(e){}
+    let j;try{j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({acao:'novaContagem',loja,senha,resumo})}).then(r=>r.text())}catch(e){toast('Sem internet','bad');return}
     try{j=JSON.parse(j)}catch(e){toast('A planilha deu erro','bad');return}
     if(!j.ok){if(j.erro==='senha'){if(senhaGer()){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}}toast('Senha errada','bad')}else toast('A planilha deu erro','bad');return}
     novaRodadaLocal(loja,j.rodada,true)})))}
+/* ---------- recontagem pedida pelo gerente ---------- */
+let RECP=null;
+function recPendentes(){if(!RECP||RECP.loja!==S.loja||!RECP.cods)return[];const r=(S.recFeito||{})[S.loja],loc=r&&r.q===RECP.quando?r.c:[];const f=new Set([...(RECP.feitos||[]),...loc]);return RECP.cods.filter(c=>!f.has(c))}
+function renderRecLista(){$('recBanLista').innerHTML=recPendentes().map(c=>{const x=P.get(c)||{c,d:'Produto '+c,g:''};return`<div class="li"><div class="d">${esc(x.d)}<small>#${c} · ${esc(x.g||'')}</small></div><div class="r"><button class="btn sm pri" data-rc="${c}" type="button">Recontar</button></div></div>`}).join('')}
+function renderRecBan(){const el=$('recBan');if(!el)return;const p=recPendentes();el.hidden=!PLANILHA||!p.length;if(el.hidden)return;
+  $('recBanT').textContent='O gerente pediu pra recontar';$('recBanS').textContent=`${p.length} produto${p.length===1?'':'s'} · conte de novo e digite o total`;if(!$('recBanLista').hidden)renderRecLista()}
+$('recBanVer').onclick=()=>{const l=$('recBanLista');l.hidden=!l.hidden;$('recBanVer').textContent=l.hidden?'Ver lista':'Fechar';if(!l.hidden)renderRecLista()};
+$('recBanLista').addEventListener('click',e=>{const b=e.target.closest('[data-rc]');if(!b)return;const c=+b.dataset.rc,x=P.get(c)||{c,d:'Produto '+c,u:''},loja=S.loja,quando=RECP&&RECP.quando;
+  promptQtd('Recontar',0,x.u,q=>{(async()=>{try{const j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({chave:CHAVE_ENVIO,acao:'recontado',loja,nome:S.nome,aparelho:aparelho(),c,q,prod:x.d,sis:sis(c)})}).then(r=>r.json());if(!j.ok)throw 0;
+    S.recFeito=S.recFeito||{};const r=S.recFeito[loja]&&S.recFeito[loja].q===quando?S.recFeito[loja]:{q:quando,c:[]};r.c.push(c);S.recFeito[loja]=r;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+    toast('Recontagem enviada pro gerente','ok');renderRecBan();renderRecLista()}catch(e){toast('Sem internet. Tente de novo.','bad')}})()});
+  $('modalTexto').textContent=`${x.d}\n\nConte tudo que tem desse produto na loja (prateleira e depósito) e digite o total.`;$('modalInput').value=''});
 function quemContou(c){return outrosLoja===S.loja?(OUTROS.get(c)||[]):[]}
 function aparelho(){try{let a=localStorage.getItem('contagem-aparelho');if(!a){a=Math.random().toString(36).slice(2,8);localStorage.setItem('contagem-aparelho',a)}return a}catch(e){return 'sem-id'}}
 function agendarEnvio(){if(!PLANILHA||!S.loja||!S.nome)return;S.pend=S.pend||{};if(!S.pend[S.loja]){S.pend[S.loja]=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}if(!pendDesde)pendDesde=Date.now();clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,Math.max(0,Math.min(15000,pendDesde+30000-Date.now())));syncUI()}
@@ -720,7 +781,7 @@ function agendarEnvio(){if(!PLANILHA||!S.loja||!S.nome)return;S.pend=S.pend||{};
 function itensDe(loja){const st=ESTQ[loja]||new Map();return[...totais(loja)].map(([c,q])=>[c,r3(q),(P.get(c)||{}).d||'',(st.get(c)||{q:0}).q])}
 async function enviarPlanilha(){clearTimeout(syncT);pendDesde=0;if(!PLANILHA||!D||enviando||navigator.onLine===false)return syncUI();enviando=true;
   for(const loja of Object.keys(S.pend||{})){const itens=itensDe(loja);const v=JSON.stringify(itens);
-    try{const r=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({chave:CHAVE_ENVIO,loja,nome:S.nome,aparelho:aparelho(),finalizada:!!(S.finalizadas||{})[loja],rodada:(S.rodada||{})[loja]||'',itens})});const j=await r.json();if(j.erro==='rodada'){novaRodadaLocal(loja,j.rodada);continue}if(!j.ok)throw 0;
+    try{const r=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({chave:CHAVE_ENVIO,loja,nome:S.nome,aparelho:aparelho(),finalizada:!!(S.finalizadas||{})[loja],rodada:(S.rodada||{})[loja]||'',itens})});const j=await r.json();if(j.erro==='rodada'){novaRodadaLocal(loja,j.rodada,false,j.limpo);continue}if(!j.ok)throw 0;
       if(JSON.stringify(itensDe(loja))===v)delete S.pend[loja];S.envioOk=Date.now();S.envOk=S.envOk||{};S.envOk[loja]=S.envioOk;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}catch(e){}}
   enviando=false;syncUI();if(Object.keys(S.pend||{}).length)syncT=setTimeout(enviarPlanilha,60000)}
 function syncUI(){const el=$('syncSt');if(!el)return;if(!PLANILHA){el.hidden=true;return}el.hidden=false;const n=Object.keys(S.pend||{}).length;
@@ -742,7 +803,7 @@ function trancado(){if(!fechada())return false;toast('Contagem finalizada. Só o
 function dataContagem(l,hora){const r=(S.rodada||{})[l],ts=r?Date.parse(r):(S.iniciadas||{})[l];if(!ts)return'';return new Date(ts).toLocaleString('pt-BR',hora?{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}:{day:'2-digit',month:'2-digit'})}
 function statusLoja(l){if((S.finalizadas||{})[l])return 'fin';if((S.iniciadas||{})[l])return 'and';return 'novo'}
 let modalCb=null;
-function fecharModal(){$('modalBack').hidden=true;modalCb=null;$('modalCancelar').textContent='Cancelar';$('modalInput').hidden=true;$('modalInput').type='text';$('modalInput').value=''}
+function fecharModal(){$('modalBack').hidden=true;$('modalCancelar').hidden=false;modalCb=null;$('modalCancelar').textContent='Cancelar';$('modalInput').hidden=true;$('modalInput').type='text';$('modalInput').value=''}
 function confirmar(titulo,texto,textoOk,cb,danger){$('modalTitulo').textContent=titulo;$('modalTexto').textContent=texto;const ok=$('modalOk');ok.textContent=textoOk||'Confirmar';ok.style.background=danger?'var(--red)':'';ok.style.borderColor=danger?'var(--red)':'';$('modalInput').hidden=true;modalCb=cb;$('modalBack').hidden=false}
 function comSenha(fn){const s=senhaGer();if(s){fn(s);return}
   $('modalTitulo').textContent='Senha do gerente';$('modalTexto').textContent='Só o gerente pode fazer isso. Digite a senha:';
@@ -1164,17 +1225,18 @@ const senhaGer=()=>{try{return localStorage.getItem('contagem-senha-gerente')||'
 const getPl=q=>fetch(PLANILHA+'?'+q).then(r=>r.json());
 function postPl(o){return fetch(PLANILHA,{method:'POST',body:JSON.stringify(Object.assign({senha:senhaGer()},o))}).then(r=>r.text()).then(t=>{try{return JSON.parse(t)}catch(e){return{ok:false,erro:'planilha'}}})}
 function erroPl(j){if(j.erro==='senha'){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}toast('Senha errada. Entre de novo.','bad');painel()}else toast('A planilha deu erro','bad')}
-function painel(){const precisa=PLANILHA&&!senhaGer();$('admLogin').hidden=!precisa;$('admTudo').hidden=precisa;$('admSair').hidden=!PLANILHA||precisa;$('admTopo').hidden=!PLANILHA||precisa;if(!precisa&&PLANILHA)admStatus()}
+function painel(){const precisa=PLANILHA&&!senhaGer();$('admLogin').hidden=!precisa;$('admTudo').hidden=precisa;$('admSair').hidden=!PLANILHA||precisa;$('admTopo').hidden=!PLANILHA||precisa;if(!precisa&&PLANILHA)admAba(abaAtual())}
 $('admEntrar').onclick=async()=>{const s=$('admSenha').value.trim();if(!s)return;
   try{const j=await getPl('senha='+encodeURIComponent(s));if(!j.ok){toast('Senha errada','bad');return}}catch(e){toast('Sem internet','bad');return}
   try{localStorage.setItem('contagem-senha-gerente',s)}catch(e){}$('admSenha').value='';painel()};
 $('admSenha').addEventListener('keydown',e=>{if(e.key==='Enter')$('admEntrar').click()});
 $('admSair').onclick=()=>{try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}painel()};
 $('admTabs').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b)return;admAba(b.dataset.t)});
-function admAba(t){[...$('admTabs').children].forEach(x=>x.classList.toggle('on',x.dataset.t===t));$('admAcoes').hidden=t!=='acoes';$('admRel').hidden=t!=='rel';$('admHist').hidden=t!=='hist';$('admCfg').hidden=t!=='cfg';
-  if(t==='hist')admHist();if(t==='cfg')admCfg();if(t==='acoes')admStatus();if(t==='rel')admRel()}
-$('cfLoja').addEventListener('change',()=>{$('cmpOut').hidden=true;const t=[...$('admTabs').children].find(x=>x.classList.contains('on')).dataset.t;admAba(t)});
-let admSeq=0;
+function admAba(t){[...$('admTabs').children].forEach(x=>x.classList.toggle('on',x.dataset.t===t));const b=$('admTabs').querySelector('.on');if(b&&b.scrollIntoView)b.scrollIntoView({block:'nearest',inline:'nearest'});
+  $('admLojas').hidden=t!=='lojas';$('admAcoes').hidden=t!=='acoes';$('admRel').hidden=t!=='rel';$('admDif').hidden=t!=='dif';$('admHist').hidden=t!=='hist';$('admCfg').hidden=t!=='cfg';$('admTopo').classList.toggle('semloja',t==='lojas'||t==='cfg');
+  if(t==='lojas')admLojas();if(t==='hist')admHist();if(t==='cfg')admCfg();if(t==='acoes')admStatus();if(t==='rel')admRel();if(t==='dif')admDif();document.querySelector('main').scrollTop=0}
+$('cfLoja').addEventListener('change',()=>{$('cmpOut').hidden=true;DIFSEL.clear();admAba(abaAtual())});
+let admSeq=0,ADM_PES=new Map();
 async function admStatus(){const loja=$('cfLoja').value;if(!PLANILHA||!loja)return;const seq=++admSeq;
   $('estoqueInfo').textContent=D?'Versão no app: '+D.gerado:'—';
   const KI={"Situação": ["#2563EB", "<path d=\"M3 12h4l3-8 4 16 3-8h4\"/>"], "Produtos contados": ["#0D9488", "<path d=\"M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8\"/>"], "Cobertura": ["#7C3AED", "<circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"1\"/>"], "Equipe": ["#D97706", "<circle cx=\"9\" cy=\"8\" r=\"3.5\"/><path d=\"M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6\"/>"]};
@@ -1182,16 +1244,21 @@ async function admStatus(){const loja=$('cfLoja').value;if(!PLANILHA||!loja)retu
   if(!$('admKpis').childElementCount)$('admKpis').innerHTML=Object.keys(KI).map(l=>`<div class="kpi4"><div class="l">${l}</div><span class="sk" style="width:60%;height:24px;margin:4px 0"></span><span class="sk" style="width:80%"></span></div>`).join('');
   $('admStatus').innerHTML='<span class="sk" style="height:40px"></span>';
   try{const j=await getPl('acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja));if(seq!==admSeq)return;if(!j.ok)throw 0;
-    const pes=new Map(),cods=new Set();j.rows.forEach(([c,nome,ap,q,f,t])=>{cods.add(c);const o=pes.get(nome)||{n:0,fin:true,t:0};o.n++;o.fin=o.fin&&!!f;o.t=Math.max(o.t,t||0);pes.set(nome,o)});
+    const pes=new Map(),cods=new Set();j.rows.forEach(([c,nome,ap,q,f,t])=>{cods.add(c);const o=pes.get(nome)||{n:0,fin:true,t:0,aps:new Set()};o.n++;o.fin=o.fin&&!!f;o.t=Math.max(o.t,t||0);o.aps.add(ap);pes.set(nome,o)});
+    const ATIVO=2*3600e3,ativo=o=>!o.fin&&o.t&&Date.now()-o.t<ATIVO;ADM_PES=pes;
     const st=ESTQ[loja]||new Map();let pos=0,cob=0;for(const [c,x] of st)if(x.q>0){pos++;if(cods.has(c))cob++}const pc=pos?cob/pos*100:0;
     const fins=[...pes.values()].filter(o=>o.fin).length,dt=t=>new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-    const ult=Math.max(0,...[...pes.values()].map(o=>o.t));
-    $('admAtual').textContent=j.rodada?'Contagem iniciada em '+dt(j.rodada):'';
-    $('admKpis').innerHTML=kp('Situação',!pes.size?'Sem contagem':fins===pes.size?'Finalizada':'Em andamento',ult?'Última atividade '+dt(ult):'Ninguém enviou ainda')+
+    const ult=Math.max(0,...[...pes.values()].map(o=>o.t)),nAtivo=[...pes.values()].filter(ativo).length;
+    $('admAtual').textContent=j.rodada?'Contagem iniciada em '+dt(j.rodada):'';renderRecCard(j.recontar);$('alertasLoja').innerHTML=htmlAlertas(alertaEstoque().concat(alertasDe(calcLoja(loja,j.rows),j.recontar)));
+    $('admKpis').innerHTML=kp('Situação',!pes.size?'Sem contagem':fins===pes.size?'Finalizada':nAtivo?'Em andamento':'Parada',!pes.size?'Ninguém enviou ainda':nAtivo?`${nAtivo} contando agora`:'Última atividade '+dt(ult))+
       kp('Produtos contados',cods.size.toLocaleString('pt-BR'),'pela equipe toda')+kp('Cobertura',pc.toFixed(0)+'%',`${cob.toLocaleString('pt-BR')} de ${pos.toLocaleString('pt-BR')} com estoque`,pc>0?pc:null)+
       kp('Equipe',pes.size?pes.size+(pes.size===1?' pessoa':' pessoas'):'—',fins?`${fins} finalizou${fins>1?'ram':''}`:pes.size?'ninguém finalizou ainda':'');
-    $('admStatus').innerHTML=pes.size?`<div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Pessoa</th><th class="n">Itens</th><th>Situação</th><th class="n">Última atividade</th></tr></thead><tbody>${[...pes].sort((a,b)=>b[1].n-a[1].n).map(([n,o])=>`<tr><td><b>${esc(n||'sem nome')}</b></td><td class="n num">${o.n.toLocaleString('pt-BR')}</td><td>${o.fin?'<span class="st fin">✓ Finalizou</span>':'<span class="st and">● Contando</span>'}</td><td class="n">${o.t?dt(o.t):'—'}</td></tr>`).join('')}</tbody></table></div>`:`<div class="vazio2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/></svg><b style="color:var(--ink2)">Ninguém contou esta loja ainda</b>Quando alguém começar a bipar, aparece aqui em até 30 segundos.</div>`}
+    $('admStatus').innerHTML=pes.size?`<div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Pessoa</th><th class="n">Itens</th><th>Situação</th><th class="n hm">Última atividade</th><th></th></tr></thead><tbody>${[...pes].sort((a,b)=>b[1].n-a[1].n).map(([n,o])=>`<tr><td><b>${esc(n||'sem nome')}</b></td><td class="n num">${o.n.toLocaleString('pt-BR')}</td><td>${o.fin?'<span class="st fin">✓ Finalizou</span>':ativo(o)?'<span class="st and">● Contando agora</span>':`<span class="st par">Parado desde ${o.t?dt(o.t):'—'}</span>`}</td><td class="n hm">${o.t?dt(o.t):'—'}</td><td class="n"><button class="btn sm" data-limpa="${esc(n)}" type="button">Limpar</button></td></tr>`).join('')}</tbody></table></div>`:`<div class="vazio2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/></svg><b style="color:var(--ink2)">Ninguém contou esta loja ainda</b>Quando alguém começar a bipar, aparece aqui em até 30 segundos.</div>`}
   catch(e){if(seq!==admSeq)return;$('admKpis').innerHTML='';$('admStatus').innerHTML='<div class="vazio2"><b style="color:var(--ink2)">Sem conexão com a planilha</b>Confira a internet e troque de aba pra tentar de novo.</div>'}}
+$('admStatus').addEventListener('click',e=>{const b=e.target.closest('[data-limpa]');if(!b)return;const nome=b.dataset.limpa,o=ADM_PES.get(nome),loja=$('cfLoja').value;if(!o)return;
+  confirmar(`Limpar a contagem de ${nome||'sem nome'}?`,`Os ${o.n.toLocaleString('pt-BR')} itens que ${nome||'essa pessoa'} contou em ${nl(loja)} saem da contagem atual e do relatório. Nada é apagado: vai pro histórico.\n\nO celular dela também é zerado pra esta loja, sozinho. Use pra testes, contagem errada ou quem não está mais contando. A contagem dos outros não muda.`,'Limpar',async()=>{
+    let j;try{j=await postPl({acao:'limparPessoa',loja,nome,aparelhos:[...o.aps]})}catch(e){toast('Sem internet','bad');return}if(!j.ok)return erroPl(j);
+    relLoja='';toast(`Contagem de ${nome||'sem nome'} limpa (${j.removidas} itens)`,'ok');admStatus()},true)});
 $('btnReabrirLoja').onclick=()=>{const loja=$('cfLoja').value;confirmar('Reabrir a contagem?',`Destrava ${nl(loja)} em todos os celulares que finalizaram, pra continuarem a MESMA contagem (somando). Pra começar do zero, use "Contagem nova".`,'Reabrir',async()=>{
   let j;try{j=await postPl({acao:'reabrirLoja',loja})}catch(e){toast('Sem internet','bad');return}if(!j.ok)return erroPl(j);
   if((S.finalizadas||{})[loja]){delete S.finalizadas[loja];save();header()}toast('Reaberta. Os celulares destravam em até 30 segundos.','ok')})};
@@ -1217,30 +1284,180 @@ function renderRelGer(){const R=relCalc(),esc_=Math.max(.3,...relCalc().cats.fil
   h+=`<div class="card admcard"><div class="admh"><b>Maiores diferenças</b><span class="muted small">as 10 que mais pesam em valor</span></div><div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Produto</th><th class="hm">Categoria</th><th class="n hm">Sistema</th><th class="n hm">Contado</th><th class="n">Diferença</th><th class="n">Valor</th></tr></thead><tbody>${
     R.top.map(x=>`<tr><td>${esc(x.p.d)} <span class="muted">#${x.p.c}</span></td><td class="hm">${esc(x.p.g||'')}</td><td class="n num hm">${fQ(x.s)}</td><td class="n num hm">${fQ(x.k)}</td><td class="n num ${x.d>0?'dpos':'dneg'}">${sinal(x.d)}</td><td class="n num ${x.d>0?'dpos':'dneg'}">${x.d>0?'+':''}${fR(x.d*x.v)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">Nenhuma diferença.</td></tr>'
     }</tbody></table></div></div>`;
-  h+=`<div class="card admcard"><div class="admh"><b>Equipe</b><span class="muted small">itens que cada pessoa contou e quantos bateram</span></div><div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Pessoa</th><th class="n">Itens</th><th class="n">Bateram</th><th class="n">Com erro</th></tr></thead><tbody>${
-    eq.map(e=>`<tr><td><b>${esc(e.nome||'sem nome')}</b></td><td class="n num">${n(e.n)}</td><td class="n num">${e.n?pct(e.ok/e.n):'—'}</td><td class="n num">${n(e.n-e.ok)}</td></tr>`).join('')}</tbody></table></div></div>`;
+  h+=`<div class="card admcard"><div class="admh"><b>Equipe e produtividade</b><span class="muted small">tempo = do primeiro ao último envio (inclui pausas)</span></div><div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Pessoa</th><th class="n">Itens</th><th class="n">Bateram</th><th class="n">Com erro</th><th class="n hm">Começou</th><th class="n hm">Última</th><th class="n">Tempo</th><th class="n">Itens/hora</th></tr></thead><tbody>${
+    eq.map(e=>{const p=PROD[e.nome]||{},ms=p.ini?p.fim-p.ini:0;return`<tr><td><b>${esc(e.nome||'sem nome')}</b></td><td class="n num">${n(e.n)}</td><td class="n num">${e.n?pct(e.ok/e.n):'—'}</td><td class="n num">${n(e.n-e.ok)}</td><td class="n hm">${p.ini?dtc(p.ini):'—'}</td><td class="n hm">${p.fim?dtc(p.fim):'—'}</td><td class="n num">${tempoTxt(ms)}</td><td class="n num">${ms>=6e5?Math.round(e.n/(ms/3600e3)):'—'}</td></tr>`}).join('')}</tbody></table></div></div>`;
   h+=`<div class="def"><b>Como ler:</b> o <b>erro</b> é a quantidade de itens em que a contagem não bateu com o sistema, dividida pelo total de itens da loja (ou da categoria). Itens ainda não contados não entram como erro, então confira a coluna "Contados". Níveis: Ótimo até 5% · Atenção de 5% a 15% · Crítico acima de 15%. Vendas e entradas feitas depois de ${esc(D.gerado)} aparecem como diferença.</div>`;
   $('relGer').innerHTML=h}
 async function admRel(forcar){const loja=$('cfLoja').value,el=$('relGer');if(!PLANILHA||!loja)return;
-  if(!forcar&&CMP&&CMP.loja===loja&&relLoja===loja){renderRelGer();return}
+  if(!forcar&&CMP&&CMP.loja===loja&&CMP.daPlanilha&&relLoja===loja){renderRelGer();return}
   const seq=++relSeq;$('relSub').textContent=nl(loja);el.innerHTML='<div class="kpis4">'+'<div class="kpi4"><span class="sk" style="width:50%"></span><span class="sk" style="width:70%;height:28px;margin:6px 0"></span><span class="sk"></span></div>'.repeat(4)+'</div><div class="card admcard"><span class="sk" style="height:120px"></span></div>';
-  try{const j=await getPl('loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer()));if(seq!==relSeq)return;if(!j.ok){el.innerHTML='';return erroPl(j)}
-    if(!j.rows.length){CMP=null;$('cmpOut').hidden=true;el.innerHTML=`<div class="card admcard"><div class="vazio2"><b style="color:var(--ink2)">Ainda não tem contagem de ${esc(nl(loja))}</b>O relatório aparece aqui assim que alguém começar a contar esta loja.</div></div>`;return}
-    const g=new Map();j.rows.forEach(([nome,ap,c,q])=>{const k=nome+'|'+ap;if(!g.has(k))g.set(k,{nome,l:[]});g.get(k).l.push(c+';'+String(q).replace('.',','))});
-    $('txtJuntar').value=[...g.values()].map(b=>`CONTAGEM|${loja}|${b.nome}|planilha|${b.l.length} produtos\n`+b.l.join('\n')).join('\n');$('btnJuntar').click();
-    if(!CMP||CMP.loja!==loja){el.innerHTML='';return}relLoja=loja;renderRelGer()}
+  try{const [c,pr]=await Promise.all([carregarCMP(loja,forcar),getPl('acao=equipe&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer())).catch(()=>({}))]);if(seq!==relSeq)return;
+    PROD=(pr&&pr.ok&&pr.pessoas)||{};
+    if(!c){el.innerHTML=`<div class="card admcard"><div class="vazio2"><b style="color:var(--ink2)">Ainda não tem contagem de ${esc(nl(loja))}</b>O relatório aparece aqui assim que alguém começar a contar esta loja.</div></div>`;return}
+    relLoja=loja;renderRelGer()}
   catch(e){if(seq===relSeq)el.innerHTML='<div class="card admcard"><div class="vazio2"><b style="color:var(--ink2)">Sem conexão com a planilha</b>Confira a internet e toque em Atualizar.</div></div>'}}
+$('relXls').onclick=exportarExcel;
 $('relAtualizar').onclick=()=>admRel(true);
 $('relPdf').onclick=()=>{if(!CMP)return;const t=document.title;document.title=nomeArq(`Relatorio_contagem_${nl(CMP.loja)}_${new Date().toISOString().slice(0,10)}`);window.print();setTimeout(()=>document.title=t,1500)};
+/* ---------- painel: base comum ---------- */
+const abaAtual=()=>([...$('admTabs').children].find(x=>x.classList.contains('on'))||{dataset:{t:'lojas'}}).dataset.t;
+const dtc=t=>new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+const ATIVO_MS=2*3600e3;
+// números de uma loja a partir das linhas da planilha [código,pessoa,aparelho,qtd,finalizou,hora]
+function calcLoja(loja,rows,rec){const st=ESTQ[loja]||new Map(),tot=new Map(),pes=new Map();
+  rows.forEach(([c,nome,ap,q,f,t])=>{tot.set(c,(tot.get(c)||0)+q);const o=pes.get(nome)||{nome,cods:new Set(),fin:true,t:0,aps:new Set()};o.cods.add(c);o.fin=o.fin&&!!f;o.t=Math.max(o.t,t||0);o.aps.add(ap);pes.set(nome,o)});
+  if(rec)for(const [c,q] of Object.entries(rec))if(tot.has(+c))tot.set(+c,+q);// recontagem vale no lugar da soma
+  const all=new Set(tot.keys());for(const [c,x] of st)if(x.q>0)all.add(c);
+  let T=0,C=0,E=0,falta=0,sobra=0;const dif=new Set();
+  for(const c of all){T++;if(!tot.has(c))continue;C++;const s=(st.get(c)||{q:0}).q,d=r3(tot.get(c)-s);if(d!==0){E++;dif.add(c);const v=preco(c,loja);if(d<0)falta+=d*v;else sobra+=d*v}}
+  const P_=[...pes.values()].map(o=>({nome:o.nome,n:o.cods.size,fin:o.fin,t:o.t,aps:o.aps,ativo:!o.fin&&o.t&&Date.now()-o.t<ATIVO_MS,erros:[...o.cods].filter(c=>dif.has(c)).length}));
+  const ult=Math.max(0,...P_.map(o=>o.t)),ativos=P_.filter(o=>o.ativo).length,fins=P_.filter(o=>o.fin).length;
+  const sit=!P_.length?'sem':fins===P_.length?'fin':ativos?'and':'par';
+  return{loja,T,C,E,falta,sobra,erro:T?E/T:0,erroC:C?E/C:0,cob:T?C/T:0,pes:P_,ult,ativos,fins,sit}}
+const SIT={sem:['sem','Sem contagem'],fin:['fin','Finalizada'],and:['and','Em andamento'],par:['par','Parada']};
+function dataEstoque(){const m=String(D&&D.gerado||'').match(/(\d+)\/(\d+)\/(\d+)\D+(\d+):(\d+)/);return m?new Date(+m[3],m[2]-1,+m[1],+m[4],+m[5]).getTime():0}
+// alertas: o que merece atenção agora
+function alertasDe(c,rec){const a=[];if(!c||c.sit==='sem')return a;
+  if(c.sit==='par')a.push(['#B45309',`<b>${esc(nl(c.loja))}</b> está parada: ninguém mexe desde ${dtc(c.ult)}.`]);
+  if(c.C>=20&&c.erroC>.15)a.push(['#DC2626',`<b>${esc(nl(c.loja))}</b> com erro alto: ${pct(c.erroC)} dos itens contados não bateram.`]);
+  c.pes.filter(o=>o.n>=20&&o.erros/o.n>.2).forEach(o=>a.push(['#DC2626',`<b>${esc(o.nome||'sem nome')}</b> em ${esc(nl(c.loja))}: ${pct(o.erros/o.n)} de erro nos ${o.n} itens que contou.`]));
+  if(rec&&rec.cods&&rec.cods.length){const f=(rec.feitos||[]).length,falt=rec.cods.length-f;if(falt>0&&Date.now()-Date.parse(rec.quando)>24*3600e3)a.push(['#B45309',`Recontagem de <b>${esc(nl(c.loja))}</b> pedida em ${dtc(rec.quando)}: faltam ${falt} de ${rec.cods.length}.`])}
+  return a}
+function alertaEstoque(){const t=dataEstoque();if(!t||Date.now()-t<24*3600e3)return[];const h=Math.round((Date.now()-t)/3600e3);
+  return[['#B45309',`O estoque do sistema no app é de <b>${esc(D.gerado)}</b> (${h<48?h+' horas':Math.round(h/24)+' dias'} atrás). Atualize antes de comparar.`,'<button class="btn sm" data-alerta="estoque" type="button">Atualizar agora</button>']]}
+const htmlAlertas=l=>l.map(([c,t,b])=>`<div class="alerta" style="--c:${c}"><span>${t}</span>${b||''}</div>`).join('');
+document.addEventListener('click',e=>{const b=e.target.closest('[data-alerta="estoque"]');if(b)$('btnPedirEstoque').click()});
+
+/* ---------- todas as lojas ---------- */
+let lojasSeq=0;
+async function admLojas(){if(!PLANILHA||!D)return;const seq=++lojasSeq;$('lojasSub').textContent='Carregando…';
+  if(!$('lojasGrid').childElementCount)$('lojasGrid').innerHTML='<div class="lc"><span class="sk" style="height:110px"></span></div>'.repeat(3);
+  let j;try{j=await getPl('acao=todas&chave='+encodeURIComponent(CHAVE_ENVIO)+'&lojas='+encodeURIComponent(D.lojas.join('|')))}catch(e){if(seq===lojasSeq){$('lojasSub').textContent='Sem conexão com a planilha. Toque em Atualizar.'}return}
+  if(seq!==lojasSeq)return;if(!j.ok){$('lojasSub').textContent='A planilha deu erro.';return}
+  const L=D.lojas.map(l=>{const x=j.lojas[l]||{rows:[]};const c=calcLoja(l,x.rows);c.rec=x.recontar;c.rodada=x.rodada;return c});
+  const com=L.filter(c=>c.sit!=='sem'),sT=com.reduce((a,c)=>a+c.T,0),sE=com.reduce((a,c)=>a+c.E,0),sC=com.reduce((a,c)=>a+c.C,0);
+  const kp=(l,v,s,cor)=>`<div class="kpi4${cor?' dest':''}"${cor?` style="--c:${cor}"`:''}><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+  $('redeKpis').innerHTML=kp('Lojas em contagem',`${com.filter(c=>c.sit==='and'||c.sit==='par').length} de ${L.length}`,`${L.filter(c=>c.sit==='fin').length} finalizada(s) · ${L.filter(c=>c.ativos).reduce((a,c)=>a+c.ativos,0)} pessoa(s) contando agora`)+
+    kp('Erro geral da rede',com.length?pct(sT?sE/sT:0):'—',com.length?`${sE.toLocaleString('pt-BR')} de ${sT.toLocaleString('pt-BR')} itens das lojas em contagem`:'nenhuma loja em contagem',com.length?nivelErro(sT?sE/sT:0)[0]:null)+
+    kp('Itens contados',sC.toLocaleString('pt-BR'),'somando todas as lojas')+
+    kp('Diferença em valor',fR(com.reduce((a,c)=>a+c.falta+c.sobra,0)),`faltando ${fR(com.reduce((a,c)=>a+c.falta,0))} · sobrando +${fR(com.reduce((a,c)=>a+c.sobra,0))}`);
+  const al=alertaEstoque().concat(...L.map(c=>alertasDe(c,c.rec)));$('alertas').innerHTML=htmlAlertas(al);
+  $('lojasGrid').innerHTML=L.map(c=>{const [cls,txt]=SIT[c.sit],ce=nivelErro(c.erro)[0],na=alertasDe(c,c.rec).length;
+    return`<button class="lc" data-loja="${esc(c.loja)}" type="button"><div class="top"><b>${esc(nl(c.loja))}</b><span class="st ${cls}">${txt}</span></div>
+      ${c.sit==='sem'?'<div class="small muted">Ninguém contou esta loja ainda.</div>':`<div class="nums"><div><small>Contado</small><b>${pct(c.cob)}</b></div><div><small>Erro</small><b style="color:${ce}">${pct(c.erro)}</b></div><div><small>Itens</small><b>${c.C.toLocaleString('pt-BR')}</b></div></div>
+      <div class="prog"><i style="width:${Math.min(100,c.cob*100)}%"></i></div>
+      <div class="who">${c.pes.map(o=>`<span><b>${esc(o.nome||'sem nome')}</b> ${o.fin?'✓':o.ativo?'● contando':'parado'}</span>`).join('')}</div>
+      <div class="small muted">Última atividade ${dtc(c.ult)}${c.rec&&c.rec.cods?` · recontagem ${(c.rec.feitos||[]).length}/${c.rec.cods.length}`:''}</div>`}
+      ${na?`<div class="alr">${na} alerta${na>1?'s':''}</div>`:''}</button>`}).join('');
+  $('lojasSub').textContent=`Atualizado ${dtc(Date.now())} · estoque do sistema de ${D.gerado}`}
+$('lojasGrid').addEventListener('click',e=>{const b=e.target.closest('[data-loja]');if(!b)return;$('cfLoja').value=b.dataset.loja;$('cmpOut').hidden=true;admAba('acoes')});
+$('lojasAtualizar').onclick=admLojas;
+
+/* ---------- comparação (relatório, diferenças) ---------- */
+let RECONT=null;// recontagens a aplicar na próxima comparação
+async function carregarCMP(loja,forcar){if(!forcar&&CMP&&CMP.loja===loja&&CMP.daPlanilha)return CMP;
+  const j=await getPl('loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer()));if(!j.ok){erroPl(j);throw 0}
+  if(!j.rows.length){CMP=null;$('cmpOut').hidden=true;return null}
+  const g=new Map();j.rows.forEach(([nome,ap,c,q])=>{const k=nome+'|'+ap;if(!g.has(k))g.set(k,{nome,l:[]});g.get(k).l.push(c+';'+String(q).replace('.',','))});
+  RECONT={loja,m:new Map(Object.entries(j.recont||{}).map(([c,q])=>[+c,+q]))};
+  $('txtJuntar').value=[...g.values()].map(b=>`CONTAGEM|${loja}|${b.nome}|planilha|${b.l.length} produtos\n`+b.l.join('\n')).join('\n');$('btnJuntar').click();
+  if(!CMP||CMP.loja!==loja)return null;CMP.daPlanilha=true;CMP.recPed=new Set((j.recPed||[]).map(Number));CMP.recQuando=j.recQuando;CMP.rodada=j.rodada;return CMP}
+
+/* ---------- relatório: produtividade e Excel ---------- */
+let PROD={};
+function tempoTxt(ms){const m=Math.round(ms/60000);return m<1?'—':m<60?m+' min':Math.floor(m/60)+'h'+String(m%60).padStart(2,'0')}
+function exportarExcel(){if(!CMP)return;const R=relCalc(),G=grupoCmp(),eq=indic().eq,wb=XLSX.utils.book_new();
+  const add=(n,rows,cols)=>{const ws=Array.isArray(rows[0])?XLSX.utils.aoa_to_sheet(rows):XLSX.utils.json_to_sheet(rows.length?rows:[{'Sem dados':''}]);if(cols)ws['!cols']=cols;XLSX.utils.book_append_sheet(wb,ws,n)};
+  const r1=v=>Math.round(v*1000)/10,r2=v=>Math.round(v*100)/100;
+  const linha=x=>({'Código':x.p.c,'Produto':x.p.d,'Categoria':x.p.g,'Unidade':un(x.p.u),'Sistema':x.s,'Contado':x.k===null?'':x.k,'Diferença':x.d===null?'':x.d,'Recontado':x.rc?'sim':'','Preço de venda':x.v,'Valor da diferença':x.d===null?'':r2(x.d*x.v),'Quem contou':x.o.join(' | ')});
+  const C=[{wch:9},{wch:50},{wch:24},{wch:8},{wch:10},{wch:10},{wch:10},{wch:10},{wch:13},{wch:16},{wch:40}];
+  add('Resumo',[['Relatório da contagem',nl(CMP.loja)],['Gerado em',new Date().toLocaleString('pt-BR')],['Estoque do sistema de',D.gerado],[],
+    ['Erro geral (%)',r1(R.erro),'itens com diferença ÷ itens da loja'],['Itens da loja',R.T],['Itens contados',R.C],['Itens com erro',R.E],['Erro entre os contados (%)',r1(R.erroC)],['Cobertura (%)',r1(R.T?R.C/R.T:0)],
+    ['Faltando (R$, preço de venda)',r2(R.falta)],['Sobrando (R$, preço de venda)',r2(R.sobra)],['Diferença líquida (R$)',r2(R.falta+R.sobra)]],[{wch:32},{wch:22},{wch:40}]);
+  add('Por categoria',R.cats.map(o=>({'Categoria':o.g,'Itens':o.t,'Contados':o.c,'Com erro':o.e,'Erro (%)':r1(o.e/o.t),'Faltando (R$)':r2(o.falta),'Sobrando (R$)':r2(o.sobra)})).concat([{'Categoria':'GERAL','Itens':R.T,'Contados':R.C,'Com erro':R.E,'Erro (%)':r1(R.erro),'Faltando (R$)':r2(R.falta),'Sobrando (R$)':r2(R.sobra)}]),[{wch:30},{wch:8},{wch:10},{wch:10},{wch:9},{wch:14},{wch:14}]);
+  const ord=(a,b)=>Math.abs((b.d||0)*b.v)-Math.abs((a.d||0)*a.v);
+  add('Diferenças',G.div.slice().sort(ord).map(linha),C);add('Não contados',G.nao.slice().sort((a,b)=>b.s*b.v-a.s*a.v).map(linha),C);add('Batendo',G.ok.map(linha),C);
+  add('Equipe',eq.map(e=>{const p=PROD[e.nome]||{};const ms=p.ini?p.fim-p.ini:0;return{'Pessoa':e.nome||'sem nome','Itens':e.n,'Bateram (%)':e.n?r1(e.ok/e.n):'','Com erro':e.n-e.ok,'Começou':p.ini?new Date(p.ini).toLocaleString('pt-BR'):'','Última atividade':p.fim?new Date(p.fim).toLocaleString('pt-BR'):'','Tempo':tempoTxt(ms),'Itens por hora':ms>=6e5?Math.round(e.n/(ms/3600e3)):''}}),[{wch:18},{wch:8},{wch:11},{wch:9},{wch:18},{wch:18},{wch:9},{wch:13}]);
+  if(CMP.recPed&&CMP.recPed.size)add('Recontagem',[...CMP.recPed].map(c=>{const x=CMP.L.find(y=>y.p.c===c)||{p:P.get(c)||{c,d:'Produto '+c,g:''},s:'',k:'',rc:false};return{'Código':c,'Produto':x.p.d,'Categoria':x.p.g,'Sistema':x.s,'Contado / recontado':x.k===null?'':x.k,'Situação':x.rc?'recontado':'aguardando'}}),[{wch:9},{wch:50},{wch:24},{wch:10},{wch:18},{wch:12}]);
+  baixar(wb,nomeArq(`relatorio_${nl(CMP.loja)}_${new Date().toISOString().slice(0,10)}.xlsx`))}
+
+/* ---------- diferenças ---------- */
+let DIFSEL=new Set(),DIFLIM=300,DIFF='dif',difSeq=0;
+async function admDif(forcar){const loja=$('cfLoja').value;if(!PLANILHA||!loja)return;const seq=++difSeq;$('difSub').textContent=nl(loja)+' · carregando…';
+  try{await carregarCMP(loja,forcar)}catch(e){if(seq===difSeq)$('difSub').textContent='Sem conexão com a planilha.';return}if(seq!==difSeq)return;
+  if(!CMP||CMP.loja!==loja){$('difSub').textContent=nl(loja);$('difLista').innerHTML=`<tr><td colspan="7">${vazio('list','Ainda não tem contagem desta loja.')}</td></tr>`;$('difInfo').textContent='';return}
+  const cats=[...new Set(CMP.L.map(x=>x.p.g||'Sem categoria'))].sort();const cur=$('difCat').value;$('difCat').innerHTML='<option value="">Todas as categorias</option>'+cats.map(g=>`<option${g===cur?' selected':''}>${esc(g)}</option>`).join('');
+  $('difSub').textContent=`${nl(loja)} · estoque do sistema de ${D.gerado}`;renderDif()}
+function listaDif(){const q=norm($('difBusca').value),g=$('difCat').value,o=$('difOrd').value;
+  let L=CMP.L.filter(x=>DIFF==='dif'?x.k!==null&&x.d!==0:DIFF==='falta'?x.k!==null&&x.d<0:DIFF==='sobra'?x.k!==null&&x.d>0:DIFF==='nao'?x.k===null&&x.s>0:x.k!==null&&x.d===0);
+  if(g)L=L.filter(x=>(x.p.g||'Sem categoria')===g);if(q)L=L.filter(x=>norm(x.p.d+' '+x.p.c).includes(q));
+  const ab=x=>Math.abs((x.d===null?x.s:x.d)*x.v);
+  L.sort(o==='valor'?(a,b)=>ab(b)-ab(a):o==='qtd'?(a,b)=>Math.abs(b.d===null?b.s:b.d)-Math.abs(a.d===null?a.s:a.d):o==='cat'?(a,b)=>(a.p.g||'').localeCompare(b.p.g||'')||a.p.d.localeCompare(b.p.d):(a,b)=>a.p.d.localeCompare(b.p.d));return L}
+function renderDif(){if(!CMP)return;const L=listaDif(),V=L.slice(0,DIFLIM);
+  $('difLista').innerHTML=V.length?V.map(x=>{const dd=x.d===null?null:x.d,tag=x.rc?'<span class="tagrc ok">recontado</span>':CMP.recPed.has(x.p.c)?'<span class="tagrc">recontagem pedida</span>':'';
+    return`<tr><td><input type="checkbox" data-sel="${x.p.c}"${DIFSEL.has(x.p.c)?' checked':''} aria-label="Marcar"></td><td>${esc(x.p.d)} <span class="muted">#${x.p.c}</span>${tag}</td><td class="hm">${esc(x.p.g||'')}</td><td class="n num">${fQ(x.s)}</td><td class="n num">${x.k===null?'—':fQ(x.k)}</td><td class="n num ${dd>0?'dpos':dd<0?'dneg':''}">${dd===null?'—':sinal(dd)}</td><td class="n num hm ${dd>0?'dpos':dd<0?'dneg':''}">${dd===null?fR(x.s*x.v):(dd>0?'+':'')+fR(dd*x.v)}</td></tr>`}).join(''):`<tr><td colspan="7">${vazio('check','Nada nesta lista.')}</td></tr>`;
+  const tot=L.reduce((a,x)=>a+(x.d===null?0:x.d*x.v),0);
+  $('difInfo').innerHTML=`${L.length.toLocaleString('pt-BR')} produto${L.length===1?'':'s'}${DIFF!=='nao'&&DIFF!=='ok'?` · valor ${tot>0?'+':''}${fR(tot)}`:''}${L.length>DIFLIM?` · mostrando ${DIFLIM} <button class="btn sm ghost" id="difMais" type="button">Mostrar mais</button>`:''}`;
+  $('difTodos').checked=V.length>0&&V.every(x=>DIFSEL.has(x.p.c));$('difSel').hidden=!DIFSEL.size;$('difSelN').textContent=`${DIFSEL.size} produto${DIFSEL.size===1?'':'s'} marcado${DIFSEL.size===1?'':'s'}`}
+$('difTipo').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;DIFF=b.dataset.f;DIFLIM=300;[...$('difTipo').children].forEach(x=>x.classList.toggle('on',x===b));renderDif()});
+['difCat','difOrd'].forEach(i=>$(i).addEventListener('change',()=>{DIFLIM=300;renderDif()}));$('difBusca').addEventListener('input',()=>{DIFLIM=300;renderDif()});
+$('difInfo').addEventListener('click',e=>{if(e.target.id==='difMais'){DIFLIM+=300;renderDif()}});
+$('difLista').addEventListener('change',e=>{const b=e.target.closest('[data-sel]');if(!b)return;const c=+b.dataset.sel;b.checked?DIFSEL.add(c):DIFSEL.delete(c);renderDif()});
+$('difTodos').addEventListener('change',e=>{listaDif().slice(0,DIFLIM).forEach(x=>e.target.checked?DIFSEL.add(x.p.c):DIFSEL.delete(x.p.c));renderDif()});
+$('difLimparSel').onclick=()=>{DIFSEL.clear();renderDif()};
+$('difXls').onclick=()=>{if(!CMP)return;const wb=XLSX.utils.book_new(),ws=XLSX.utils.json_to_sheet(listaDif().map(x=>({'Código':x.p.c,'Produto':x.p.d,'Categoria':x.p.g,'Sistema':x.s,'Contado':x.k===null?'':x.k,'Diferença':x.d===null?'':x.d,'Valor da diferença':x.d===null?'':Math.round(x.d*x.v*100)/100,'Recontado':x.rc?'sim':''})));
+  ws['!cols']=[{wch:9},{wch:50},{wch:24},{wch:10},{wch:10},{wch:10},{wch:16},{wch:10}];XLSX.utils.book_append_sheet(wb,ws,'Diferenças');baixar(wb,nomeArq(`diferencas_${nl(CMP.loja)}_${new Date().toISOString().slice(0,10)}.xlsx`))};
+$('difRecontar').onclick=()=>{if(!CMP||!DIFSEL.size)return;const loja=CMP.loja,pend=[...CMP.recPed].filter(c=>{const x=CMP.L.find(y=>y.p.c===c);return!(x&&x.rc)});
+  const cods=[...new Set([...pend,...DIFSEL])];
+  confirmar('Pedir recontagem?',`${DIFSEL.size} produto${DIFSEL.size===1?'':'s'} de ${nl(loja)}${pend.length?` (mais ${pend.length} que ainda não foram recontados)`:''} vão aparecer nos celulares de quem conta esta loja, com o aviso "O gerente pediu pra recontar".\n\nO número recontado passa a valer no relatório.`,'Pedir',async()=>{
+    let j;try{j=await postPl({acao:'pedirRecontagem',loja,cods})}catch(e){toast('Sem internet','bad');return}if(!j.ok)return erroPl(j);
+    DIFSEL.clear();CMP.recPed=new Set(cods);toast(`Recontagem pedida: ${cods.length} produtos`,'ok');renderDif()})};
+
+/* ---------- visão geral: recontagem ---------- */
+function renderRecCard(rec){const el=$('recCard');if(!rec||!rec.cods||!rec.cods.length){el.hidden=true;return}el.hidden=false;
+  const f=(rec.feitos||[]).length,n=rec.cods.length;
+  el.innerHTML=`<div class="admh"><b>Recontagem pedida</b><span class="muted small">em ${dtc(rec.quando)}</span></div><div class="small">${f} de ${n} produto${n===1?'':'s'} recontado${n===1?'':'s'}${f===n?' · <b style="color:var(--green)">concluída</b>':''}</div><div class="prog"><i style="width:${n?f/n*100:0}%"></i></div>
+    <div class="row"><button class="btn sm" id="recVer" type="button">Ver na lista de diferenças</button><button class="btn sm ghost" id="recCancelar" type="button">${f===n?'Encerrar':'Cancelar pedido'}</button></div>`;
+  $('recVer').onclick=()=>admAba('dif');
+  $('recCancelar').onclick=()=>confirmar(f===n?'Encerrar a recontagem?':'Cancelar a recontagem?','Some o aviso dos celulares. O que já foi recontado continua valendo no relatório até a próxima contagem nova.','Sim',async()=>{
+    let j;try{j=await postPl({acao:'pedirRecontagem',loja:$('cfLoja').value,cods:[]})}catch(e){toast('Sem internet','bad');return}if(!j.ok)return erroPl(j);toast('Pedido encerrado','ok');admStatus()})}
+
+/* ---------- histórico: evolução e registro por período ---------- */
+function grafEvo(pts){if(!pts.length)return vazio('chart','A evolução aparece aqui a partir da primeira contagem fechada com "Zerar a loja".');
+  const W=640,H=230,pl=40,pb=46,pt=18,n=pts.length,bw=Math.min(56,(W-pl-10)/n*.55),mx=Math.max(.2,...pts.map(p=>p.erro))*1.15,y=v=>pt+(H-pt-pb)*(1-v/mx);
+  let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Erro por contagem">`;
+  for(let i=0;i<=4;i++){const v=mx*i/4;g+=`<line x1="${pl}" x2="${W-6}" y1="${y(v)}" y2="${y(v)}" stroke="#E5E7EB"/><text x="${pl-6}" y="${y(v)+4}" font-size="10.5" text-anchor="end" fill="#6B7280">${Math.round(v*100)}%</text>`}
+  pts.forEach((p,i)=>{const cx=pl+(W-pl-10)*(i+.5)/n,c=nivelErro(p.erro)[0];
+    g+=`<rect x="${cx-bw/2}" y="${y(p.erro)}" width="${bw}" height="${H-pb-y(p.erro)}" rx="4" fill="${c}" opacity="${p.atual?.55:.9}"/><text x="${cx}" y="${y(p.erro)-5}" font-size="11.5" font-weight="700" text-anchor="middle" fill="#111827">${pct(p.erro)}</text>
+      <text x="${cx}" y="${H-pb+16}" font-size="11" text-anchor="middle" fill="#374151">${p.atual?'Atual':new Date(p.quando).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'})}</text><text x="${cx}" y="${H-pb+31}" font-size="10" text-anchor="middle" fill="#6B7280">contado ${Math.round(p.cob*100)}%</text>`});
+  return`<div class="evo">${g}</svg></div><div class="small muted">Barras: erro geral de cada contagem (itens com diferença ÷ itens da loja). Embaixo: quanto da loja foi contado.</div>`}
+let REG=[];
+function msData(id,fim){const v=$(id).value;if(!v)return'';const [a,m,d]=v.split('-').map(Number);return new Date(a,m-1,d,fim?23:0,fim?59:0,fim?59:0).getTime()}
+async function buscarReg(){const loja=$('cfLoja').value;$('regInfo').textContent='Buscando…';$('regLista').innerHTML='';
+  try{const r=await getPl('acao=registro&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer())+'&de='+msData('regDe')+'&ate='+msData('regAte',1));if(!r.ok)return erroPl(r);
+    REG=r.rows;const pes=[...new Set(REG.map(x=>x[1]))].sort(),cats=[...new Set(REG.filter(x=>x[2]!=='').map(x=>(P.get(+x[2])||{}).g||'Sem categoria'))].sort();
+    const pv=$('regPes').value,cv=$('regCat').value;$('regPes').innerHTML='<option value="">Todas as pessoas</option>'+pes.map(p=>`<option${p===pv?' selected':''}>${esc(p)}</option>`).join('');
+    $('regCat').innerHTML='<option value="">Todas as categorias</option>'+cats.map(g=>`<option${g===cv?' selected':''}>${esc(g)}</option>`).join('');
+    REG.total=r.total;renderReg()}catch(e){$('regInfo').textContent='Sem conexão com a planilha.'}}
+function regFiltrado(){const q=norm($('regFiltro').value),pe=$('regPes').value,ca=$('regCat').value;
+  return REG.filter(r=>(!pe||r[1]===pe)&&(!ca||(r[2]!==''&&((P.get(+r[2])||{}).g||'Sem categoria')===ca))&&(!q||norm(r[3]+' '+r[2]).includes(q)))}
+function renderReg(){const L=regFiltrado();
+  $('regInfo').textContent=`${L.length.toLocaleString('pt-BR')} mudança${L.length===1?'':'s'}${L.length>300?' · mostrando as 300 mais recentes (o Excel leva todas)':''}${REG.total>2000?` · o período tem ${REG.total.toLocaleString('pt-BR')}; escolha um período menor pra ver tudo`:''}`;
+  $('regLista').innerHTML=L.length?L.slice(0,300).map(([t,nome,c,prod,a,d,dif,sis])=>{const ev=a==='';prod=String(prod||'').replace(/[\u{1F000}-\u{1FAFF}☀-➿️]/gu,'').trim();
+    return`<tr${ev?' style="background:var(--soft2)"':''}><td style="white-space:nowrap">${dtc(t)}</td><td>${esc(nome)}</td><td>${ev?'<b>'+esc(prod)+'</b>':esc(prod)+(c!==''?` <span class="muted">#${c}</span>`:'')}</td><td class="n num">${ev?'':fQ(+a)}</td><td class="n num">${ev?'':'<b>'+fQ(+d)+'</b>'}</td><td class="n num ${ev?'':+dif>0?'dpos':+dif<0?'dneg':''}">${ev?'':(+dif>0?'+':'')+fQ(+dif)}</td><td class="n num hm">${ev||sis===''||sis===undefined?'':fQ(+sis)}</td></tr>`}).join(''):`<tr><td colspan="7">${vazio('list','Nada no registro com esses filtros.')}</td></tr>`}
+['regPes','regCat'].forEach(i=>$(i).addEventListener('change',renderReg));$('regFiltro').addEventListener('input',renderReg);$('regBuscar').onclick=buscarReg;
+$('regXls').onclick=()=>{const L=regFiltrado();if(!L.length){toast('Nada pra exportar','bad');return}const wb=XLSX.utils.book_new(),ws=XLSX.utils.json_to_sheet(L.map(([t,nome,c,prod,a,d,dif,sis])=>({'Quando':new Date(t).toLocaleString('pt-BR'),'Pessoa':nome,'Código':c,'Produto':String(prod||''),'Categoria':c!==''?(P.get(+c)||{}).g||'':'','Contado antes':a,'Contado agora':d,'Mudança':dif,'Sistema':sis===undefined?'':sis})));
+  ws['!cols']=[{wch:18},{wch:14},{wch:9},{wch:50},{wch:24},{wch:13},{wch:13},{wch:10},{wch:10}];XLSX.utils.book_append_sheet(wb,ws,'Registro');baixar(wb,nomeArq(`registro_${nl($('cfLoja').value)}_${new Date().toISOString().slice(0,10)}.xlsx`))};
 let HIST=[];
-async function admHist(){const loja=$('cfLoja').value;$('histLista').innerHTML='<tr><td colspan="4" class="empty">Carregando…</td></tr>';$('regLista').innerHTML='';
-  try{const [h,r]=await Promise.all([getPl('acao=historico&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer())),getPl('acao=registro&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer()))]);
+async function admHist(){const loja=$('cfLoja').value;$('histLista').innerHTML='<tr><td colspan="4" class="empty">Carregando…</td></tr>';$('evoGraf').innerHTML='<span class="sk" style="height:180px"></span>';
+  if(!$('regDe').value&&!$('regAte').value){const d=new Date(Date.now()-30*864e5);$('regDe').value=d.toISOString().slice(0,10)}
+  buscarReg();
+  try{const [h,ev,q]=await Promise.all([getPl('acao=historico&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer())),getPl('acao=evolucao&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer())),getPl('acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja))]);
     if(!h.ok)return erroPl(h);const f=d=>new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
-    $('histLista').innerHTML=h.contagens.length?h.contagens.map(c=>`<tr><td><b>${c.inicio?f(c.inicio)+' → ':''}${f(c.quando)}</b></td><td>${Object.entries(c.pessoas).map(([n,k])=>esc(n)+' <span class="muted">('+k+')</span>').join(', ')}</td><td class="n num">${c.itens.toLocaleString('pt-BR')}</td><td class="n"><button class="btn sm" data-antiga="${esc(c.quando)}" type="button">Comparar</button></td></tr>`).join(''):`<tr><td colspan="4">${vazio('folder','Nenhuma contagem anterior ainda. Elas aparecem aqui quando você usa "Contagem nova".')}</td></tr>`;
-    HIST=r.ok?r.rows:[];renderReg()}catch(e){$('histLista').innerHTML=`<tr><td colspan="4">${vazio('alert','Sem internet.')}</td></tr>`}}
-function renderReg(){const q=norm($('regFiltro').value);const L=HIST.filter(r=>!q||norm(r[1]+' '+r[3]+' '+r[2]).includes(q));
-  $('regLista').innerHTML=L.length?L.slice(0,300).map(([t,nome,c,prod,a,d,dif])=>{const ev=a==='';prod=String(prod||'').replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF\uFE0F]/gu,'').trim();return`<tr${ev?' style="background:var(--soft2)"':''}><td style="white-space:nowrap">${new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td><td>${esc(nome)}</td><td>${ev?'<b>'+esc(prod||'')+'</b>':esc(prod||'')+(c!==''?` <span class="muted">#${c}</span>`:'')}</td><td class="n num">${ev?'':fQ(+a)}</td><td class="n num">${ev?'':'<b>'+fQ(+d)+'</b>'}</td><td class="n num ${ev?'':+dif>0?'dpos':+dif<0?'dneg':''}">${ev?'':(+dif>0?'+':'')+fQ(+dif)}</td></tr>`}).join(''):`<tr><td colspan="6">${vazio('list','Nada no registro desta loja ainda.')}</td></tr>`}
-$('regFiltro').addEventListener('input',renderReg);
+    const pts=(ev.ok?ev.rows:[]).map(r=>({quando:r.quando,erro:(+r.erro||0)/100,cob:(+r.cob||0)/100}));if(q.ok&&q.rows.length){const c=calcLoja(loja,q.rows);pts.push({atual:true,erro:c.erro,cob:c.cob})}
+    $('evoGraf').innerHTML=grafEvo(pts.length===1&&pts[0].atual?[]:pts.slice(-12));
+    $('histLista').innerHTML=h.contagens.length?h.contagens.map(c=>`<tr><td><b>${c.inicio?f(c.inicio)+' → ':''}${f(c.quando)}</b></td><td>${Object.entries(c.pessoas).map(([n,k])=>esc(n)+' <span class="muted">('+k+')</span>').join(', ')}</td><td class="n num">${c.itens.toLocaleString('pt-BR')}</td><td class="n"><button class="btn sm" data-antiga="${esc(c.quando)}" type="button">Comparar</button></td></tr>`).join(''):`<tr><td colspan="4">${vazio('folder','Nenhuma contagem anterior ainda. Elas aparecem aqui quando você usa "Zerar a loja".')}</td></tr>`}
+  catch(e){$('histLista').innerHTML=`<tr><td colspan="4">${vazio('alert','Sem internet.')}</td></tr>`;$('evoGraf').innerHTML=''}}
 $('histLista').addEventListener('click',async e=>{const b=e.target.closest('[data-antiga]');if(!b)return;const loja=$('cfLoja').value;toast('Buscando a contagem antiga…');
   try{const j=await getPl('acao=contagemAntiga&loja='+encodeURIComponent(loja)+'&quando='+encodeURIComponent(b.dataset.antiga)+'&senha='+encodeURIComponent(senhaGer()));if(!j.ok)return erroPl(j);
     const g=new Map();j.rows.forEach(([nome,ap,c,q])=>{const k=nome+'|'+ap;if(!g.has(k))g.set(k,{nome,l:[]});g.get(k).l.push(c+';'+String(q).replace('.',','))});
@@ -1283,6 +1500,7 @@ $('btnJuntar').onclick=()=>{const blocos=[];let b=null;
   const cont=new Map(),ond=new Map();B.forEach(x=>x.m.forEach((q,c)=>{cont.set(c,(cont.get(c)||0)+q);if(!ond.has(c))ond.set(c,[]);ond.get(c).push(`${x.nome}: ${fQ(q)}`)}));
   $('juntarInfo').innerHTML=`<b>${esc(nl(loja))}</b> · ${B.length} contagem(ns): ${B.map(x=>`${esc(x.nome||'sem nome')} (${x.m.size})`).join(', ')}`+(lojas.length>1?`<br><span class="pill warn">Outras lojas ignoradas: ${esc(lojas.filter(l=>l!==loja).map(nl).join(', '))}</span>`:'');
   const st=ESTQ[loja]||new Map();const L=[];new Set([...cont.keys(),...[...st].filter(([c,x])=>x.q!==0).map(([c])=>c)]).forEach(c=>{const p=P.get(c)||{c,d:'Produto '+c,g:'—',u:'',e:'',pv:0};const s=st.has(c)?st.get(c).q:0;const v=preco(c,loja);const k=cont.has(c)?r3(cont.get(c)):null;L.push({p,s,k,d:k===null?null:r3(k-s),v,o:ond.get(c)||[]})});
+  const rc=RECONT;RECONT=null;if(rc&&rc.loja===loja&&rc.m.size)L.forEach(x=>{if(rc.m.has(x.p.c)){x.k=r3(rc.m.get(x.p.c));x.d=r3(x.k-x.s);x.rc=true}});
   CMP={loja,L,B};renderCmp();$('cmpOut').hidden=false;$('cmpOut').scrollIntoView({behavior:'smooth'})};
 function grupoCmp(){const L=CMP.L;return{cont:L.filter(x=>x.k!==null),div:L.filter(x=>x.k!==null&&x.d!==0),ok:L.filter(x=>x.k!==null&&x.d===0),nao:L.filter(x=>x.k===null&&x.s>0)}}
 function renderCmp(){if(!CMP)return;const G=grupoCmp();const falta=G.div.filter(x=>x.d<0).reduce((a,x)=>a+x.d*x.v,0),sobra=G.div.filter(x=>x.d>0).reduce((a,x)=>a+x.d*x.v,0);
