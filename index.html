@@ -287,7 +287,7 @@ nav.tabs .badge{position:absolute;top:7px;left:calc(50% + 8px);background:var(--
 @media (min-width:560px){.lojas{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 /* ---------- telas travada / contagem cega ---------- */
-#v-contar.trancada>:not(#lockCard){display:none!important}
+#v-contar.trancada>:not(#lockCard):not(#lockGer){display:none!important}
 .lockic{width:56px;height:56px;border-radius:50%;background:var(--green-l);color:var(--green);display:grid;place-items:center}.lockic svg{width:26px;height:26px}
 .cega #pNums .kpi:nth-child(1),.cega #pNums .kpi:nth-child(3),.cega #recentes .r .of,.cega #recentes .r small,.cega #cLista .r .of,.cega #cLista .r small,.cega .rs,.cega .res .sv,.cega #cStats [data-f=ok],.cega #cStats [data-f=dif],.cega #segC [data-f=ok],.cega #segC [data-f=dif]{display:none!important}
 .cega #pNums{grid-template-columns:1fr}.cega #pNums .kpi{border-left:0}.cega #recentes .li,.cega #cLista .li{--c:var(--line2)!important}
@@ -384,6 +384,12 @@ body.adm .app{max-width:none}
 .admmanual details[open]{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;box-shadow:var(--sh)}
 .sk{display:block;height:14px;border-radius:6px;background:linear-gradient(90deg,var(--soft) 25%,#E9EDF2 50%,var(--soft) 75%);background-size:200% 100%;animation:sk 1.2s infinite}@keyframes sk{to{background-position:-200% 0}}
 .vazio2{display:flex;flex-direction:column;align-items:center;gap:6px;padding:26px 8px;color:var(--muted);font-size:14px;text-align:center}.vazio2 svg{width:28px;height:28px;color:var(--muted2)}
+.kpi4.dest{border-color:var(--c);box-shadow:0 0 0 1px var(--c)}.kpi4.dest .v{font-size:32px;color:var(--c)}
+.ebar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden;min-width:90px}.ebar i{display:block;height:100%;border-radius:99px}
+.atbl tfoot td{font-weight:700;background:var(--soft2);border-top:2px solid var(--line2);border-bottom:0}
+.atbl td{vertical-align:middle}
+@media print{.admbar,.admlogin{display:none!important}.admbody{padding:0!important;max-width:none!important}.tblwrap{max-height:none!important;overflow:visible!important}.kpis4{grid-template-columns:repeat(4,minmax(0,1fr))!important}.kpi4,.admcard{box-shadow:none!important;break-inside:avoid}}
+@media(max-width:899px){.hm{display:none}.kpi4.dest .v{font-size:28px}.atbl td,.atbl th{padding:9px 6px}.atbl thead th,.atbl thead th.n{letter-spacing:0;white-space:normal;line-height:1.2;font-size:10px}.atbl td:first-child,.atbl th:first-child{padding-left:10px}.atbl td:last-child,.atbl th:last-child{padding-right:10px}}
 @media(min-width:900px){.kpis4{grid-template-columns:repeat(4,minmax(0,1fr))}.admgrid{grid-template-columns:1fr 1fr}.admset{grid-template-columns:300px 1fr;align-items:start}.admbody{padding:24px}.admbar{padding:12px 24px 0}}
 @media(max-width:899px){.admnav{margin-left:0;width:100%}.admnav button{flex:1;padding:11px 6px}.admloja{width:100%;padding-bottom:0}.admloja select{flex:1}.admback{padding:8px 10px}.tile{grid-template-columns:auto 1fr}.tile .btn{grid-column:1/-1}.admbrand small,.admback .lg{display:none}.kpi4 .v{font-size:19px;white-space:normal;overflow:visible}.kpi4 .ki{display:none}.kpi4{grid-template-columns:1fr;padding:14px}.admbrand b{font-size:16px}}
 </style>
@@ -426,11 +432,17 @@ body.adm .app{max-width:none}
 
 <!-- ============ CONTAR ============ -->
 <section id="v-contar" hidden>
-  <div class="card" id="lockCard" hidden style="align-items:center;text-align:center;border-color:var(--green)">
-    <div class="lockic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><b style="font-size:18px">Contagem finalizada</b>
+  <div class="card" id="lockCard" hidden style="align-items:center;text-align:center">
+    <div class="lockic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></div><b style="font-size:18px">Você terminou a sua parte</b>
     <div class="small muted" id="lockInfo"></div>
-    <button class="btn pri" id="btnLockNova" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg> Contar esta loja de novo (gerente)</button>
-    <button class="btn sm ghost" id="btnLockReabrir" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.7"/></svg> Reabrir esta mesma contagem (gerente)</button>
+    <div class="small" id="lockEquipe" style="color:var(--ink2)"></div>
+    <button class="btn pri big" id="btnLockOutra" type="button">Contar outra loja</button>
+    <button class="btn" id="btnLockVer" type="button" style="width:100%">Ver o que eu contei</button>
+  </div>
+  <div class="card" id="lockGer" hidden>
+    <div class="ttl">Precisa mexer nesta contagem?</div>
+    <div class="small muted" id="lockGerInfo">Só o gerente pode. Ele faz pelo Painel do gerente (este celular destrava sozinho) ou aqui mesmo, com a senha:</div>
+    <div class="grid2"><button class="btn sm" id="btnLockReabrir" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.7"/></svg> Reabrir pra corrigir</button><button class="btn sm" id="btnLockNova" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg> Contagem nova</button></div>
   </div>
   <div class="seg" role="group" aria-label="Modo de contagem">
     <button class="btn" id="mQtd" type="button">Bipa e digita a qtd.</button>
@@ -541,7 +553,7 @@ body.adm .app{max-width:none}
     </div>
     <div class="admtopo" id="admTopo" hidden>
       <label class="admloja"><span>Loja</span><select id="cfLoja" aria-label="Loja"></select></label>
-      <nav class="admnav" id="admTabs"><button class="on" data-t="acoes" type="button">Visão geral</button><button data-t="hist" type="button">Histórico</button><button data-t="cfg" type="button">Ajustes</button></nav>
+      <nav class="admnav" id="admTabs"><button class="on" data-t="acoes" type="button">Visão geral</button><button data-t="rel" type="button">Relatório</button><button data-t="hist" type="button">Histórico</button><button data-t="cfg" type="button">Ajustes</button></nav>
     </div>
   </div></header>
   <div class="admlogin" id="admLogin" hidden>
@@ -588,6 +600,11 @@ body.adm .app{max-width:none}
     </div>
     <div class="card" style="padding:4px 16px"><div class="list" id="tbody"></div></div>
   </div>
+  </div>
+  <div id="admRel" hidden class="admsec">
+    <div class="admh" style="align-items:center"><div><b style="font-size:19px">Relatório da contagem</b><div class="small muted" id="relSub"></div></div>
+      <div class="row noprint"><button class="btn sm" id="relAtualizar" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/></svg> Atualizar</button><button class="btn sm pri" id="relPdf" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><path d="M7 14h10v7H7z"/></svg> Salvar em PDF</button></div></div>
+    <div id="relGer" class="admsec"></div>
   </div>
   <div id="admHist" hidden class="admsec">
     <div class="card admcard"><div class="admh"><b>Contagens anteriores</b><span class="muted small">Guardadas quando começou uma contagem nova</span></div><div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Período</th><th>Quem contou</th><th class="n">Itens</th><th></th></tr></thead><tbody id="histLista"></tbody></table></div></div>
@@ -673,12 +690,13 @@ let CFG=Object.assign({cega:false,fator:5,minimo:15,equipe:[]},(()=>{try{return 
 function aplicarCfg(c){if(!c||typeof c!=='object')return;CFG=Object.assign({cega:false,fator:5,minimo:15,equipe:[]},c);try{localStorage.setItem('contagem-cfg',JSON.stringify(CFG))}catch(e){}
   document.body.classList.toggle('cega',!!CFG.cega);
   const novos=(CFG.equipe||[]).filter(n=>n&&!(S.pessoas||[]).includes(n));if(novos.length){S.pessoas=(S.pessoas||[]).concat(novos);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(typeof renderPessoas==='function')renderPessoas()}}
+let EQUIPE=new Map();// nome -> true se já finalizou (outros celulares)
 let OUTROS=new Map(),outrosLoja='',outrosT=0,outrosSig='';// código -> [{nome,q}] contado por OUTROS celulares (vem da planilha)
 async function buscarOutros(forcar){if(!PLANILHA||!S.loja||navigator.onLine===false)return;if(!forcar&&outrosLoja===S.loja&&Date.now()-outrosT<25000)return;
   const loja=S.loja;outrosT=Date.now();
   try{const j=await fetch(PLANILHA+'?acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)).then(r=>r.json());if(!j.ok||loja!==S.loja)return;if(j.rodada&&j.rodada!==(S.rodada||{})[loja])novaRodadaLocal(loja,j.rodada);aplicarCfg(j.config);
     if(j.reaberta&&(S.finalizadas||{})[loja]&&S.finalizadas[loja]<Date.parse(j.reaberta)){delete S.finalizadas[loja];save();header();toast('O gerente reabriu a contagem de '+nl(loja),'ok');if(!$('v-contar').hidden)view('contar');if(!$('v-contados').hidden)renderContados()}
-    const m=new Map(),eu=aparelho();j.rows.forEach(([c,nome,ap,q])=>{if(ap===eu||!q)return;if(!m.has(c))m.set(c,[]);const l=m.get(c),o=l.find(x=>x.nome===nome);o?o.q=r3(o.q+q):l.push({nome,q})});const sig=loja+JSON.stringify([...m]);OUTROS=m;outrosLoja=loja;if(sig!==outrosSig){outrosSig=sig;header();if(!$('v-contados').hidden)renderContados()}}catch(e){}}
+    const m=new Map(),eq=new Map(),eu=aparelho();j.rows.forEach(([c,nome,ap,q,f])=>{if(ap!==eu)eq.set(nome,(eq.has(nome)?eq.get(nome):true)&&!!f);if(ap===eu||!q)return;if(!m.has(c))m.set(c,[]);const l=m.get(c),o=l.find(x=>x.nome===nome);o?o.q=r3(o.q+q):l.push({nome,q})});const sig=loja+JSON.stringify([...m])+JSON.stringify([...eq]);OUTROS=m;EQUIPE=eq;outrosLoja=loja;if(sig!==outrosSig){outrosSig=sig;header();renderLock();if(!$('v-contados').hidden)renderContados()}}catch(e){}}
 setInterval(()=>{if(!document.hidden&&(!$('v-contar').hidden||!$('v-contados').hidden))buscarOutros()},30000);
 // Nova contagem da loja (o gerente começou outra rodada): guarda o que este celular tinha de ANTES e segue só com o que é mais novo.
 function novaRodadaLocal(loja,rod,meu){const ts=Date.parse(rod)||Date.now();S.rodada=S.rodada||{};if(S.rodada[loja]===rod)return;S.rodada[loja]=rod;
@@ -689,13 +707,12 @@ function novaRodadaLocal(loja,rod,meu){const ts=Date.parse(rod)||Date.now();S.ro
   if(loja===S.loja){header();renderRecentes();if(!$('v-contar').hidden)view('contar');if(!$('v-contados').hidden)renderContados()}
   if(velhos.length||fin||meu){const ant=velhos.length?new Date(Math.min(...velhos.map(e=>e.t))).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'';
     setTimeout(()=>{confirmar(`Contagem nova de ${nl(loja)}`,`A lista foi zerada e a contagem começa do zero agora (${dataContagem(loja,1)}).\n\nA contagem anterior${ant?' (de '+ant+')':''} NÃO foi apagada: ficou guardada${PLANILHA?' na aba "Arquivo" da planilha':''}.`,'Começar a contar',()=>{if(S.loja===loja)view('contar')});$('modalCancelar').textContent='Fechar'},300)}clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,2000)}
-async function novaContagem(loja){
-  confirmar('Contar a loja de novo?',`Começa uma contagem nova de ${nl(loja)} do zero, em todos os celulares. A contagem anterior não se perde: fica guardada na aba "Arquivo" da planilha. Use quando for fazer outro inventário desta loja.`,'Começar nova',async()=>{
-    let senha='';try{senha=localStorage.getItem('contagem-senha-gerente')||''}catch(e){}if(!senha){senha=(prompt('Senha do gerente:')||'').trim();if(!senha)return}
+function novaContagem(loja){
+  confirmar('Começar contagem nova?',`Zera a contagem de ${nl(loja)} em TODOS os celulares e começa outro inventário do zero. A contagem atual não se perde: fica guardada no histórico. Só o gerente pode.`,'Começar nova',()=>setTimeout(()=>comSenha(async senha=>{
     let j;try{j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({acao:'novaContagem',loja,senha})}).then(r=>r.text())}catch(e){toast('Sem internet','bad');return}
     try{j=JSON.parse(j)}catch(e){toast('A planilha deu erro','bad');return}
-    if(!j.ok){if(j.erro==='senha'){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}toast('Senha errada','bad')}else toast('A planilha deu erro','bad');return}
-    try{localStorage.setItem('contagem-senha-gerente',senha)}catch(e){}novaRodadaLocal(loja,j.rodada,true)})}
+    if(!j.ok){if(j.erro==='senha'){if(senhaGer()){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}}toast('Senha errada','bad')}else toast('A planilha deu erro','bad');return}
+    novaRodadaLocal(loja,j.rodada,true)})))}
 function quemContou(c){return outrosLoja===S.loja?(OUTROS.get(c)||[]):[]}
 function aparelho(){try{let a=localStorage.getItem('contagem-aparelho');if(!a){a=Math.random().toString(36).slice(2,8);localStorage.setItem('contagem-aparelho',a)}return a}catch(e){return 'sem-id'}}
 function agendarEnvio(){if(!PLANILHA||!S.loja||!S.nome)return;S.pend=S.pend||{};if(!S.pend[S.loja]){S.pend[S.loja]=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}if(!pendDesde)pendDesde=Date.now();clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,Math.max(0,Math.min(15000,pendDesde+30000-Date.now())));syncUI()}
@@ -725,11 +742,22 @@ function trancado(){if(!fechada())return false;toast('Contagem finalizada. Só o
 function dataContagem(l,hora){const r=(S.rodada||{})[l],ts=r?Date.parse(r):(S.iniciadas||{})[l];if(!ts)return'';return new Date(ts).toLocaleString('pt-BR',hora?{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}:{day:'2-digit',month:'2-digit'})}
 function statusLoja(l){if((S.finalizadas||{})[l])return 'fin';if((S.iniciadas||{})[l])return 'and';return 'novo'}
 let modalCb=null;
-function fecharModal(){$('modalBack').hidden=true;modalCb=null;$('modalCancelar').textContent='Cancelar';$('modalInput').hidden=true}
+function fecharModal(){$('modalBack').hidden=true;modalCb=null;$('modalCancelar').textContent='Cancelar';$('modalInput').hidden=true;$('modalInput').type='text';$('modalInput').value=''}
 function confirmar(titulo,texto,textoOk,cb,danger){$('modalTitulo').textContent=titulo;$('modalTexto').textContent=texto;const ok=$('modalOk');ok.textContent=textoOk||'Confirmar';ok.style.background=danger?'var(--red)':'';ok.style.borderColor=danger?'var(--red)':'';$('modalInput').hidden=true;modalCb=cb;$('modalBack').hidden=false}
+function comSenha(fn){const s=senhaGer();if(s){fn(s);return}
+  $('modalTitulo').textContent='Senha do gerente';$('modalTexto').textContent='Só o gerente pode fazer isso. Digite a senha:';
+  const ok=$('modalOk');ok.textContent='Continuar';ok.style.background='';ok.style.borderColor='';
+  const inp=$('modalInput');inp.hidden=false;inp.value='';inp.type='password';inp.inputMode='text';inp.autocomplete='off';
+  modalCb=()=>{const v=inp.value.trim();if(!v){toast('Digite a senha','bad');return false}setTimeout(()=>fn(v))};
+  $('modalBack').hidden=false;setTimeout(()=>inp.focus(),50)}
+function renderLock(){const fz=(S.finalizadas||{})[S.loja];if(!fz||!$('lockInfo'))return;
+  $('lockInfo').textContent=`${nl(S.loja)} · finalizada em ${new Date(fz).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}`;
+  const falta=outrosLoja===S.loja?[...EQUIPE].filter(([n,f])=>!f).map(([n])=>n||'alguém'):[];
+  $('lockEquipe').textContent=outrosLoja!==S.loja||!EQUIPE.size?'':falta.length?`${falta.join(', ')} ainda ${falta.length>1?'estão':'está'} contando esta loja.`:'Todo mundo que contou esta loja já terminou.';
+  $('btnLockNova').hidden=!PLANILHA;if(!PLANILHA)$('lockGerInfo').textContent='Só o gerente deve reabrir uma contagem finalizada.'}
 function promptQtd(titulo,valorAtual,unidade,cb){$('modalTitulo').textContent=titulo;$('modalTexto').textContent=`Quantidade (${un(unidade)}):`;
   const ok=$('modalOk');ok.textContent='Salvar';ok.style.background='';ok.style.borderColor='';
-  const inp=$('modalInput');inp.hidden=false;inp.value=fQ(valorAtual);
+  const inp=$('modalInput');inp.hidden=false;inp.type='text';inp.inputMode='decimal';inp.value=fQ(valorAtual);
   modalCb=()=>{const v=parseFloat(String(inp.value).replace(',','.'));if(isNaN(v)||v<0){toast('Quantidade inválida','bad');return false}cb(v)};
   $('modalBack').hidden=false;setTimeout(()=>{inp.focus();inp.select()},50)}
 $('modalCancelar').onclick=fecharModal;
@@ -752,7 +780,7 @@ function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='con
   $('hStats').style.display=(v==='relatorio'||v==='contados')?'none':'';$('hProg').style.display=v==='contar'?'':'none';
   $('rodape').style.display=v==='inicio'?'none':'';
   if(v!=='contar')pararCamera();
-  if(v==='contados'){renderContados();buscarOutros(true)}if(v==='conferir')painel();document.body.classList.toggle('largo',v==='relatorio');document.body.classList.toggle('adm',v==='conferir');if(v==='inicio')renderLojas();if(v==='contar'){renderRecentes();const t=fechada();$('v-contar').classList.toggle('trancada',t);$('lockCard').hidden=!t;if(t)$('lockInfo').textContent=`${nl(S.loja)} foi finalizada em ${new Date(S.finalizadas[S.loja]).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}. Ninguém altera mais nada.`;buscarOutros(true)}
+  if(v==='contados'){renderContados();buscarOutros(true)}if(v==='conferir')painel();document.body.classList.toggle('largo',v==='relatorio');document.body.classList.toggle('adm',v==='conferir');if(v==='inicio')renderLojas();if(v==='contar'){renderRecentes();const t=fechada();$('v-contar').classList.toggle('trancada',t);$('lockCard').hidden=!t;$('lockGer').hidden=!t;renderLock();buscarOutros(true)}
   const mn=document.querySelector('main');if(mn)mn.scrollTop=0}
 VIEWS.forEach(k=>{const n=$('n-'+k);if(n)n.onclick=()=>view(k)});
 $('btnGerente').onclick=()=>view('conferir');$('cfVoltar').onclick=()=>view('inicio');
@@ -803,15 +831,16 @@ $('v-inicio').addEventListener('click',e=>{const t=e.target.closest('[data-troca
 function renderIniciar(){const c=$('cardIniciar');if(!renderPassos()){c.hidden=true;return}c.hidden=false;
   const dt=ts=>new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   const st=statusLoja(S.loja);const btn=$('btnComecar');
-  if(st==='fin'){$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>. <span class="pill ok">Finalizada em ${dt(S.finalizadas[S.loja])}</span>`;btn.textContent='Ver a contagem finalizada'}
+  if(st==='fin'){$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>. <span class="pill ok">Finalizada em ${dt(S.finalizadas[S.loja])}</span>`;btn.textContent='Ver a minha contagem (finalizada)'}
   else if(st==='and'){$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>. <span class="pill info">Em andamento desde ${dt(S.iniciadas[S.loja])}</span>`;btn.textContent='Continuar contagem'}
   else{$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>.`;btn.textContent='Iniciar contagem'}}
-async function reabrir(l,depois){
-  if(!PLANILHA){confirmar('Reabrir contagem?',`Reabrir a contagem de ${nl(l)}?`,'Reabrir',()=>{delete S.finalizadas[l];save();depois&&depois()});return}
-  const senha=(prompt(`Pra reabrir ${nl(l)}, digite a senha do gerente:`)||'').trim();if(!senha)return;
-  try{const j=await fetch(PLANILHA+'?senha='+encodeURIComponent(senha)).then(r=>r.json());if(!j.ok){toast('Senha errada','bad');return}}
-  catch(e){toast('Precisa de internet pra reabrir','bad');return}
-  delete S.finalizadas[l];save();header();toast('Contagem reaberta','ok');depois&&depois()}
+function reabrir(l,depois){
+  if(!PLANILHA){confirmar('Reabrir pra corrigir?',`Reabrir a contagem de ${nl(l)} neste celular?`,'Reabrir',()=>{delete S.finalizadas[l];save();depois&&depois()});return}
+  confirmar('Reabrir pra corrigir?',`Destrava a contagem de ${nl(l)} neste celular pra continuar a MESMA contagem: o que já foi contado fica. Só o gerente pode.`,'Reabrir',()=>setTimeout(()=>comSenha(async senha=>{
+    try{const j=await fetch(PLANILHA+'?senha='+encodeURIComponent(senha)).then(r=>r.json());if(!j.ok){toast('Senha errada','bad');return}}catch(e){toast('Precisa de internet pra reabrir','bad');return}
+    delete S.finalizadas[l];save();header();toast('Contagem reaberta','ok');depois&&depois()})))}
+$('btnLockOutra').onclick=()=>{trocaLoja=true;renderLojas();renderIniciar();view('inicio')};
+$('btnLockVer').onclick=()=>view('contados');
 $('btnLockNova').onclick=()=>PLANILHA?novaContagem(S.loja):toast('Precisa da planilha ligada','bad');
 $('btnLockReabrir').onclick=()=>reabrir(S.loja,()=>view('contar'));
 $('btnComecar').onclick=()=>{if(!S.loja||!S.nome)return;const l=S.loja;
@@ -1102,14 +1131,14 @@ $('btnZap').onclick=async()=>{if(!ent().length){toast('Nada contado ainda','bad'
 $('btnLimpar').onclick=()=>trancado()||confirmar('Apagar contagem?',`Apagar tudo o que foi contado em ${nl(S.loja)} neste celular? Confira se já enviou. Não dá para desfazer.`,'Apagar',()=>{S.L[S.loja]=[];save();header();renderContados();renderRecentes();toast('Contagem apagada')},true);
 function telaFim(){const L=linhasMinhas(),dif=L.filter(x=>x.d!==0).length,pr=progresso(),ini=(S.iniciadas||{})[S.loja];
   const min=ini?Math.round((Date.now()-ini)/60000):0,tempo=!ini?'':min<60?min+' min':Math.floor(min/60)+'h'+String(min%60).padStart(2,'0');
-  confirmar('Contagem finalizada','','Enviar agora',()=>$('btnZap').click());$('modalCancelar').textContent='Fechar';
-  $('modalTexto').innerHTML=`<b>${esc(nl(S.loja))}</b> · ${esc(S.nome)}<br><br><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></svg> ${L.length.toLocaleString('pt-BR')} produtos contados${CFG.cega?'':`<br><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg> ${(L.length-dif).toLocaleString('pt-BR')} batendo<br><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/></svg> ${dif.toLocaleString('pt-BR')} com diferença`}<br><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20v-6M2 20h20"/></svg> ${Math.floor(pr.pc)}% dos produtos com estoque`+(pr.pos-pr.cont?` (faltaram ${(pr.pos-pr.cont).toLocaleString('pt-BR')})`:'')+(tempo?`<br><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> ${tempo} de contagem`:'')+'<br><br>Agora é só enviar a contagem '}
+  if(PLANILHA)confirmar('Você terminou a sua parte','','Contar outra loja',()=>$('btnLockOutra').click());else confirmar('Contagem finalizada','','Enviar agora',()=>$('btnZap').click());$('modalCancelar').textContent='Fechar';
+  $('modalTexto').innerHTML=`<b>${esc(nl(S.loja))}</b> · ${esc(S.nome)}<br><br><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></svg> ${L.length.toLocaleString('pt-BR')} ${L.length===1?'produto contado':'produtos contados'}${CFG.cega?'':`<br><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg> ${(L.length-dif).toLocaleString('pt-BR')} batendo<br><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/></svg> ${dif.toLocaleString('pt-BR')} com diferença`}<br><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20v-6M2 20h20"/></svg> ${Math.floor(pr.pc)}% dos produtos com estoque`+(pr.pos-pr.cont?` (faltaram ${(pr.pos-pr.cont).toLocaleString('pt-BR')})`:'')+(tempo?`<br><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> ${tempo} de contagem`:'')+'<br><br>'+(PLANILHA?'Sua contagem vai sozinha pra planilha do gerente. Não precisa enviar nada.':'Agora é só enviar a contagem.')}
 function renderStatusFinalizar(){const fz=(S.finalizadas||{})[S.loja];const el=$('statusFinalizar');if(!el)return;
   const dt=ts=>new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-  if(fz){el.innerHTML=`<div class="card" style="flex-direction:row;align-items:center;gap:10px;border-color:var(--green)"><div class="ic" style="--c:#047857"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></div><div style="flex:1;min-width:0"><b>Finalizada</b><div class="small muted">em ${dt(fz)}</div></div><button class="btn sm" id="btnReabrir" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.7"/></svg> Reabrir</button></div>`;
+  if(fz){el.innerHTML=`<div class="card" style="flex-direction:row;align-items:center;gap:10px;border-color:var(--green)"><div class="ic" style="--c:#047857"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></div><div style="flex:1;min-width:0"><b>Você terminou a sua parte</b><div class="small muted">em ${dt(fz)} · só o gerente reabre</div></div><button class="btn sm" id="btnReabrir" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.7"/></svg> Reabrir</button></div>`;
     $('btnReabrir').onclick=()=>reabrir(S.loja,renderContados)}
-  else{el.innerHTML=`<button class="btn big" id="btnFinalizar" type="button" style="background:var(--green);border-color:var(--green);color:#fff"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg> Terminei: finalizar esta loja</button>`;
-    $('btnFinalizar').onclick=()=>confirmar('Finalizar contagem?',`Finalizar a contagem de ${nl(S.loja)}? Depois disso ninguém altera mais nada neste celular. Só o gerente consegue reabrir, com a senha.`,'Finalizar',()=>{S.finalizadas=S.finalizadas||{};S.finalizadas[S.loja]=Date.now();cur=null;$('prodCard').hidden=true;save();renderContados();header();setTimeout(telaFim)})}}
+  else{el.innerHTML=`<button class="btn big" id="btnFinalizar" type="button" style="background:var(--green);border-color:var(--green);color:#fff"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg> Terminei a minha parte</button>`;
+    $('btnFinalizar').onclick=()=>confirmar('Terminou a sua parte?',`Sua contagem de ${nl(S.loja)} fica fechada neste celular${PLANILHA?' e vai pra planilha do gerente':''}. Quem ainda está contando continua normalmente.\n\nDepois disso, só o gerente consegue reabrir.`,'Sim, terminei',()=>{S.finalizadas=S.finalizadas||{};S.finalizadas[S.loja]=Date.now();cur=null;$('prodCard').hidden=true;save();renderContados();header();setTimeout(telaFim)})}}
 $('btnBackup').onclick=()=>{if(!ent().length){toast('Nada contado ainda','bad');return}
   const payload={app:'contagem-estoque',v:1,loja:S.loja,nome:S.nome,exportadoEm:new Date().toISOString(),iniciado:(S.iniciadas||{})[S.loja]||null,entries:ent()};
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(payload)],{type:'application/json'}));a.download=nomeArq(`Backup_${nl(S.loja)}_${new Date().toISOString().slice(0,10)}.json`);document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('Backup salvo','ok')};
@@ -1142,8 +1171,8 @@ $('admEntrar').onclick=async()=>{const s=$('admSenha').value.trim();if(!s)return
 $('admSenha').addEventListener('keydown',e=>{if(e.key==='Enter')$('admEntrar').click()});
 $('admSair').onclick=()=>{try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}painel()};
 $('admTabs').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b)return;admAba(b.dataset.t)});
-function admAba(t){[...$('admTabs').children].forEach(x=>x.classList.toggle('on',x.dataset.t===t));$('admAcoes').hidden=t!=='acoes';$('admHist').hidden=t!=='hist';$('admCfg').hidden=t!=='cfg';
-  if(t==='hist')admHist();if(t==='cfg')admCfg();if(t==='acoes')admStatus()}
+function admAba(t){[...$('admTabs').children].forEach(x=>x.classList.toggle('on',x.dataset.t===t));$('admAcoes').hidden=t!=='acoes';$('admRel').hidden=t!=='rel';$('admHist').hidden=t!=='hist';$('admCfg').hidden=t!=='cfg';
+  if(t==='hist')admHist();if(t==='cfg')admCfg();if(t==='acoes')admStatus();if(t==='rel')admRel()}
 $('cfLoja').addEventListener('change',()=>{$('cmpOut').hidden=true;const t=[...$('admTabs').children].find(x=>x.classList.contains('on')).dataset.t;admAba(t)});
 let admSeq=0;
 async function admStatus(){const loja=$('cfLoja').value;if(!PLANILHA||!loja)return;const seq=++admSeq;
@@ -1166,6 +1195,43 @@ async function admStatus(){const loja=$('cfLoja').value;if(!PLANILHA||!loja)retu
 $('btnReabrirLoja').onclick=()=>{const loja=$('cfLoja').value;confirmar('Reabrir a contagem?',`Destrava ${nl(loja)} em todos os celulares que finalizaram, pra continuarem a MESMA contagem (somando). Pra começar do zero, use "Contagem nova".`,'Reabrir',async()=>{
   let j;try{j=await postPl({acao:'reabrirLoja',loja})}catch(e){toast('Sem internet','bad');return}if(!j.ok)return erroPl(j);
   if((S.finalizadas||{})[loja]){delete S.finalizadas[loja];save();header()}toast('Reaberta. Os celulares destravam em até 30 segundos.','ok')})};
+/* ---------- relatório para a gerência ----------
+   Erro = itens com diferença ÷ itens da loja (com estoque no sistema ou contados). Geral e por categoria. */
+let relLoja='',relSeq=0;
+function relCalc(){const L=CMP.L.filter(x=>x.k!==null||x.s>0),gm=new Map();let C=0,E=0,falta=0,sobra=0;
+  for(const x of L){const g=x.p.g||'Sem categoria';let o=gm.get(g);if(!o)gm.set(g,o={g,t:0,c:0,e:0,falta:0,sobra:0});o.t++;
+    if(x.k!==null){o.c++;C++;if(x.d!==0){o.e++;E++;if(x.d<0){o.falta+=x.d*x.v;falta+=x.d*x.v}else{o.sobra+=x.d*x.v;sobra+=x.d*x.v}}}}
+  const cats=[...gm.values()].sort((a,b)=>(b.c>0)-(a.c>0)||b.e/b.t-a.e/a.t||b.e-a.e||a.g.localeCompare(b.g));
+  const top=L.filter(x=>x.k!==null&&x.d!==0).sort((a,b)=>Math.abs(b.d*b.v)-Math.abs(a.d*a.v)||Math.abs(b.d)-Math.abs(a.d)).slice(0,10);
+  return{T:L.length,C,E,falta,sobra,cats,top,erro:L.length?E/L.length:0,erroC:C?E/C:0}}
+function renderRelGer(){const R=relCalc(),esc_=Math.max(.3,...relCalc().cats.filter(o=>o.c).map(o=>o.e/o.t)),n=v=>v.toLocaleString('pt-BR'),[cE,tE]=nivelErro(R.erro),cor=v=>nivelErro(v)[0],eq=indic().eq;
+  $('relSub').textContent=`${nl(CMP.loja)} · gerado em ${new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})} · estoque do sistema de ${D.gerado}`;
+  const kp=(l,v,sub)=>`<div class="kpi4"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${sub}</div></div>`;
+  let h=`<div class="kpis4"><div class="kpi4 dest" style="--c:${cE}"><div class="l">Erro geral</div><div class="v">${pct(R.erro)}</div><div class="s"><b>${n(R.E)}</b> de <b>${n(R.T)}</b> itens com diferença · <span class="pill" style="background:${cE}14;color:${cE}">${tE}</span></div></div>`+
+    kp('Itens da loja',n(R.T),'com estoque no sistema ou contados')+
+    kp('Itens contados',n(R.C),`${pct(R.T?R.C/R.T:0)} da loja · erro entre os contados: ${pct(R.erroC)}<div class="bar"><i style="width:${R.T?Math.min(100,R.C/R.T*100):0}%"></i></div>`)+
+    kp('Diferença em valor',fR(R.falta+R.sobra),`faltando ${fR(R.falta)} · sobrando +${fR(R.sobra)}<br>a preço de venda`)+`</div>`;
+  h+=`<div class="card admcard"><div class="admh"><b>Erro por categoria</b><span class="muted small">itens com diferença ÷ itens da categoria</span></div><div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Categoria</th><th class="n">Itens</th><th class="n">Contados</th><th class="n">Com erro</th><th class="hm"></th><th class="n">Erro</th></tr></thead><tbody>${
+    R.cats.map(o=>{const e=o.e/o.t,c=cor(e);return`<tr><td><b>${esc(o.g)}</b>${o.c?'':' <span class="pill muted">não contada</span>'}</td><td class="n num">${n(o.t)}</td><td class="n num">${n(o.c)}</td><td class="n num">${n(o.e)}</td><td class="hm">${o.c?`<div class="ebar"><i style="width:${Math.min(100,e/esc_*100)}%;background:${c}"></i></div>`:''}</td><td class="n num">${o.c?`<b style="color:${c}">${pct(e)}</b>`:'—'}</td></tr>`}).join('')
+    }</tbody><tfoot><tr><td>Geral</td><td class="n num">${n(R.T)}</td><td class="n num">${n(R.C)}</td><td class="n num">${n(R.E)}</td><td class="hm"><div class="ebar"><i style="width:${Math.min(100,R.erro/esc_*100)}%;background:${cE}"></i></div></td><td class="n num" style="color:${cE}">${pct(R.erro)}</td></tr></tfoot></table></div></div>`;
+  h+=`<div class="card admcard"><div class="admh"><b>Maiores diferenças</b><span class="muted small">as 10 que mais pesam em valor</span></div><div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Produto</th><th class="hm">Categoria</th><th class="n hm">Sistema</th><th class="n hm">Contado</th><th class="n">Diferença</th><th class="n">Valor</th></tr></thead><tbody>${
+    R.top.map(x=>`<tr><td>${esc(x.p.d)} <span class="muted">#${x.p.c}</span></td><td class="hm">${esc(x.p.g||'')}</td><td class="n num hm">${fQ(x.s)}</td><td class="n num hm">${fQ(x.k)}</td><td class="n num ${x.d>0?'dpos':'dneg'}">${sinal(x.d)}</td><td class="n num ${x.d>0?'dpos':'dneg'}">${x.d>0?'+':''}${fR(x.d*x.v)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">Nenhuma diferença.</td></tr>'
+    }</tbody></table></div></div>`;
+  h+=`<div class="card admcard"><div class="admh"><b>Equipe</b><span class="muted small">itens que cada pessoa contou e quantos bateram</span></div><div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Pessoa</th><th class="n">Itens</th><th class="n">Bateram</th><th class="n">Com erro</th></tr></thead><tbody>${
+    eq.map(e=>`<tr><td><b>${esc(e.nome||'sem nome')}</b></td><td class="n num">${n(e.n)}</td><td class="n num">${e.n?pct(e.ok/e.n):'—'}</td><td class="n num">${n(e.n-e.ok)}</td></tr>`).join('')}</tbody></table></div></div>`;
+  h+=`<div class="def"><b>Como ler:</b> o <b>erro</b> é a quantidade de itens em que a contagem não bateu com o sistema, dividida pelo total de itens da loja (ou da categoria). Itens ainda não contados não entram como erro, então confira a coluna "Contados". Níveis: Ótimo até 5% · Atenção de 5% a 15% · Crítico acima de 15%. Vendas e entradas feitas depois de ${esc(D.gerado)} aparecem como diferença.</div>`;
+  $('relGer').innerHTML=h}
+async function admRel(forcar){const loja=$('cfLoja').value,el=$('relGer');if(!PLANILHA||!loja)return;
+  if(!forcar&&CMP&&CMP.loja===loja&&relLoja===loja){renderRelGer();return}
+  const seq=++relSeq;$('relSub').textContent=nl(loja);el.innerHTML='<div class="kpis4">'+'<div class="kpi4"><span class="sk" style="width:50%"></span><span class="sk" style="width:70%;height:28px;margin:6px 0"></span><span class="sk"></span></div>'.repeat(4)+'</div><div class="card admcard"><span class="sk" style="height:120px"></span></div>';
+  try{const j=await getPl('loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer()));if(seq!==relSeq)return;if(!j.ok){el.innerHTML='';return erroPl(j)}
+    if(!j.rows.length){CMP=null;$('cmpOut').hidden=true;el.innerHTML=`<div class="card admcard"><div class="vazio2"><b style="color:var(--ink2)">Ainda não tem contagem de ${esc(nl(loja))}</b>O relatório aparece aqui assim que alguém começar a contar esta loja.</div></div>`;return}
+    const g=new Map();j.rows.forEach(([nome,ap,c,q])=>{const k=nome+'|'+ap;if(!g.has(k))g.set(k,{nome,l:[]});g.get(k).l.push(c+';'+String(q).replace('.',','))});
+    $('txtJuntar').value=[...g.values()].map(b=>`CONTAGEM|${loja}|${b.nome}|planilha|${b.l.length} produtos\n`+b.l.join('\n')).join('\n');$('btnJuntar').click();
+    if(!CMP||CMP.loja!==loja){el.innerHTML='';return}relLoja=loja;renderRelGer()}
+  catch(e){if(seq===relSeq)el.innerHTML='<div class="card admcard"><div class="vazio2"><b style="color:var(--ink2)">Sem conexão com a planilha</b>Confira a internet e toque em Atualizar.</div></div>'}}
+$('relAtualizar').onclick=()=>admRel(true);
+$('relPdf').onclick=()=>{if(!CMP)return;const t=document.title;document.title=nomeArq(`Relatorio_contagem_${nl(CMP.loja)}_${new Date().toISOString().slice(0,10)}`);window.print();setTimeout(()=>document.title=t,1500)};
 let HIST=[];
 async function admHist(){const loja=$('cfLoja').value;$('histLista').innerHTML='<tr><td colspan="4" class="empty">Carregando…</td></tr>';$('regLista').innerHTML='';
   try{const [h,r]=await Promise.all([getPl('acao=historico&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer())),getPl('acao=registro&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer()))]);
@@ -1190,7 +1256,7 @@ $('cfgNome').addEventListener('keydown',e=>{if(e.key==='Enter')$('cfgAdd').click
 $('cfgSalvar').onclick=async()=>{const config={equipe:EQ,cega:$('cfgCega').checked,fator:Math.max(1.5,parseFloat(String($('cfgFator').value).replace(',','.'))||5),minimo:Math.max(1,parseInt($('cfgMin').value)||15)};
   let j;try{j=await postPl({acao:'salvarConfig',config})}catch(e){toast('Sem internet','bad');return}if(!j.ok)return erroPl(j);aplicarCfg(config);toast('Ajustes salvos. Os celulares pegam ao abrir o app.','ok')};
 $('btnNuvem').onclick=async()=>{let senha='';try{senha=localStorage.getItem('contagem-senha-gerente')||''}catch(e){}
-  if(!senha){senha=(prompt('Senha do gerente (a mesma que está no script da planilha):')||'').trim();if(!senha)return}
+  if(!senha){painel();return}
   const loja=$('cfLoja').value;toast('Buscando na planilha…');
   try{const r=await fetch(PLANILHA+'?loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senha));const j=await r.json();
     if(!j.ok){if(j.erro==='senha'){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}toast('Senha errada','bad')}else toast('A planilha deu erro','bad');return}
@@ -1201,7 +1267,7 @@ $('btnNuvem').onclick=async()=>{let senha='';try{senha=localStorage.getItem('con
   catch(e){toast('Sem internet ou a planilha está fora do ar','bad')}};
 $('btnNovaContagem').onclick=()=>novaContagem($('cfLoja').value);
 $('btnPedirEstoque').onclick=()=>confirmar('Atualizar o estoque?','O estoque atual vai ser puxado do OM e publicado no app em poucos minutos. Atenção: se alguém estiver contando agora, as diferenças passam a ser calculadas com o estoque novo.','Atualizar',async()=>{
-  let senha='';try{senha=localStorage.getItem('contagem-senha-gerente')||''}catch(e){}if(!senha){senha=(prompt('Senha do gerente:')||'').trim();if(!senha)return}
+  let senha='';try{senha=localStorage.getItem('contagem-senha-gerente')||''}catch(e){}if(!senha){painel();return}
   let j;try{j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({acao:'pedirEstoque',senha})}).then(r=>r.text())}catch(e){toast('Sem internet','bad');return}
   try{j=JSON.parse(j)}catch(e){toast('A planilha deu erro (veja as Execuções no Apps Script)','bad');return}
   try{
@@ -1273,7 +1339,7 @@ function renderRel(){const I=indic();const hoje=new Date().toLocaleDateString('p
     <div>Níveis da taxa de erro: Ótimo até 5% · Atenção de 5% a 15% · Crítico acima de 15%. Níveis da cobertura: Ótimo 95% ou mais · Atenção 85% a 95% · Crítico abaixo de 85%.</div>
     <div>Vendas e entradas feitas depois de ${esc(D.gerado)} aparecem como diferença.</div></div>`;
   $('relBody').innerHTML=h}
-$('btnRel').onclick=()=>{if(!CMP)return;renderRel();view('relatorio')};
+$('btnRel').onclick=()=>{if(!CMP)return;relLoja=CMP.loja;admAba('rel');document.querySelector('main').scrollTop=0};
 $('relVoltar').onclick=()=>view('conferir');
 $('relPrint').onclick=()=>{const t=document.title;document.title=nomeArq(`Relatorio_contagem_${nl(CMP.loja)}_${new Date().toISOString().slice(0,10)}`);window.print();setTimeout(()=>document.title=t,1500)};
 $('btnXlsCmp').onclick=()=>{if(!CMP)return;const G=grupoCmp();
