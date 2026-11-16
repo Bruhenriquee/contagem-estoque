@@ -1333,12 +1333,12 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-alerta="es
 let lojasSeq=0;
 async function admLojas(){if(!PLANILHA||!D)return;const seq=++lojasSeq;
   let cache=null;try{cache=JSON.parse(sessionStorage.getItem('adm-todas')||'null')}catch(e){}
-  if(cache&&!$('lojasGrid').childElementCount)renderLojas(cache.j,cache.t);$('lojasSub').textContent=cache?`Mostrando dados de ${dtc(cache.t)} · atualizando…`:'Carregando…';
+  if(cache&&!$('lojasGrid').childElementCount)renderLojasAdm(cache.j,cache.t);$('lojasSub').textContent=cache?`Mostrando dados de ${dtc(cache.t)} · atualizando…`:'Carregando…';
   if(!$('lojasGrid').childElementCount)$('lojasGrid').innerHTML='<div class="lc"><span class="sk" style="height:110px"></span></div>'.repeat(3);
   let j;try{j=await getPl('acao=todas&chave='+encodeURIComponent(CHAVE_ENVIO)+'&lojas='+encodeURIComponent(D.lojas.join('|')))}catch(e){if(seq===lojasSeq){$('lojasSub').textContent='Sem conexão com a planilha. Toque em Atualizar.'}return}
   if(seq!==lojasSeq)return;if(!j.ok){$('lojasSub').textContent='A planilha deu erro.';return}
-  try{sessionStorage.setItem('adm-todas',JSON.stringify({t:Date.now(),j}))}catch(e){}renderLojas(j,Date.now())}
-function renderLojas(j,quando){
+  try{sessionStorage.setItem('adm-todas',JSON.stringify({t:Date.now(),j}))}catch(e){}renderLojasAdm(j,Date.now())}
+function renderLojasAdm(j,quando){
   const L=D.lojas.map(l=>{const x=j.lojas[l]||{rows:[]};const c=calcLoja(l,x.rows);c.rec=x.recontar;c.rodada=x.rodada;return c});
   const com=L.filter(c=>c.sit!=='sem'),sT=com.reduce((a,c)=>a+c.T,0),sE=com.reduce((a,c)=>a+c.E,0),sC=com.reduce((a,c)=>a+c.C,0);
   const kp=(l,v,s,cor)=>`<div class="kpi4${cor?' dest':''}"${cor?` style="--c:${cor}"`:''}><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
