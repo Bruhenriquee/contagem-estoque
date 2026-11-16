@@ -740,7 +740,7 @@ let EQUIPE=new Map();// nome -> true se já finalizou (outros celulares)
 let OUTROS=new Map(),outrosLoja='',outrosT=0,outrosSig='';// código -> [{nome,q}] contado por OUTROS celulares (vem da planilha)
 async function buscarOutros(forcar){if(!PLANILHA||!S.loja||navigator.onLine===false)return;if(!forcar&&outrosLoja===S.loja&&Date.now()-outrosT<25000)return;
   const loja=S.loja;outrosT=Date.now();
-  try{const j=await fetch(PLANILHA+'?acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)+'&aparelho='+encodeURIComponent(aparelho())).then(r=>r.json());if(!j.ok||loja!==S.loja)return;if(j.rodada&&j.rodada!==(S.rodada||{})[loja])novaRodadaLocal(loja,j.rodada,false,j.limpo);aplicarCfg(j.config);RECP=j.recontar?Object.assign({loja},j.recontar):null;renderRecBan();
+  try{const j=await fetch(PLANILHA+'?_='+Date.now()+'&acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)+'&aparelho='+encodeURIComponent(aparelho())).then(r=>r.json());if(!j.ok||loja!==S.loja)return;if(j.rodada&&j.rodada!==(S.rodada||{})[loja])novaRodadaLocal(loja,j.rodada,false,j.limpo);aplicarCfg(j.config);RECP=j.recontar?Object.assign({loja},j.recontar):null;renderRecBan();
     if(j.reaberta&&(S.finalizadas||{})[loja]&&S.finalizadas[loja]<Date.parse(j.reaberta)){delete S.finalizadas[loja];save();header();toast('O gerente reabriu a contagem de '+nl(loja),'ok');if(!$('v-contar').hidden)view('contar');if(!$('v-contados').hidden)renderContados()}
     const m=new Map(),eq=new Map(),eu=aparelho();j.rows.forEach(([c,nome,ap,q,f])=>{if(ap!==eu)eq.set(nome,(eq.has(nome)?eq.get(nome):true)&&!!f);if(ap===eu||!q)return;if(!m.has(c))m.set(c,[]);const l=m.get(c),o=l.find(x=>x.nome===nome);o?o.q=r3(o.q+q):l.push({nome,q})});const sig=loja+JSON.stringify([...m])+JSON.stringify([...eq]);OUTROS=m;EQUIPE=eq;outrosLoja=loja;if(sig!==outrosSig){outrosSig=sig;header();renderLock();if(!$('v-contados').hidden)renderContados()}}catch(e){}}
 setInterval(()=>{if(!document.hidden&&(!$('v-contar').hidden||!$('v-contados').hidden))buscarOutros()},30000);
@@ -755,8 +755,8 @@ function novaRodadaLocal(loja,rod,meu,limpo){const ts=Date.parse(rod)||Date.now(
     setTimeout(()=>{if(limpo){confirmar(`Sua contagem de ${nl(loja)} foi limpa`,`O gerente tirou a sua contagem de ${nl(loja)} da contagem atual. O que você tinha bipado não foi perdido: ficou guardado no histórico.\n\nSe for contar esta loja, é só começar de novo.`,'Entendi',()=>{});$('modalCancelar').hidden=true;return}confirmar(`Contagem nova de ${nl(loja)}`,`A lista foi zerada e a contagem começa do zero agora (${dataContagem(loja,1)}).\n\nA contagem anterior${ant?' (de '+ant+')':''} NÃO foi apagada: ficou guardada${PLANILHA?' na aba "Arquivo" da planilha':''}.`,'Começar a contar',()=>{if(S.loja===loja)view('contar')});$('modalCancelar').textContent='Fechar'},300)}clearTimeout(syncT);syncT=setTimeout(enviarPlanilha,2000)}
 function novaContagem(loja){
   confirmar('Começar contagem nova?',`Zera a contagem de ${nl(loja)} em TODOS os celulares e começa outro inventário do zero. A contagem atual não se perde: fica guardada no histórico. Só o gerente pode.`,'Começar nova',()=>setTimeout(()=>comSenha(async senha=>{
-    let resumo=null;try{const q=await fetch(PLANILHA+'?acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)).then(r=>r.json());
-      let rcm=null;try{const rr=await fetch(PLANILHA+'?acao=recontagens&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senha)).then(r=>r.json());if(rr.ok&&rr.recontar)rcm=rr.recontar.res}catch(e){}
+    let resumo=null;try{const q=await fetch(PLANILHA+'?_='+Date.now()+'&acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)).then(r=>r.json());
+      let rcm=null;try{const rr=await fetch(PLANILHA+'?_='+Date.now()+'&acao=recontagens&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senha)).then(r=>r.json());if(rr.ok&&rr.recontar)rcm=rr.recontar.res}catch(e){}
       if(q.ok&&q.rows.length){const c=calcLoja(loja,q.rows,rcm),r1=v=>Math.round(v*1000)/10,r2=v=>Math.round(v*100)/100;resumo={inicio:q.rodada||Math.min(...q.rows.map(x=>x[5]||Date.now())),T:c.T,C:c.C,E:c.E,erro:r1(c.erro),erroC:r1(c.erroC),cob:r1(c.cob),falta:r2(c.falta),sobra:r2(c.sobra),pessoas:c.pes.map(o=>o.nome).join(', ')}}}catch(e){}
     let j;try{j=await fetch(PLANILHA,{method:'POST',body:JSON.stringify({acao:'novaContagem',loja,senha,resumo})}).then(r=>r.text())}catch(e){toast('Sem internet','bad');return}
     try{j=JSON.parse(j)}catch(e){toast('A planilha deu erro','bad');return}
@@ -866,7 +866,7 @@ async function init(){
   $('noteDados').innerHTML=`Estoque do sistema de <b>${esc(D.gerado)}</b>. Vendas e entradas feitas depois desse horário aparecem como diferença: conte com a loja fechada.`;
   $('rodape').textContent='Estoque do sistema de '+D.gerado;
   modo(S.modo||'qtd');renderRecentes();header();aplicarCfg(CFG);
-  if(PLANILHA)fetch(PLANILHA+'?acao=config&chave='+encodeURIComponent(CHAVE_ENVIO)).then(r=>r.json()).then(j=>{if(j.ok)aplicarCfg(j.config)}).catch(()=>{});
+  if(PLANILHA)fetch(PLANILHA+'?_='+Date.now()+'&acao=config&chave='+encodeURIComponent(CHAVE_ENVIO)).then(r=>r.json()).then(j=>{if(j.ok)aplicarCfg(j.config)}).catch(()=>{});
   if(!PLANILHA)$('cfManual').open=true;
   if(PLANILHA){$('cfNuvem').hidden=false;$('admTopo').hidden=false;$('estoqueInfo').textContent='Estoque atual do app: '+D.gerado;$('cfLoja').innerHTML=D.lojas.map(l=>`<option value="${esc(l)}">${esc(nl(l))}</option>`).join('');if(S.loja)$('cfLoja').value=S.loja;Object.keys(S.L||{}).forEach(l=>{if((S.L[l]||[]).length&&!(S.envOk||{})[l]){S.pend=S.pend||{};S.pend[l]=1}});syncUI();enviarPlanilha()}
   view(location.hash==='#admin'?'conferir':S.loja&&S.nome?'contar':'inicio');
@@ -898,7 +898,7 @@ function renderIniciar(){const c=$('cardIniciar');if(!renderPassos()){c.hidden=t
 function reabrir(l,depois){
   if(!PLANILHA){confirmar('Reabrir pra corrigir?',`Reabrir a contagem de ${nl(l)} neste celular?`,'Reabrir',()=>{delete S.finalizadas[l];save();depois&&depois()});return}
   confirmar('Reabrir pra corrigir?',`Destrava a contagem de ${nl(l)} neste celular pra continuar a MESMA contagem: o que já foi contado fica. Só o gerente pode.`,'Reabrir',()=>setTimeout(()=>comSenha(async senha=>{
-    try{const j=await fetch(PLANILHA+'?senha='+encodeURIComponent(senha)).then(r=>r.json());if(!j.ok){toast('Senha errada','bad');return}}catch(e){toast('Precisa de internet pra reabrir','bad');return}
+    try{const j=await fetch(PLANILHA+'?_='+Date.now()+'&senha='+encodeURIComponent(senha)).then(r=>r.json());if(!j.ok){toast('Senha errada','bad');return}}catch(e){toast('Precisa de internet pra reabrir','bad');return}
     delete S.finalizadas[l];save();header();toast('Contagem reaberta','ok');depois&&depois()})))}
 $('btnLockOutra').onclick=()=>{trocaLoja=true;renderLojas();renderIniciar();view('inicio')};
 $('btnLockVer').onclick=()=>view('contados');
@@ -1222,12 +1222,13 @@ $('arq').addEventListener('change',async()=>{const fs=[...$('arq').files];$('arq
   if(n)toast(n+' arquivo(s) adicionado(s). Toque em Comparar.','ok')});
 /* ---------- painel do gerente ---------- */
 const senhaGer=()=>{try{return localStorage.getItem('contagem-senha-gerente')||''}catch(e){return''}};
-const getPl=q=>fetch(PLANILHA+'?'+q).then(r=>r.json());
+const getPl=q=>fetch(PLANILHA+'?_='+Date.now()+'&'+q).then(r=>r.json());
 function postPl(o){return fetch(PLANILHA,{method:'POST',body:JSON.stringify(Object.assign({senha:senhaGer()},o))}).then(r=>r.text()).then(t=>{try{return JSON.parse(t)}catch(e){return{ok:false,erro:'planilha'}}})}
 function erroPl(j){if(j.erro==='senha'){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}toast('Senha errada. Entre de novo.','bad');painel()}else toast('A planilha deu erro','bad')}
 function painel(){const precisa=PLANILHA&&!senhaGer();$('admLogin').hidden=!precisa;$('admTudo').hidden=precisa;$('admSair').hidden=!PLANILHA||precisa;$('admTopo').hidden=!PLANILHA||precisa;if(!precisa&&PLANILHA)admAba(abaAtual())}
 $('admEntrar').onclick=async()=>{const s=$('admSenha').value.trim();if(!s)return;
-  try{const j=await getPl('senha='+encodeURIComponent(s));if(!j.ok){toast('Senha errada','bad');return}}catch(e){toast('Sem internet','bad');return}
+  $('admEntrar').disabled=true;$('admEntrar').textContent='Entrando…';
+  try{const j=await getPl('acao=ping&senha='+encodeURIComponent(s));if(!j.ok){toast('Senha errada','bad');return}}catch(e){toast('Sem internet','bad');return}finally{$('admEntrar').disabled=false;$('admEntrar').textContent='Entrar'}
   try{localStorage.setItem('contagem-senha-gerente',s)}catch(e){}$('admSenha').value='';painel()};
 $('admSenha').addEventListener('keydown',e=>{if(e.key==='Enter')$('admEntrar').click()});
 $('admSair').onclick=()=>{try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}painel()};
@@ -1330,10 +1331,14 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-alerta="es
 
 /* ---------- todas as lojas ---------- */
 let lojasSeq=0;
-async function admLojas(){if(!PLANILHA||!D)return;const seq=++lojasSeq;$('lojasSub').textContent='Carregando…';
+async function admLojas(){if(!PLANILHA||!D)return;const seq=++lojasSeq;
+  let cache=null;try{cache=JSON.parse(sessionStorage.getItem('adm-todas')||'null')}catch(e){}
+  if(cache&&!$('lojasGrid').childElementCount)renderLojas(cache.j,cache.t);$('lojasSub').textContent=cache?`Mostrando dados de ${dtc(cache.t)} · atualizando…`:'Carregando…';
   if(!$('lojasGrid').childElementCount)$('lojasGrid').innerHTML='<div class="lc"><span class="sk" style="height:110px"></span></div>'.repeat(3);
   let j;try{j=await getPl('acao=todas&chave='+encodeURIComponent(CHAVE_ENVIO)+'&lojas='+encodeURIComponent(D.lojas.join('|')))}catch(e){if(seq===lojasSeq){$('lojasSub').textContent='Sem conexão com a planilha. Toque em Atualizar.'}return}
   if(seq!==lojasSeq)return;if(!j.ok){$('lojasSub').textContent='A planilha deu erro.';return}
+  try{sessionStorage.setItem('adm-todas',JSON.stringify({t:Date.now(),j}))}catch(e){}renderLojas(j,Date.now())}
+function renderLojas(j,quando){
   const L=D.lojas.map(l=>{const x=j.lojas[l]||{rows:[]};const c=calcLoja(l,x.rows);c.rec=x.recontar;c.rodada=x.rodada;return c});
   const com=L.filter(c=>c.sit!=='sem'),sT=com.reduce((a,c)=>a+c.T,0),sE=com.reduce((a,c)=>a+c.E,0),sC=com.reduce((a,c)=>a+c.C,0);
   const kp=(l,v,s,cor)=>`<div class="kpi4${cor?' dest':''}"${cor?` style="--c:${cor}"`:''}><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
@@ -1349,7 +1354,7 @@ async function admLojas(){if(!PLANILHA||!D)return;const seq=++lojasSeq;$('lojasS
       <div class="who">${c.pes.map(o=>`<span><b>${esc(o.nome||'sem nome')}</b> ${o.fin?'✓':o.ativo?'● contando':'parado'}</span>`).join('')}</div>
       <div class="small muted">Última atividade ${dtc(c.ult)}${c.rec&&c.rec.cods?` · recontagem ${(c.rec.feitos||[]).length}/${c.rec.cods.length}`:''}</div>`}
       ${na?`<div class="alr">${na} alerta${na>1?'s':''}</div>`:''}</button>`}).join('');
-  $('lojasSub').textContent=`Atualizado ${dtc(Date.now())} · estoque do sistema de ${D.gerado}`}
+  $('lojasSub').textContent=`Atualizado ${dtc(quando)} · estoque do sistema de ${D.gerado}`}
 $('lojasGrid').addEventListener('click',e=>{const b=e.target.closest('[data-loja]');if(!b)return;$('cfLoja').value=b.dataset.loja;$('cmpOut').hidden=true;admAba('acoes')});
 $('lojasAtualizar').onclick=admLojas;
 
@@ -1475,7 +1480,7 @@ $('cfgSalvar').onclick=async()=>{const config={equipe:EQ,cega:$('cfgCega').check
 $('btnNuvem').onclick=async()=>{let senha='';try{senha=localStorage.getItem('contagem-senha-gerente')||''}catch(e){}
   if(!senha){painel();return}
   const loja=$('cfLoja').value;toast('Buscando na planilha…');
-  try{const r=await fetch(PLANILHA+'?loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senha));const j=await r.json();
+  try{const r=await fetch(PLANILHA+'?_='+Date.now()+'&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senha));const j=await r.json();
     if(!j.ok){if(j.erro==='senha'){try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}toast('Senha errada','bad')}else toast('A planilha deu erro','bad');return}
     try{localStorage.setItem('contagem-senha-gerente',senha)}catch(e){}
     if(!j.rows.length){toast('Ninguém mandou contagem de '+nl(loja)+' ainda','bad');return}
