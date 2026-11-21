@@ -414,6 +414,74 @@ body.adm .app{max-width:none}
 @media(min-width:1050px){.lojagrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(min-width:900px){.kpis4{grid-template-columns:repeat(4,minmax(0,1fr))}.admgrid{grid-template-columns:1fr 1fr}.admset{grid-template-columns:300px 1fr;align-items:start}.admbody{padding:24px}.admbar{padding:12px 24px 0}}
 @media(max-width:899px){.admnav{margin-left:0;width:100%}.admnav button{flex:1;padding:11px 6px}.admloja{width:100%;padding-bottom:0}.admloja select{flex:1}.admback{padding:8px 10px}.tile{grid-template-columns:auto 1fr}.tile .btn{grid-column:1/-1}.admbrand small,.admback .lg{display:none}.kpi4 .v{font-size:19px;white-space:normal;overflow:visible}.kpi4 .ki{display:none}.kpi4{grid-template-columns:1fr;padding:14px}.admbrand b{font-size:16px}}
+
+/* confirmação bem visível ao salvar */
+.flashok{position:fixed;inset:0;z-index:80;pointer-events:none;display:flex;align-items:flex-start;justify-content:center;padding-top:calc(env(safe-area-inset-top,0px) + 96px);background:color-mix(in srgb,var(--fc) 20%,transparent);animation:fo .8s ease-out forwards}
+.flashok[hidden]{display:none}
+.flashok .fb{background:var(--fc);color:#fff;border-radius:18px;padding:14px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 32px rgba(0,0,0,.28);max-width:calc(100% - 32px)}
+.flashok .fb svg{width:36px;height:36px;flex:none}
+.flashok .fb b{font-size:23px;display:block;line-height:1.1;letter-spacing:-.01em}
+.flashok .fb span{font-size:13px;opacity:.92;display:block;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60vw}
+@keyframes fo{0%{opacity:0;transform:scale(.98)}10%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0}}
+.bipdica{font-size:12.5px;color:var(--teal);font-weight:600;background:color-mix(in srgb,var(--teal) 8%,#fff);border-radius:8px;padding:8px 10px;display:flex;gap:8px;align-items:center;line-height:1.35}
+.bipdica[hidden]{display:none}
+#prodCard.junto:not([hidden]){box-shadow:0 -10px 34px rgba(15,23,42,.32);max-height:62dvh}
+#prodCard.junto #pInfo,#prodCard.junto #quick,#prodCard.junto .ajbtns,#prodCard.junto .aj,#prodCard.junto .kpi .s{display:none}
+#prodCard .maisop{display:none}
+#prodCard.junto .maisop{display:block;align-self:flex-start}
+.bipdica svg{width:18px;height:18px;flex:none}
+/* contar em sequência */
+.seqbar{display:flex;align-items:center;gap:8px;background:#EEF2FF;border:1px solid #C7D2FE;color:#3730A3;border-radius:10px;padding:8px 10px;font-size:13.5px}
+.seqbar[hidden]{display:none}
+.seqbar span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seqbar .bar{height:4px;background:#C7D2FE;border-radius:4px;overflow:hidden;margin-top:4px}
+.seqbar .bar i{display:block;height:100%;background:#4338CA}
+/* faltam: ações e seleção em lote */
+.faltacts{display:flex;gap:8px;flex-wrap:wrap}
+.faltacts[hidden]{display:none}
+.faltacts .btn{flex:1;min-width:140px}
+.gacts{display:flex;gap:8px;flex-wrap:wrap;padding:4px 0 8px}
+.gacts .btn{flex:1;min-width:150px}
+#cLista .ck{display:none;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--ink2);cursor:pointer;padding:6px 4px}
+#cLista .ck input{width:22px;height:22px;accent-color:#DC2626}
+#cLista.sel .ck{display:flex}
+#cLista.sel [data-zero],#cLista.sel [data-ir]{display:none}
+#cLista .selonly{display:none}
+#cLista.sel .selonly{display:flex}
+#cLista.sel .li.marc{background:#FEF2F2}
+.selbar{position:fixed;left:12px;right:12px;bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 10px);z-index:65;background:#111827;color:#fff;border-radius:14px;padding:10px 10px 10px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:620px;margin:0 auto}
+.selbar[hidden]{display:none}
+.selbar b{flex:1;font-size:14px}
+.selbar .btn{min-height:40px}
+/* início simples */
+.pronto{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line,#E5E7EB);border-radius:12px;background:#F8FAFC}
+.pronto .pi{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 12%,#fff);color:var(--c);flex:none}
+.pronto .pi svg{width:22px;height:22px}
+.pronto div{flex:1;min-width:0}
+.pronto small{display:block;font-size:12px;color:var(--muted,#64748B)}
+.pronto b{display:block;font-size:19px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.notinha{text-align:center;padding:0 12px;line-height:1.45}
+/* painel ao vivo */
+.vivodot{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:#047857;background:#ECFDF5;border-radius:99px;padding:5px 10px}
+.vivodot i{width:8px;height:8px;border-radius:50%;background:#10B981;animation:pul 1.6s infinite}
+.vivodot.off{color:#64748B;background:#F1F5F9}.vivodot.off i{background:#94A3B8;animation:none}
+@keyframes pul{0%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+.vivo2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:820px){.vivo2{grid-template-columns:1fr}}
+.gbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:8px 0;border-bottom:1px solid #F1F5F9;font-size:13.5px}
+.gbar:last-child{border-bottom:0}
+.gbar .b{grid-column:1/-1;height:6px;background:#EEF2F7;border-radius:6px;overflow:hidden}
+.gbar .b i{display:block;height:100%;background:#2563EB;border-radius:6px}
+.gbar .n{color:#64748B;font-variant-numeric:tabular-nums;white-space:nowrap}
+.feed{display:flex;flex-direction:column}
+.feed div{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:8px;padding:7px 0;border-bottom:1px solid #F1F5F9;font-size:13px;align-items:baseline}
+.feed div:last-child{border-bottom:0}
+.feed .t{color:#64748B;font-variant-numeric:tabular-nums}
+.feed .p{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.feed .p small{display:block;color:#64748B;font-size:11.5px}
+.feed .q{font-weight:700;font-variant-numeric:tabular-nums}
+#admRel>.admh{flex-wrap:wrap;gap:10px}#admRel>.admh .row{flex-wrap:wrap}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:1px}
 </style>
 </head>
 <body>
@@ -432,23 +500,23 @@ body.adm .app{max-width:none}
 <!-- ============ LOJA ============ -->
 <section id="v-inicio" hidden>
   <div class="card" id="cardLoja">
-    <div class="ttl"><span class="passo">1</span>Qual loja você vai contar?</div>
+    <div class="ttl">Qual loja você vai contar?</div>
     <div class="sel" id="lojaSel" hidden></div>
     <div class="lojas" id="lojas"></div>
   </div>
   <div class="card" id="cardNome" hidden>
-    <div class="ttl"><span class="passo">2</span>Quem é você? <span class="muted" style="font-weight:400">Toque no seu nome</span></div>
+    <div class="ttl">Quem é você? <span class="muted" style="font-weight:400">Toque no seu nome</span></div>
     <div class="sel" id="nomeSel" hidden></div>
     <div class="chips" id="pessoas"></div>
     <div class="row" id="novoNomeRow" hidden><input id="inNovoNome" autocomplete="name" placeholder="Seu nome"><button class="btn pri" id="btnAddNome" type="button">Adicionar</button></div>
     <button class="btn sm ghost" id="btnNovoNome" type="button">+ Adicionar meu nome</button>
   </div>
   <div class="card" id="cardIniciar" hidden>
-    <div class="ttl"><span class="passo">3</span>Tudo pronto!</div>
-    <p class="small" id="iniciarInfo" style="color:var(--ink2)"></p>
+    <div id="prontoResumo" style="display:flex;flex-direction:column;gap:8px"></div>
+    <div class="small" id="iniciarInfo" style="color:var(--ink2)"></div>
     <button class="btn pri big" id="btnComecar" type="button">Iniciar contagem</button>
   </div>
-  <div class="note"><div class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div id="noteDados">Carregando a lista de produtos…</div></div>
+  <div class="small muted notinha" id="noteDados">Carregando a lista de produtos…</div>
   <button class="btn sm ghost gerente" id="btnGerente" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg> Painel do gerente</button>
 </section>
 
@@ -493,6 +561,7 @@ body.adm .app{max-width:none}
   <div class="results" id="results"></div>
 
   <div class="card prod" id="prodCard" hidden>
+    <div class="seqbar" id="seqBar" hidden><span id="seqTxt"></span><button class="btn sm" id="seqPular" type="button">Pular</button><button class="btn sm ghost" id="seqSair" type="button">Sair</button></div>
     <div class="tags" id="pInfo"></div>
     <h2 id="pNome"></h2>
     <div class="ja" id="jaInfo" hidden></div>
@@ -506,8 +575,9 @@ body.adm .app{max-width:none}
         <button class="btn" id="qMais" type="button" aria-label="Aumentar 1">+</button>
       </div>
       <div class="cxinfo" id="cxInfo"></div>
+      <button class="linkbtn maisop" id="btnMaisOp" type="button">Mais opções: atalhos, contar por pacote ou na balança</button>
       <div class="chips" id="quick"></div>
-      <div class="grid2"><button class="btn sm" id="ajPac" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></svg> Contar por pacote</button><button class="btn sm" id="ajPeso" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M7 20h10M5 8h14"/><path d="M5 8l-3 6a3 3 0 0 0 6 0zM19 8l-3 6a3 3 0 0 0 6 0z"/></svg> Contar na balança</button></div>
+      <div class="grid2 ajbtns"><button class="btn sm" id="ajPac" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></svg> Contar por pacote</button><button class="btn sm" id="ajPeso" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M7 20h10M5 8h14"/><path d="M5 8l-3 6a3 3 0 0 0 6 0zM19 8l-3 6a3 3 0 0 0 6 0z"/></svg> Contar na balança</button></div>
       <div class="aj" id="boxPac" hidden>
         <div class="ajrow"><label>Pacotes<input id="pacN" inputmode="numeric"></label><span>×</span><label>Peças em cada<input id="pacQ" inputmode="numeric"></label><span>+</span><label>Soltas<input id="pacS" inputmode="numeric"></label></div>
         <button class="btn pri" id="pacOk" type="button" disabled>= 0 peças</button>
@@ -519,6 +589,7 @@ body.adm .app{max-width:none}
         <button class="btn pri" id="pesoOk" type="button" disabled>= 0 peças</button>
       </div>
     </div>
+    <div class="bipdica" id="bipDica" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 8v8M10 8v8M14 8v8M17 8v8"/></svg><span>Já pode bipar o próximo: este salva sozinho com a quantidade acima. Bipou este de novo? Soma +1.</span></div>
     <div class="row">
       <button class="btn" id="btnCancelar" type="button">Cancelar</button>
       <button class="btn pri" id="btnSomar" type="button" style="flex:1">✓ Somar à contagem</button>
@@ -553,6 +624,8 @@ body.adm .app{max-width:none}
     </div>
     <input id="fC" placeholder="Filtrar por nome ou código">
     <div class="small muted" id="cInfo" style="margin:-4px 0 2px"></div>
+    <div class="faltacts" id="faltActs" hidden><button class="btn sm" id="btnSelZero" type="button">Marcar vários como zero</button></div>
+    <div class="small muted" id="faltDica" hidden style="margin-top:-4px">Abra um grupo e toque em <b>Contar em sequência</b> pra ir de um produto pro outro, sem bipar.</div>
     <div class="list" id="cLista"></div>
   </div>
   <details class="card maisOpcoes" style="padding:0">
@@ -579,7 +652,7 @@ body.adm .app{max-width:none}
     </div>
     <div class="admtopo" id="admTopo" hidden>
       <label class="admloja"><span>Loja</span><select id="cfLoja" aria-label="Loja"></select></label>
-      <nav class="admnav" id="admTabs"><button class="on" data-t="lojas" type="button">Todas as lojas</button><button data-t="acoes" type="button">Visão geral</button><button data-t="rel" type="button">Relatório</button><button data-t="dif" type="button">Diferenças</button><button data-t="hist" type="button">Histórico</button><button data-t="cfg" type="button">Ajustes</button></nav>
+      <nav class="admnav" id="admTabs"><button class="on" data-t="lojas" type="button">Todas as lojas</button><button data-t="vivo" type="button">Ao vivo</button><button data-t="acoes" type="button">Visão geral</button><button data-t="rel" type="button">Relatório</button><button data-t="dif" type="button">Diferenças</button><button data-t="hist" type="button">Histórico</button><button data-t="cfg" type="button">Ajustes</button></nav>
     </div>
   </div></header>
   <div class="admlogin" id="admLogin" hidden>
@@ -594,6 +667,15 @@ body.adm .app{max-width:none}
     <div id="alertas" class="admsec" style="gap:8px"></div>
     <div class="kpis4" id="redeKpis"></div>
     <div class="lojagrid" id="lojasGrid"></div>
+  </div>
+  <div id="admVivo" class="admsec" hidden>
+    <div class="admh" style="align-items:center"><div><b style="font-size:19px">Ao vivo</b><div class="small muted" id="vivoSub"></div></div><span class="vivodot" id="vivoDot"><i></i>ao vivo</span></div>
+    <div class="kpis4" id="vivoKpis"></div>
+    <div class="card admcard"><div class="admh"><b>Equipe agora</b><span class="muted small">atualiza sozinho a cada 20 segundos</span></div><div id="vivoEq"></div></div>
+    <div class="vivo2">
+      <div class="card admcard"><div class="admh"><b>O que falta, por grupo</b><span class="muted small">mais atrasados primeiro</span></div><div id="vivoGr"></div></div>
+      <div class="card admcard"><div class="admh"><b>Últimos bipes</b><span class="muted small">chegam em até 30 s</span></div><div class="feed" id="vivoFeed"></div></div>
+    </div>
   </div>
   <div id="admAcoes" class="admsec" hidden>
     <div id="alertasLoja" class="admsec" style="gap:8px"></div>
@@ -637,7 +719,7 @@ body.adm .app{max-width:none}
   </div>
   <div id="admRel" hidden class="admsec">
     <div class="admh" style="align-items:center"><div><b style="font-size:19px">Relatório da contagem</b><div class="small muted" id="relSub"></div></div>
-      <div class="row noprint"><button class="btn sm" id="relAtualizar" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/></svg> Atualizar</button><button class="btn sm" id="relXls" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg> Excel</button><button class="btn sm pri" id="relPdf" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><path d="M7 14h10v7H7z"/></svg> Salvar em PDF</button></div></div>
+      <div class="row noprint"><button class="btn sm grn" id="relZap" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg> Resumo pro dono</button><button class="btn sm" id="relAtualizar" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/></svg> Atualizar</button><button class="btn sm" id="relXls" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg> Excel</button><button class="btn sm pri" id="relPdf" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><path d="M7 14h10v7H7z"/></svg> Salvar em PDF</button></div></div>
     <div id="relGer" class="admsec"></div>
   </div>
   <div id="admDif" hidden class="admsec">
@@ -696,7 +778,9 @@ body.adm .app{max-width:none}
     <div class="row"><button class="btn" id="modalCancelar" type="button">Cancelar</button><button class="btn pri" id="modalOk" type="button">Confirmar</button></div>
   </div>
 </div>
+<div class="selbar" id="selBar" hidden><b id="selN">0 selecionados</b><button class="btn sm" id="selCancel" type="button">Cancelar</button><button class="btn sm danger" id="selOk" type="button">Marcar como zero</button></div>
 <div class="toast" id="toast" hidden></div>
+<div class="flashok" id="flashOk" hidden aria-live="polite"><div class="fb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></svg><div><b></b><span></span></div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.20.0/umd/index.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -840,7 +924,8 @@ function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='con
   VIEWS.forEach(k=>{$('v-'+k).hidden=k!==v;const n=$('n-'+k);if(n)n.setAttribute('aria-current',(k===v||(k==='conferir'&&v==='relatorio'))?'page':'false')});
   $('hStats').style.display=(v==='relatorio'||v==='contados')?'none':'';$('hProg').style.display=v==='contar'?'':'none';
   $('rodape').style.display=v==='inicio'?'none':'';
-  if(v!=='contar')pararCamera();
+  if(v!=='contar'){pararCamera();if(SEQ)seqSair()}
+  if(v!=='conferir')clearTimeout(vivoT);
   if(v==='contados'){renderContados();buscarOutros(true)}if(v==='conferir')painel();document.body.classList.toggle('largo',v==='relatorio');document.body.classList.toggle('adm',v==='conferir');if(v==='inicio')renderLojas();if(v==='contar'){renderRecentes();const t=fechada();$('v-contar').classList.toggle('trancada',t);$('lockCard').hidden=!t;$('lockGer').hidden=!t;renderLock();buscarOutros(true)}
   const mn=document.querySelector('main');if(mn)mn.scrollTop=0}
 VIEWS.forEach(k=>{const n=$('n-'+k);if(n)n.onclick=()=>view(k)});
@@ -863,7 +948,7 @@ async function init(){
   D.lojas.forEach((l,i)=>{const m=new Map();(D.e[i]||[]).forEach(r=>m.set(r[0],{q:r[1],v:r[2]}));ESTQ[l]=m});
   renderPessoas();renderIniciar();
   $('fGrupo').innerHTML='<option value="">Todos os grupos</option>'+[...D.grupos].sort().map(g=>`<option>${esc(g)}</option>`).join('');
-  $('noteDados').innerHTML=`Estoque do sistema de <b>${esc(D.gerado)}</b>. Vendas e entradas feitas depois desse horário aparecem como diferença: conte com a loja fechada.`;
+  $('noteDados').innerHTML=`Estoque do sistema: <b>${esc(D.gerado)}</b> · conte com a loja fechada`;
   $('rodape').textContent='Estoque do sistema de '+D.gerado;
   modo(S.modo||'qtd');renderRecentes();header();aplicarCfg(CFG);
   if(PLANILHA)fetch(PLANILHA+'?_='+Date.now()+'&acao=config&chave='+encodeURIComponent(CHAVE_ENVIO)).then(r=>r.json()).then(j=>{if(j.ok)aplicarCfg(j.config)}).catch(()=>{});
@@ -884,17 +969,19 @@ $('btnNovoNome').onclick=()=>{$('novoNomeRow').hidden=false;$('inNovoNome').focu
 $('btnAddNome').onclick=()=>{const n=$('inNovoNome').value.trim();if(!n){toast('Escreva um nome','bad');return}
   if(!S.pessoas.includes(n))S.pessoas.push(n);S.nome=n;trocaNome=false;save();$('inNovoNome').value='';$('novoNomeRow').hidden=true;renderPessoas();header();renderIniciar();toast('Nome adicionado')};
 $('inNovoNome').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('btnAddNome').click()}});
-function renderPassos(){const l=!!S.loja&&!trocaLoja,n=!!S.nome&&!trocaNome;
+function renderPassos(){const l=!!S.loja&&!trocaLoja,n=!!S.nome&&!trocaNome;$('cardLoja').hidden=l&&n;
   $('lojas').hidden=l;$('lojaSel').hidden=!l;if(l)$('lojaSel').innerHTML=`<span><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v11h16V9"/><path d="M3 9l1.6-5h14.8L21 9z"/><path d="M9.5 20v-6h5v6"/></svg></span><b>${esc(nl(S.loja))}</b><button class="btn sm" data-troca="loja" type="button">Trocar</button>`;
-  $('cardNome').hidden=!l;$('pessoas').hidden=n;$('btnNovoNome').hidden=n;if(n)$('novoNomeRow').hidden=true;$('nomeSel').hidden=!n;if(n)$('nomeSel').innerHTML=`<span><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><b>${esc(S.nome)}</b><button class="btn sm" data-troca="nome" type="button">Trocar</button>`;
+  $('cardNome').hidden=!l||n;$('pessoas').hidden=n;$('btnNovoNome').hidden=n;if(n)$('novoNomeRow').hidden=true;$('nomeSel').hidden=!n;if(n)$('nomeSel').innerHTML=`<span><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><b>${esc(S.nome)}</b><button class="btn sm" data-troca="nome" type="button">Trocar</button>`;
   return l&&n}
 $('v-inicio').addEventListener('click',e=>{const t=e.target.closest('[data-troca]');if(!t)return;if(t.dataset.troca==='loja')trocaLoja=true;else trocaNome=true;renderLojas();renderIniciar()});
 function renderIniciar(){const c=$('cardIniciar');if(!renderPassos()){c.hidden=true;return}c.hidden=false;
   const dt=ts=>new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   const st=statusLoja(S.loja);const btn=$('btnComecar');
-  if(st==='fin'){$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>. <span class="pill ok">Finalizada em ${dt(S.finalizadas[S.loja])}</span>`;btn.textContent='Ver a minha contagem (finalizada)'}
-  else if(st==='and'){$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>. <span class="pill info">Em andamento desde ${dt(S.iniciadas[S.loja])}</span>`;btn.textContent='Continuar contagem'}
-  else{$('iniciarInfo').innerHTML=`Você vai contar <b>${esc(nl(S.loja))}</b> como <b>${esc(S.nome)}</b>.`;btn.textContent='Iniciar contagem'}}
+  const cor=corLoja(S.loja,D?D.lojas.indexOf(S.loja):0);
+  $('prontoResumo').innerHTML=`<div class="pronto"><span class="pi" style="--c:${cor}">${svgI('store')}</span><div><small>Loja</small><b>${esc(nl(S.loja))}</b></div><button class="btn sm" data-troca="loja" type="button">Trocar</button></div><div class="pronto"><span class="pi" style="--c:#4338CA">${svgI('user')}</span><div><small>Contando como</small><b>${esc(S.nome)}</b></div><button class="btn sm" data-troca="nome" type="button">Trocar</button></div>`;
+  if(st==='fin'){$('iniciarInfo').innerHTML=`<span class="pill ok">Você finalizou em ${dt(S.finalizadas[S.loja])}</span>`;btn.textContent='Ver a minha contagem'}
+  else if(st==='and'){$('iniciarInfo').innerHTML=`<span class="pill info">Em andamento desde ${dt(S.iniciadas[S.loja])}</span>`;btn.textContent='Continuar contagem'}
+  else{$('iniciarInfo').innerHTML='';btn.textContent='Começar a contar'}}
 function reabrir(l,depois){
   if(!PLANILHA){confirmar('Reabrir pra corrigir?',`Reabrir a contagem de ${nl(l)} neste celular?`,'Reabrir',()=>{delete S.finalizadas[l];save();depois&&depois()});return}
   confirmar('Reabrir pra corrigir?',`Destrava a contagem de ${nl(l)} neste celular pra continuar a MESMA contagem: o que já foi contado fica. Só o gerente pode.`,'Reabrir',()=>setTimeout(()=>comSenha(async senha=>{
@@ -975,8 +1062,8 @@ function numsHtml(p,extra){const s=sis(p.c);const c=(totais().get(p.c)||0)+(extr
   return`<div class="kpi" style="--c:#1565C0"><div class="l">Sistema</div><div class="v">${fQ(s)}</div><div class="s">${u}${p.cx&&s?' · '+fQ(s/p.cx)+' cx':''}</div></div><div class="kpi" style="--c:#4F46E5"><div class="l">Contado</div><div class="v">${fQ(c)}</div><div class="s">${u}</div></div><div class="kpi" style="--c:${dc}"><div class="l">Diferença</div><div class="v">${c?(d===0?'✓ 0':(d>0?'▲ ':'▼ ')+sinal(d)):'—'}</div><div class="s">${!c?'ainda não contado':d===0?'bateu':d>0?'sobrando':'faltando'}</div></div>`}
 function achou(p,viaScan){
   if(trancado())return;
-  if(S.modo==='uni'){adicionar(p,p.cx||1);return}
-  cur=p;pausado=true;
+  if(S.modo==='uni'&&!SEQ){adicionar(p,p.cx||1);return}
+  cur=p;qMexeu=false;const segue=!!(viaScan&&camAberta&&!SEQ);pausado=!segue;$('bipDica').hidden=!segue;$('prodCard').classList.toggle('junto',segue);seqUI();
   $('pNome').textContent=p.d;
   $('pInfo').innerHTML=`<span class="tag g">${esc(p.g)}</span><span class="tag">#${p.c}</span><span class="tag">${p.e?'EAN '+esc(p.e):'sem EAN'}</span><span class="tag">${un(p.u)}</span>`;
   $('pNums').innerHTML=numsHtml(p);
@@ -984,7 +1071,7 @@ function achou(p,viaScan){
   if(!ja.hidden){const quem=[...out.map(o=>`<b>${esc(o.nome||'alguém')}</b> (${fQ(o.q)})`),...(meu?[`<b>você</b> (${fQ(meu)})`]:[])].join(', ');
     ja.innerHTML=`<div><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/></svg> Esse produto já foi contado por ${quem}.</div><div>${meu?'Quer <b>alterar</b> o que você contou, ou <b>somar</b> o que achou em outro lugar?':'Se for o mesmo lugar, não precisa contar de novo. Se achou em outro lugar, é só somar.'}</div>`+
       `<div class="row">${meu?'<button class="btn sm pri" id="jaAlterar" type="button" style="flex:1">Alterar a minha</button>':''}<button class="btn sm" id="jaPular" type="button" style="flex:1">Pular este produto</button></div>`;
-    $('jaPular').onclick=()=>{cur=null;$('prodCard').hidden=true;pausado=false};
+    $('jaPular').onclick=()=>{cur=null;$('prodCard').hidden=true;pausado=false;if(SEQ)seqProx()};
     if(meu)$('jaAlterar').onclick=()=>promptQtd('Alterar a sua contagem',meu,p.u,novo=>{S.L[S.loja]=ent().filter(x=>x.c!==p.c);ent().push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),c:p.c,q:novo,t:Date.now()});save();header();renderRecentes();cur=null;$('prodCard').hidden=true;pausado=false;toast('Contagem alterada','ok')})}
   $('cxBox').hidden=!p.cx;cxUI();
   $('boxPac').hidden=$('boxPeso').hidden=true;['pacN','pacQ','pacS'].forEach(i=>$(i).value='');pacCalc();
@@ -993,7 +1080,7 @@ function achou(p,viaScan){
   if(!viaScan){$('qtd').focus();$('qtd').select()}}
 /* ---------- miudezas: por pacote e na balança ---------- */
 const nv=id=>{const v=parseFloat(String($(id).value).replace(/\s/g,'').replace(',','.'));return isNaN(v)?0:v};
-function usarQtd(q){$('qtd').value=fQ(q);$('boxPac').hidden=$('boxPeso').hidden=true;cxCalc();toast('Quantidade preenchida: '+fQ(q)+' — confira e toque em Somar','ok')}
+function usarQtd(q){qMexeu=true;$('qtd').value=fQ(q);$('boxPac').hidden=$('boxPeso').hidden=true;cxCalc();toast('Quantidade preenchida: '+fQ(q)+' — confira e toque em Somar','ok')}
 $('ajPac').onclick=()=>{$('boxPeso').hidden=true;$('boxPac').hidden=!$('boxPac').hidden;if(!$('boxPac').hidden)$('pacN').focus()};
 $('ajPeso').onclick=()=>{$('boxPac').hidden=true;const b=$('boxPeso');b.hidden=!b.hidden;if(b.hidden||!cur)return;
   const un=(S.pesoUn||{})[cur.c];$('amN').value=un?'1':'10';$('amP').value=un?fQ(un):'';$('totP').value='';
@@ -1004,30 +1091,49 @@ function pesoCalc(){const n=nv('amN'),pa=nv('amP'),pt=nv('totP');const q=n>0&&pa
 ['pacN','pacQ','pacS'].forEach(i=>$(i).addEventListener('input',pacCalc));['amN','amP','totP'].forEach(i=>$(i).addEventListener('input',pesoCalc));
 $('pacOk').onclick=()=>{const q=pacCalc();if(q)usarQtd(q)};
 $('pesoOk').onclick=()=>{const q=pesoCalc();if(!q)return;S.pesoUn=S.pesoUn||{};S.pesoUn[cur.c]=r3(nv('amP')/nv('amN')*1000)/1000;save();usarQtd(q)};
-$('quick').addEventListener('click',e=>{const b=e.target.closest('[data-n]');if(b){$('qtd').value=b.dataset.n;cxCalc()}});
+$('quick').addEventListener('click',e=>{const b=e.target.closest('[data-n]');if(b){qMexeu=true;$('qtd').value=b.dataset.n;cxCalc()}});
 const qv=()=>parseFloat(String($('qtd').value).replace(/\s/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.'));
-$('qMais').onclick=()=>{$('qtd').value=fQ((qv()||0)+1);cxCalc()};$('qMenos').onclick=()=>{$('qtd').value=fQ(Math.max(0,(qv()||0)-1));cxCalc()};
+$('qMais').onclick=()=>{qMexeu=true;$('qtd').value=fQ((qv()||0)+1);cxCalc()};$('qMenos').onclick=()=>{qMexeu=true;$('qtd').value=fQ(Math.max(0,(qv()||0)-1));cxCalc()};
 function cxUI(){const p=cur;if(!p)return;const emCx=!!(p.cx&&S.cx);$('cxM2').classList.toggle('on',!emCx);$('cxCx').classList.toggle('on',emCx);
   $('qLabel').textContent='Quantidade encontrada ('+(emCx?'caixas':un(p.u))+')';cxCalc()}
 function cxCalc(){const p=cur;if(!p||!p.cx){$('cxInfo').textContent='';return}const q=qv()||0;
   $('cxInfo').textContent=S.cx?`1 caixa = ${fQ(p.cx)} m² · ${fQ(q)} cx = ${fQ(q*p.cx)} m²`+(sis(p.c)?` · sistema ${fQ(sis(p.c))} m² = ${fQ(sis(p.c)/p.cx)} cx`:''):`1 caixa = ${fQ(p.cx)} m²`}
 $('cxM2').onclick=()=>{S.cx=false;save();cxUI()};$('cxCx').onclick=()=>{S.cx=true;save();cxUI()};
-$('qtd').addEventListener('input',cxCalc);
+$('qtd').addEventListener('input',()=>{qMexeu=true;cxCalc()});
 $('qtd').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();somar()}});
-$('btnSomar').onclick=somar;$('btnCancelar').onclick=()=>{cur=null;$('prodCard').hidden=true;pausado=false};
-function somar(){if(!cur)return;const q=qv();if(isNaN(q)||q<0){toast('Digite uma quantidade válida','bad');return}
+$('btnSomar').onclick=()=>somar();$('btnCancelar').onclick=()=>{if(SEQ){seqSair();return}cur=null;$('prodCard').hidden=true;pausado=false};
+function somar(depois){if(!cur)return;const q=qv();if(isNaN(q)||q<0){toast('Digite uma quantidade válida','bad');return}
   const p=cur,v=p.cx&&S.cx?r3(q*p.cx):q,tot=(totais().get(p.c)||0)+v,s=sis(p.c);
-  const fim=()=>{adicionar(p,v);if(cur===p){cur=null;$('prodCard').hidden=true}pausado=false};
+  const fim=()=>{adicionar(p,v);if(cur===p){cur=null;$('prodCard').hidden=true}pausado=false;if(SEQ){SEQ.feitos++;seqProx()}else if(typeof depois==='function')depois()};
   // aviso suave: total 5x maior/menor que o sistema e diferença de 15+ (pega erro de digitação)
-  const F=+CFG.fator||5,M=+CFG.minimo||15;if(s>0&&(tot>s*F||tot<s/F)&&Math.abs(tot-s)>=M){confirmar('Confere essa quantidade?',CFG.cega?`A contagem vai ficar ${fQ(tot)} ${un(p.u)}. Parece bem diferente do esperado — confere de novo?`:`O sistema tem ${fQ(s)} ${un(p.u)} e a contagem vai ficar ${fQ(tot)}. Parece bem diferente do esperado — confere de novo?`,'Sim, está certo',fim);$('modalCancelar').textContent='Corrigir';return}
+  const F=+CFG.fator||5,M=+CFG.minimo||15;if(s>0&&(tot>s*F||tot<s/F)&&Math.abs(tot-s)>=M){pausado=true;confirmar('Confere essa quantidade?',CFG.cega?`A contagem vai ficar ${fQ(tot)} ${un(p.u)}. Parece bem diferente do esperado — confere de novo?`:`O sistema tem ${fQ(s)} ${un(p.u)} e a contagem vai ficar ${fQ(tot)}. Parece bem diferente do esperado — confere de novo?`,'Sim, está certo',fim);$('modalCancelar').textContent='Corrigir';return}
   fim()}
 function tutorial(){try{localStorage.setItem('contagem-tutorial','1')}catch(e){}
   const T=[['1 de 3 · Escolha a loja','Na tela Loja, toque na loja que vai contar, depois no seu nome e em "Iniciar contagem".'],
     ['2 de 3 · Bipe os produtos','Na tela Contar, aponte a câmera pro código de barras (ou busque pelo nome) e diga quantas peças achou.'],
     ['3 de 3 · Envie quando terminar','Na tela Revisar e enviar, toque em "Terminei" e depois em "Enviar agora".']];
   let i=0;const go=()=>{const [t,x]=T[i];confirmar(t,x,i<2?'Próximo →':'Entendi!',()=>{if(++i<T.length)setTimeout(go)});$('modalCancelar').textContent='Pular'};go()}
+let foT;function tom(fs){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();let t=ac.currentTime;fs.forEach(f=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.2,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+.12);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.13);t+=.13})}catch(e){}}
+function sinalSalvo(p,tot,d){const el=$('flashOk');if(!el)return;const uni=S.modo==='uni'&&!SEQ,neutro=CFG.cega||uni,ok=d===0;
+  const cor=neutro?'#1D4ED8':ok?'#047857':'#D97706';el.style.setProperty('--fc',cor);
+  el.querySelector('svg').innerHTML=neutro||ok?'<path d="M5 12.5l4.5 4.5L19 7"/>':'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/>';
+  el.querySelector('b').textContent=uni?'+1 · total '+fQ(tot):CFG.cega?'Salvo · '+fQ(tot)+' '+un(p.u):ok?'Bateu! '+fQ(tot)+' '+un(p.u):'Diferença '+sinal(d)+' '+un(p.u);
+  el.querySelector('span').textContent=p.d;
+  const ms=uni?500:850;el.hidden=true;void el.offsetWidth;el.style.animationDuration=ms+'ms';el.hidden=false;clearTimeout(foT);foT=setTimeout(()=>el.hidden=true,ms);
+  if(!uni){tom(CFG.cega?[1180]:ok?[1050,1570]:[560,380]);try{navigator.vibrate&&navigator.vibrate(ok||CFG.cega?50:[80,60,80])}catch(e){}}}
+var SEQ=null,qMexeu=false;
+function seqIniciar(g){const l=(FALTA_G.get(g)||[]).map(x=>x.p.c);if(!l.length)return;if(trancado())return;SEQ={g,l,i:-1,feitos:0};view('contar');seqProx()}
+function seqProx(){if(!SEQ)return;const m=totais();
+  while(++SEQ.i<SEQ.l.length){const c=SEQ.l[SEQ.i];if(m.has(c)||quemContou(c).length)continue;const p=P.get(c);if(!p)continue;achou(p,false);return}
+  const g=SEQ.g,n=SEQ.feitos;SEQ=null;seqUI();cur=null;$('prodCard').hidden=true;pausado=false;
+  confirmar('Grupo terminado!',`Você passou por todos os produtos de ${g} que faltavam${n?' ('+n+' contados agora)':''}.`,'Ver o que falta',()=>{view('contados');setFiltroC('falta')});$('modalCancelar').textContent='Fechar'}
+function seqSair(){SEQ=null;seqUI();cur=null;$('prodCard').hidden=true;pausado=false}
+function seqUI(){const b=$('seqBar');if(!b)return;if(!SEQ){b.hidden=true;return}b.hidden=false;const tot=SEQ.l.length,i=Math.min(SEQ.i+1,tot);
+  $('seqTxt').innerHTML=`<b>${i} de ${tot}</b> · ${esc(SEQ.g)}<div class="bar"><i style="width:${tot?i/tot*100:0}%"></i></div>`}
+$('btnMaisOp').onclick=()=>$('prodCard').classList.remove('junto');
+$('seqPular').onclick=()=>{cur=null;seqProx()};$('seqSair').onclick=seqSair;
 function adicionar(p,q){ent().push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),c:p.c,q,t:Date.now()});save();
-  const tot=totais().get(p.c),s=sis(p.c),d=r3(tot-s);
+  const tot=totais().get(p.c),s=sis(p.c),d=r3(tot-s);sinalSalvo(p,tot,d);
   const out=quemContou(p.c);toast(CFG.cega?`${p.d.slice(0,40)} · contado ${fQ(tot)}`:`${p.d.slice(0,40)} · contado ${fQ(tot)} · sistema ${fQ(s)} · ${d===0?'bateu ✓':'dif. '+sinal(d)}`+(out.length?` · ${out.map(o=>o.nome).join(', ')} também contou`:''),d===0?'ok':'');
   header();renderRecentes();if(!camAberta)$('busca').focus()}
 function renderRecentes(){const L=ent().slice(-10).reverse();$('recInfo').textContent=ent().length?`${totais().size} produtos · ${ent().length} bipes nesta loja`:'Nada contado ainda';
@@ -1044,7 +1150,7 @@ $('recentes').addEventListener('click',e=>{
    Motores de leitura, em ordem: leitor nativo do celular (BarcodeDetector) e zxing-wasm (zxing-cpp),
    alternando quadro a quadro; zxing-js fica só de reserva se o wasm não carregar.
    Em celular com várias câmeras traseiras, escolhe a principal (com foco automático) e deixa trocar. */
-let t0Ler=0,stream=null,det=null,camAberta=false,pausado=false,ultimo='',ultimoT=0,loopT=null,ac=null,track=null,luz=false,frame=0,zoomOn=false,cap={},cams=[],camIdx=-1;
+let vistoT=0,t0Ler=0,stream=null,det=null,camAberta=false,pausado=false,ultimo='',ultimoT=0,loopT=null,ac=null,track=null,luz=false,frame=0,zoomOn=false,cap={},cams=[],camIdx=-1;
 let wasmOk=false,zr=null,motor='';
 const FMT_W=['EAN13','EAN8','UPCA','UPCE','Code128','Code39','Code93','ITF','QRCode','DataMatrix'];
 const OPT_W={formats:FMT_W,tryHarder:true,tryRotate:true,tryInvert:true,tryDownscale:true,maxNumberOfSymbols:1};
@@ -1106,7 +1212,8 @@ async function loop(){if(!camAberta)return;const v=$('video');let code=null;
     if(code&&!buscar(code.replace(/\D/g,'')||code).length&&!/^\d{8,}$/.test(code))code=null;
     if(!code&&!modoTexto&&t0Ler&&Date.now()-t0Ler>7000){t0Ler=0;$('scanSt').textContent=cams.length>1?'Não leu? Troque de câmera, afaste um palmo ou use o botão Foto.':'Não leu? Afaste um palmo, toque na imagem para focar ou use o botão Foto.'}
   }
-  if(code){t0Ler=Date.now();const now=Date.now();if(code!==ultimo||now-ultimoT>(S.modo==='uni'?900:2500)){ultimo=code;ultimoT=now;lido(code)}}
+  if(code){t0Ler=Date.now();const now=Date.now(),sumiu=now-vistoT>800;vistoT=now;const cartao=cur&&!$('prodCard').hidden&&S.modo!=='uni';
+    if(code!==ultimo||(cartao?sumiu&&now-ultimoT>800:now-ultimoT>(S.modo==='uni'?900:2500))){ultimo=code;ultimoT=now;lido(code)}}
   loopT=setTimeout(loop,wasmOk?40:90)}
 /* foto: usa a câmera do próprio celular (foco e resolução máximos) e lê a imagem inteira */
 $('btnFoto').onclick=()=>$('fotoIn').click();
@@ -1117,6 +1224,10 @@ $('fotoIn').addEventListener('change',async()=>{const f=$('fotoIn').files[0];$('
   if(code){ultimo=code;ultimoT=Date.now();lido(code)}else toast('Não achei código na foto. Chegue mais perto e deixe o código reto e nítido.','bad')});
 function lido(code){const l=buscar(code.replace(/\D/g,'')||code);$('scanBox').classList.remove('flash');void $('scanBox').offsetWidth;$('scanBox').classList.add('flash');
   if(!l.length){bip();$('scanSt').textContent='Código '+code+' não cadastrado. Busque pelo nome.';toast('Código '+code+' não está no cadastro','bad');return}
+  if(cur&&!$('prodCard').hidden&&S.modo!=='uni'&&!SEQ){
+    if(l.length===1&&l[0].c===cur.c){bip();qMexeu=true;$('qtd').value=fQ((qv()||0)+1);cxCalc();toast('+1 · '+fQ(qv())+' '+un(cur.u),'ok');return}
+    if(!$('jaInfo').hidden&&!qMexeu){toast(cur.d.slice(0,40)+' · pulado');cur=null;$('prodCard').hidden=true}
+    else{somar(()=>lido(code));return}}
   bip();
   if(l.length>1){pausado=true;mostrar(l,code);toast('Este código está em '+l.length+' produtos: escolha o certo');return}
   $('scanSt').textContent=l[0].d;achou(l[0],true)}
@@ -1140,11 +1251,12 @@ function renderContados(){renderStatusFinalizar();syncUI();const L=linhasMinhas(
     let RF=F.filter(x=>x.s>0).filter(x=>!f||norm(x.p.d).includes(f)||String(x.p.c).includes(f));
     RF.sort((a,b)=>(a.p.g||'').localeCompare(b.p.g||'')||a.p.d.localeCompare(b.p.d));
     $('cInfo').textContent=RF.length?`${RF.length.toLocaleString('pt-BR')} produtos ainda não contados`:'';
-    const itemF=x=>`<div class="li" data-code="${x.p.c}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small></div><div class="r rs"><span class="of">sistema</span> ${fQ(x.s)}</div><div style="grid-column:2/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:4px"><button class="btn sm" data-zero="${x.p.c}" type="button">É zero</button><button class="btn sm pri" data-ir="${x.p.c}" type="button">Contar →</button></div></div>`;const G=new Map();RF.forEach(x=>{const g=x.p.g||'Sem grupo';if(!G.has(g))G.set(g,[]);G.get(g).push(x)});FALTA_G=G;
+    const itemF=x=>`<div class="li${SELZ.has(x.p.c)?' marc':''}" data-code="${x.p.c}"><div class="d">${esc(x.p.d)}<small>#${x.p.c} · ${esc(x.p.g)} · ${un(x.p.u)}</small></div><div class="r rs"><span class="of">sistema</span> ${fQ(x.s)}</div><div style="grid-column:2/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:4px"><label class="ck"><input type="checkbox" data-sel="${x.p.c}"${SELZ.has(x.p.c)?' checked':''}> Não tem nenhum</label><button class="btn sm" data-zero="${x.p.c}" type="button">É zero</button><button class="btn sm pri" data-ir="${x.p.c}" type="button">Contar →</button></div></div>`;const G=new Map();RF.forEach(x=>{const g=x.p.g||'Sem grupo';if(!G.has(g))G.set(g,[]);G.get(g).push(x)});FALTA_G=G;
     $('cLista').innerHTML=!RF.length?vazio('check','Tudo contado nesta loja!'):f?[...G].map(([g,l])=>`<div class="gsep">${esc(g)} · ${l.length}</div>`+l.slice(0,100).map(itemF).join('')).join('')
       :[...G].map(([g,l])=>`<details class="gfalta" data-g="${esc(g)}"><summary>${esc(g)}<span class="n">${l.length} faltando</span></summary><div class="list"></div></details>`).join('');
-    ITEMF=itemF;
+    ITEMF=itemF;$('faltActs').hidden=!RF.length;$('faltDica').hidden=!RF.length||!!f;
   }else{
+    $('faltActs').hidden=$('faltDica').hidden=true;if(SELZ.size||$('cLista').classList.contains('sel'))selFim();
     let R=L.filter(x=>!f||norm(x.p.d).includes(f)||String(x.p.c).includes(f));
     if(filtroC==='dif')R=R.filter(x=>x.d!==0);if(filtroC==='ok')R=R.filter(x=>x.d===0);
     R.sort((a,b)=>a.p.d.localeCompare(b.p.d));
@@ -1156,8 +1268,22 @@ function setFiltroC(f){filtroC=f;[...$('segC').children].forEach(x=>x.classList.
 $('segC').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;setFiltroC(b.dataset.f)});
 $('cStats').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;setFiltroC(b.dataset.f)});
 $('fC').addEventListener('input',renderContados);
-$('cLista').addEventListener('toggle',e=>{const d=e.target;if(!d.classList||!d.classList.contains('gfalta')||!d.open)return;const box=d.querySelector('.list');if(box.childElementCount)return;const l=FALTA_G.get(d.dataset.g)||[];box.innerHTML=l.slice(0,300).map(ITEMF).join('')+(l.length>300?`<div class="empty">Mostrando 300 de ${l.length}. Use a busca acima.</div>`:'')},true);
+$('cLista').addEventListener('toggle',e=>{const d=e.target;if(!d.classList||!d.classList.contains('gfalta')||!d.open)return;const box=d.querySelector('.list');if(box.childElementCount)return;const l=FALTA_G.get(d.dataset.g)||[];box.innerHTML=`<div class="gacts"><button class="btn sm pri" data-seqg="${esc(d.dataset.g)}" type="button">▶ Contar em sequência (${l.length})</button><button class="btn sm selonly" data-selall="${esc(d.dataset.g)}" type="button">Marcar todos deste grupo</button></div>`+l.slice(0,300).map(ITEMF).join('')+(l.length>300?`<div class="empty">Mostrando 300 de ${l.length}. Use a busca acima.</div>`:'')},true);
+var SELZ=new Set();
+function selUI(){const n=SELZ.size;$('selN').textContent=n?`${n.toLocaleString('pt-BR')} selecionado${n>1?'s':''}`:'Abra um grupo e toque nos que não têm';$('selOk').disabled=!n}
+function selFim(){SELZ.clear();$('cLista').classList.remove('sel');$('selBar').hidden=true;$('btnSelZero').textContent='Marcar vários como zero';$('cLista').querySelectorAll('[data-sel]').forEach(i=>{i.checked=false;i.closest('.li').classList.remove('marc')})}
+function selMarca(c,on){on?SELZ.add(c):SELZ.delete(c);const i=$('cLista').querySelector(`[data-sel="${c}"]`);if(i){i.checked=on;i.closest('.li').classList.toggle('marc',on)}}
+$('btnSelZero').onclick=()=>{if(trancado())return;if($('cLista').classList.contains('sel')){selFim();return}$('cLista').classList.add('sel');$('selBar').hidden=false;$('btnSelZero').textContent='Cancelar seleção';selUI()};
+$('selCancel').onclick=selFim;
+$('selOk').onclick=()=>{const L=[...SELZ];if(!L.length)return;const tot=L.reduce((a,c)=>a+Math.max(0,sis(c)),0);
+  confirmar(`Marcar ${L.length} produto${L.length>1?'s':''} como zero?`,`Eles entram na sua contagem com quantidade 0 (não tem nenhum na loja).\n\nO sistema diz que tem ${fQ(tot)} no total desses produtos: tudo isso vai aparecer como faltando.`,'Marcar como zero',()=>{
+    const t=Date.now();L.forEach((c,k)=>ent().push({id:t.toString(36)+k.toString(36)+Math.random().toString(36).slice(2,5),c,q:0,t}));save();selFim();header();renderContados();renderRecentes();
+    toast(`${L.length} produto${L.length>1?'s':''} marcado${L.length>1?'s':''} como zero`,'ok')},true)};
+$('cLista').addEventListener('change',e=>{const i=e.target.closest('[data-sel]');if(!i)return;selMarca(+i.dataset.sel,i.checked);selUI()});
 $('cLista').addEventListener('click',e=>{
+  const sg=e.target.closest('[data-seqg]');if(sg){seqIniciar(sg.dataset.seqg);return}
+  const sa=e.target.closest('[data-selall]');if(sa){const l=FALTA_G.get(sa.dataset.selall)||[];const todos=l.every(x=>SELZ.has(x.p.c));l.forEach(x=>selMarca(x.p.c,!todos));sa.textContent=todos?'Marcar todos deste grupo':'Desmarcar todos deste grupo';selUI();return}
+  if($('cLista').classList.contains('sel')){const li=e.target.closest('.li[data-code]');if(li&&!e.target.closest('label')){const c=+li.dataset.code;selMarca(c,!SELZ.has(c));selUI()}return}
   if(e.target.closest('[data-zera],[data-zero],[data-editatotal],[data-ir]')&&trancado())return;
   const zera=e.target.closest('[data-zera]');if(zera){const c=+zera.dataset.zera;S.L[S.loja]=ent().filter(x=>x.c!==c);save();header();renderContados();renderRecentes();toast('Produto removido');return}
   const zero=e.target.closest('[data-zero]');if(zero){const c=+zero.dataset.zero;const p=P.get(c)||{c,d:'Produto '+c,g:'',u:'',e:''};adicionar(p,0);renderContados();return}
@@ -1234,10 +1360,45 @@ $('admSenha').addEventListener('keydown',e=>{if(e.key==='Enter')$('admEntrar').c
 $('admSair').onclick=()=>{try{localStorage.removeItem('contagem-senha-gerente')}catch(e){}painel()};
 $('admTabs').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b)return;admAba(b.dataset.t)});
 function admAba(t){[...$('admTabs').children].forEach(x=>x.classList.toggle('on',x.dataset.t===t));const b=$('admTabs').querySelector('.on');if(b&&b.scrollIntoView)b.scrollIntoView({block:'nearest',inline:'nearest'});
-  $('admLojas').hidden=t!=='lojas';$('admAcoes').hidden=t!=='acoes';$('admRel').hidden=t!=='rel';$('admDif').hidden=t!=='dif';$('admHist').hidden=t!=='hist';$('admCfg').hidden=t!=='cfg';$('admTopo').classList.toggle('semloja',t==='lojas'||t==='cfg');
+  $('admLojas').hidden=t!=='lojas';$('admVivo').hidden=t!=='vivo';$('admAcoes').hidden=t!=='acoes';$('admRel').hidden=t!=='rel';$('admDif').hidden=t!=='dif';$('admHist').hidden=t!=='hist';$('admCfg').hidden=t!=='cfg';$('admTopo').classList.toggle('semloja',t==='lojas'||t==='cfg');
+  clearTimeout(vivoT);if(t==='vivo')admVivo();
   if(t==='lojas')admLojas();if(t==='hist')admHist();if(t==='cfg')admCfg();if(t==='acoes')admStatus();if(t==='rel')admRel();if(t==='dif')admDif();document.querySelector('main').scrollTop=0}
 $('cfLoja').addEventListener('change',()=>{$('cmpOut').hidden=true;DIFSEL.clear();admAba(abaAtual())});
 let admSeq=0,ADM_PES=new Map();
+/* ---------- ao vivo: progresso, ritmo e previsão (atualiza sozinho) ---------- */
+var vivoT=null,vivoSeq=0;
+const haMin=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?'agora':m<60?`há ${m} min`:`há ${Math.floor(m/60)}h${String(m%60).padStart(2,'0')}`};
+const hhmm=t=>new Date(t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+const durTxt=h=>{const m=Math.round(h*60);return m<60?`${m} min`:`${Math.floor(m/60)}h${m%60?' '+String(m%60).padStart(2,'0')+'min':''}`};
+async function admVivo(){clearTimeout(vivoT);const loja=$('cfLoja').value;if(!PLANILHA||!loja||$('admVivo').hidden||$('v-conferir').hidden)return;const seq=++vivoSeq,agora=Date.now(),JAN=30*60e3;
+  if(!$('vivoKpis').childElementCount)$('vivoKpis').innerHTML='<div class="kpi4"><span class="sk" style="width:50%"></span><span class="sk" style="width:70%;height:28px;margin:6px 0"></span><span class="sk"></span></div>'.repeat(4);
+  try{const [q,r]=await Promise.all([getPl('acao=quem&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)),getPl('acao=registro&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer())+'&de='+(agora-3*3600e3))]);
+    if(seq!==vivoSeq||$('admVivo').hidden)return;if(!q.ok)throw 0;if(!r.ok){erroPl(r);return}
+    const st=ESTQ[loja]||new Map(),cods=new Set(),pes=new Map();
+    q.rows.forEach(([c,nome,ap,qt,f,t])=>{cods.add(c);const o=pes.get(nome)||{n:0,fin:true,t:0,rec:new Set()};o.n++;o.fin=o.fin&&!!f;o.t=Math.max(o.t,t||0);pes.set(nome,o)});
+    let pos=0,cob=0;const gm=new Map();
+    for(const [c,x] of st)if(x.q>0){pos++;const ok=cods.has(c);if(ok)cob++;const g=(P.get(c)||{}).g||'Sem grupo';const o=gm.get(g)||{g,t:0,c:0};o.t++;if(ok)o.c++;gm.set(g,o)}
+    const falta=pos-cob,pc=pos?cob/pos*100:0;
+    const R=(r.rows||[]).filter(x=>x[2]!==''&&x[1]!=='gerente'),rec=R.filter(x=>agora-x[0]<=JAN);
+    rec.forEach(x=>{const o=pes.get(x[1]);if(o)o.rec.add(x[2])});
+    const feitos30=new Set(rec.map(x=>x[1]+'|'+x[2])).size,ritmo=feitos30*2,prev=ritmo>0&&falta>0?falta/ritmo:null;
+    const ATIVO=10*60e3,ativos=[...pes.values()].filter(o=>!o.fin&&o.t&&agora-o.t<ATIVO).length;
+    const kp=(c,ic,l,v,sub,bar)=>`<div class="kpi4"><span class="ki" style="--c:${c}">${svgI(ic)}</span><div class="l">${l}</div><div class="v">${v}</div><div class="s">${sub||'&nbsp;'}</div>${bar!=null?`<div class="bar"><i style="width:${Math.min(100,bar)}%"></i></div>`:''}</div>`;
+    $('vivoKpis').innerHTML=kp('#2563EB','check','Progresso',pc.toFixed(0)+'%',`${cob.toLocaleString('pt-BR')} de ${pos.toLocaleString('pt-BR')} produtos com estoque`,pc)+
+      kp('#0D9488','zap','Ritmo da equipe',ritmo?ritmo.toLocaleString('pt-BR')+'/h':'—',ritmo?'produtos por hora (últimos 30 min)':'ninguém bipou nos últimos 30 min')+
+      kp('#7C3AED','clock','Previsão',!falta?'Pronto':prev?'~'+durTxt(prev):'—',!falta?'todos os produtos com estoque foram contados':prev?`termina por volta das ${hhmm(agora+prev*3600e3)} · faltam ${falta.toLocaleString('pt-BR')}`:`faltam ${falta.toLocaleString('pt-BR')} produtos`)+
+      kp('#D97706','users','Contando agora',String(ativos),pes.size?`de ${pes.size} ${pes.size===1?'pessoa':'pessoas'} nesta contagem`:'ninguém começou ainda');
+    $('vivoEq').innerHTML=pes.size?`<div class="tblwrap" style="max-height:none"><table class="tbl atbl"><thead><tr><th>Pessoa</th><th class="n">Itens</th><th class="n">Ritmo</th><th>Situação</th><th class="n hm">Último envio</th></tr></thead><tbody>${[...pes].sort((a,b)=>b[1].t-a[1].t).map(([n,o])=>{const at=!o.fin&&o.t&&agora-o.t<ATIVO;
+      return`<tr><td><b>${esc(n||'sem nome')}</b></td><td class="n num">${o.n.toLocaleString('pt-BR')}</td><td class="n num">${o.rec.size?(o.rec.size*2).toLocaleString('pt-BR')+'/h':'—'}</td><td>${o.fin?'<span class="st fin">✓ Finalizou</span>':at?'<span class="st and">● Contando</span>':'<span class="st par">Parado</span>'}</td><td class="n hm">${o.t?haMin(o.t):'—'}</td></tr>`}).join('')}</tbody></table></div>`
+      :'<div class="vazio2"><b style="color:var(--ink2)">Ninguém começou esta loja ainda</b>Quando alguém bipar, aparece aqui sozinho.</div>';
+    const G=[...gm.values()].filter(o=>o.t>o.c).sort((a,b)=>(b.t-b.c)-(a.t-a.c)).slice(0,10);
+    $('vivoGr').innerHTML=G.length?G.map(o=>`<div class="gbar"><b>${esc(o.g)}</b><span class="n">faltam ${(o.t-o.c).toLocaleString('pt-BR')} de ${o.t.toLocaleString('pt-BR')}</span><div class="b"><i style="width:${o.c/o.t*100}%"></i></div></div>`).join(''):'<div class="vazio2"><b style="color:var(--ink2)">Nada faltando</b>Todos os produtos com estoque foram contados.</div>';
+    const fd=R.slice(0,14);
+    $('vivoFeed').innerHTML=fd.length?fd.map(x=>`<div><span class="t">${hhmm(x[0])}</span><span class="p">${esc(x[3]||'Produto '+x[2])}<small>${esc(x[1]||'')}</small></span><span class="q">${fQ(+x[5]||0)}</span></div>`).join(''):'<div class="vazio2" style="display:block">Nenhum bipe nas últimas 3 horas.</div>';
+    $('vivoSub').textContent=`${nl(loja)} · atualizado às ${new Date().toLocaleTimeString('pt-BR')}`;$('vivoDot').classList.remove('off');$('vivoDot').lastChild.textContent='ao vivo'}
+  catch(e){if(seq!==vivoSeq)return;$('vivoDot').classList.add('off');$('vivoDot').lastChild.textContent='sem conexão';$('vivoSub').textContent='Tentando de novo…'}
+  if(seq===vivoSeq&&!$('admVivo').hidden)vivoT=setTimeout(admVivo,20000)}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!$('v-conferir').hidden&&!$('admVivo').hidden)admVivo()});
 async function admStatus(){const loja=$('cfLoja').value;if(!PLANILHA||!loja)return;const seq=++admSeq;
   $('estoqueInfo').textContent=D?'Versão no app: '+D.gerado:'—';
   const KI={"Situação": ["#2563EB", "<path d=\"M3 12h4l3-8 4 16 3-8h4\"/>"], "Produtos contados": ["#0D9488", "<path d=\"M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8\"/>"], "Cobertura": ["#7C3AED", "<circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"1\"/>"], "Equipe": ["#D97706", "<circle cx=\"9\" cy=\"8\" r=\"3.5\"/><path d=\"M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6\"/>"]};
@@ -1298,6 +1459,21 @@ async function admRel(forcar){const loja=$('cfLoja').value,el=$('relGer');if(!PL
     relLoja=loja;renderRelGer()}
   catch(e){if(seq===relSeq)el.innerHTML='<div class="card admcard"><div class="vazio2"><b style="color:var(--ink2)">Sem conexão com a planilha</b>Confira a internet e toque em Atualizar.</div></div>'}}
 $('relXls').onclick=exportarExcel;
+function resumoDono(){const R=relCalc(),loja=$('cfLoja').value,[,nv]=nivelErro(R.erro),pc=v=>(v*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
+  const rs=v=>'R$ '+Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const cats=R.cats.filter(o=>o.c&&o.e).sort((a,b)=>b.e/b.t-a.e/a.t).slice(0,3);
+  const pes=Object.keys(PROD||{}).filter(Boolean);
+  const L=[`*Contagem de estoque · ${nl(loja)}*`,new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}),'',
+    `Contados: ${R.C.toLocaleString('pt-BR')} de ${R.T.toLocaleString('pt-BR')} produtos (${pc(R.T?R.C/R.T:0)})`,
+    `Erro geral: *${pc(R.erro)}* (${nv})`,`Com diferença: ${R.E.toLocaleString('pt-BR')} produtos`,
+    `Faltando: ${rs(R.falta)}`,`Sobrando: ${rs(R.sobra)}`,`Saldo: ${R.falta+R.sobra<0?'-':'+'}${rs(R.falta+R.sobra)} (preço de venda)`];
+  if(cats.length)L.push('','*Categorias com mais erro*',...cats.map(o=>`• ${o.g}: ${pc(o.e/o.t)} (${o.e} de ${o.t})`));
+  if(R.top.length)L.push('','*Maiores diferenças*',...R.top.slice(0,5).map(x=>`• ${x.p.d.slice(0,42)}: ${sinal(x.d)} ${un(x.p.u)} (${x.d<0?'-':'+'}${rs(x.d*x.v)})`));
+  if(pes.length)L.push('',`Equipe: ${pes.join(', ')}`);
+  return L.join('\n')}
+$('relZap').onclick=()=>{if(!CMP||!relLoja){toast('Espere o relatório carregar','bad');return}const t=resumoDono();
+  try{navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>toast('Resumo copiado','ok')).catch(()=>{})}catch(e){}
+  confirmar('Resumo pro dono',t,'Enviar no WhatsApp',()=>{window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank')});$('modalCancelar').textContent='Fechar'};
 $('relAtualizar').onclick=()=>admRel(true);
 $('relPdf').onclick=()=>{if(!CMP)return;const t=document.title;document.title=nomeArq(`Relatorio_contagem_${nl(CMP.loja)}_${new Date().toISOString().slice(0,10)}`);window.print();setTimeout(()=>document.title=t,1500)};
 /* ---------- painel: base comum ---------- */
