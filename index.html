@@ -481,6 +481,26 @@ body.adm .app{max-width:none}
 .feed .p small{display:block;color:#64748B;font-size:11.5px}
 .feed .q{font-weight:700;font-variant-numeric:tabular-nums}
 #admRel>.admh{flex-wrap:wrap;gap:10px}#admRel>.admh .row{flex-wrap:wrap}
+/* histórico do produto */
+.phist{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.phist[hidden]{display:none}
+.phist .hl{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#64748B}
+.phist .hr{display:flex;gap:6px;flex-wrap:wrap}
+.phist .hc{border:1px solid #E2E8F0;border-radius:8px;padding:5px 9px;background:#fff;line-height:1.3}
+.phist .hc small{display:block;color:#64748B;font-size:11px}
+.phist .hc.ok{border-color:#A7F3D0;background:#ECFDF5}.phist .hc.bad{border-color:#FED7AA;background:#FFF7ED}
+.phist .av{background:#FFF7ED;color:#9A3412;border-radius:8px;padding:7px 10px;font-weight:600}
+#prodCard.junto .phist .hr{display:none}
+/* lançar no OM */
+.omcard .omnums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.omcard .omnums div{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px 12px}
+.omcard .omnums b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.omcard .omnums span{font-size:12px;color:#64748B}
+.omcard .ombtns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:700px){.omcard .ombtns{grid-template-columns:1fr}.omcard .omnums b{font-size:17px}}
+.omaviso{border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.45}
+.omaviso.warn{background:#FFF7ED;color:#9A3412;border:1px solid #FED7AA}
+.omaviso.info{background:#EFF6FF;color:#1E3A8A;border:1px solid #BFDBFE}
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:1px}
 </style>
 </head>
@@ -566,6 +586,7 @@ body.adm .app{max-width:none}
     <h2 id="pNome"></h2>
     <div class="ja" id="jaInfo" hidden></div>
     <div class="kpis" id="pNums"></div>
+    <div class="phist" id="pHist" hidden></div>
     <div id="qtdBox" style="display:flex;flex-direction:column;gap:10px">
       <div class="seg" id="cxBox" hidden><button class="btn" id="cxM2" type="button">Contar em m²</button><button class="btn" id="cxCx" type="button">Contar em caixas</button></div>
       <div class="ttl" id="qLabel">Quantidade encontrada</div>
@@ -721,6 +742,7 @@ body.adm .app{max-width:none}
     <div class="admh" style="align-items:center"><div><b style="font-size:19px">Relatório da contagem</b><div class="small muted" id="relSub"></div></div>
       <div class="row noprint"><button class="btn sm grn" id="relZap" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg> Resumo pro dono</button><button class="btn sm" id="relAtualizar" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/></svg> Atualizar</button><button class="btn sm" id="relXls" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg> Excel</button><button class="btn sm pri" id="relPdf" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><path d="M7 14h10v7H7z"/></svg> Salvar em PDF</button></div></div>
     <div id="relGer" class="admsec"></div>
+    <div id="relOM" class="admsec noprint"></div>
   </div>
   <div id="admDif" hidden class="admsec">
     <div class="admh" style="align-items:center"><div><b style="font-size:19px">Diferenças</b><div class="small muted" id="difSub"></div></div><button class="btn sm" id="difXls" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg> Excel desta lista</button></div>
@@ -926,7 +948,7 @@ function view(v){if(v==='relatorio'&&!CMP)v='conferir';if(v!=='inicio'&&v!=='con
   $('rodape').style.display=v==='inicio'?'none':'';
   if(v!=='contar'){pararCamera();if(SEQ)seqSair()}
   if(v!=='conferir')clearTimeout(vivoT);
-  if(v==='contados'){renderContados();buscarOutros(true)}if(v==='conferir')painel();document.body.classList.toggle('largo',v==='relatorio');document.body.classList.toggle('adm',v==='conferir');if(v==='inicio')renderLojas();if(v==='contar'){renderRecentes();const t=fechada();$('v-contar').classList.toggle('trancada',t);$('lockCard').hidden=!t;$('lockGer').hidden=!t;renderLock();buscarOutros(true)}
+  if(v==='contados'){renderContados();buscarOutros(true)}if(v==='conferir')painel();document.body.classList.toggle('largo',v==='relatorio');document.body.classList.toggle('adm',v==='conferir');if(v==='inicio')renderLojas();if(v==='contar'){renderRecentes();carregarHist();const t=fechada();$('v-contar').classList.toggle('trancada',t);$('lockCard').hidden=!t;$('lockGer').hidden=!t;renderLock();buscarOutros(true)}
   const mn=document.querySelector('main');if(mn)mn.scrollTop=0}
 VIEWS.forEach(k=>{const n=$('n-'+k);if(n)n.onclick=()=>view(k)});
 $('btnGerente').onclick=()=>view('conferir');$('cfVoltar').onclick=()=>view('inicio');
@@ -1066,7 +1088,7 @@ function achou(p,viaScan){
   cur=p;qMexeu=false;const segue=!!(viaScan&&camAberta&&!SEQ);pausado=!segue;$('bipDica').hidden=!segue;$('prodCard').classList.toggle('junto',segue);seqUI();
   $('pNome').textContent=p.d;
   $('pInfo').innerHTML=`<span class="tag g">${esc(p.g)}</span><span class="tag">#${p.c}</span><span class="tag">${p.e?'EAN '+esc(p.e):'sem EAN'}</span><span class="tag">${un(p.u)}</span>`;
-  $('pNums').innerHTML=numsHtml(p);
+  $('pNums').innerHTML=numsHtml(p);renderHist(p);
   const meu=totais().get(p.c)||0,out=quemContou(p.c),ja=$('jaInfo');ja.hidden=!meu&&!out.length;
   if(!ja.hidden){const quem=[...out.map(o=>`<b>${esc(o.nome||'alguém')}</b> (${fQ(o.q)})`),...(meu?[`<b>você</b> (${fQ(meu)})`]:[])].join(', ');
     ja.innerHTML=`<div><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/></svg> Esse produto já foi contado por ${quem}.</div><div>${meu?'Quer <b>alterar</b> o que você contou, ou <b>somar</b> o que achou em outro lugar?':'Se for o mesmo lugar, não precisa contar de novo. Se achou em outro lugar, é só somar.'}</div>`+
@@ -1121,7 +1143,17 @@ function sinalSalvo(p,tot,d){const el=$('flashOk');if(!el)return;const uni=S.mod
   el.querySelector('span').textContent=p.d;
   const ms=uni?500:850;el.hidden=true;void el.offsetWidth;el.style.animationDuration=ms+'ms';el.hidden=false;clearTimeout(foT);foT=setTimeout(()=>el.hidden=true,ms);
   if(!uni){tom(CFG.cega?[1180]:ok?[1050,1570]:[560,380]);try{navigator.vibrate&&navigator.vibrate(ok||CFG.cega?50:[80,60,80])}catch(e){}}}
-var SEQ=null,qMexeu=false;
+var SEQ=null,qMexeu=false,PHIST=null,histP=null;
+/* contagens anteriores de cada produto da loja (só as contagens fechadas; a planilha guarda as 3 últimas) */
+function carregarHist(forcar){const loja=S.loja;if(!PLANILHA||!loja||navigator.onLine===false)return;if(!forcar&&PHIST&&PHIST.loja===loja&&Date.now()-PHIST.t<2*3600e3)return;if(histP&&histP.loja===loja)return;
+  const pr=getPl('acao=histLoja&chave='+encodeURIComponent(CHAVE_ENVIO)+'&loja='+encodeURIComponent(loja)).then(j=>{if(j&&j.ok)PHIST={loja,t:Date.now(),rodadas:j.rodadas||[],h:j.h||{}}}).catch(()=>{}).finally(()=>{if(histP===pr)histP=null});pr.loja=loja;histP=pr}
+function renderHist(p){const el=$('pHist');if(!el)return;const H=PHIST&&PHIST.loja===S.loja?PHIST:null,l=H&&H.h[p.c];
+  if(CFG.cega||!H||!H.rodadas.length){el.hidden=true;return}
+  const dd=t=>new Date(t).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+  const chips=H.rodadas.map((t,i)=>{const x=l&&l[i];if(!x)return`<span class="hc"><small>${dd(t)}</small>não contado</span>`;const [q,si]=x,d=si==null?null:r3(q-si);
+    return`<span class="hc ${d===null?'':d===0?'ok':'bad'}"><small>${dd(t)}</small>contado <b>${fQ(q)}</b>${si==null?'':` · sistema ${fQ(si)}${d===0?' ✓':' · '+sinal(d)}`}</span>`}).join('');
+  const nDif=l?l.filter(x=>x&&x[1]!=null&&r3(x[0]-x[1])!==0).length:0;
+  el.innerHTML=(nDif>=2?`<div class="av">Este produto deu diferença em ${nDif} das últimas ${H.rodadas.length} contagens. Conte com atenção (prateleira e depósito).</div>`:'')+`<div class="hl">Contagens anteriores</div><div class="hr">${chips}</div>`;el.hidden=false}
 function seqIniciar(g){const l=(FALTA_G.get(g)||[]).map(x=>x.p.c);if(!l.length)return;if(trancado())return;SEQ={g,l,i:-1,feitos:0};view('contar');seqProx()}
 function seqProx(){if(!SEQ)return;const m=totais();
   while(++SEQ.i<SEQ.l.length){const c=SEQ.l[SEQ.i];if(m.has(c)||quemContou(c).length)continue;const p=P.get(c);if(!p)continue;achou(p,false);return}
@@ -1451,14 +1483,30 @@ function renderRelGer(){const R=relCalc(),esc_=Math.max(.3,...relCalc().cats.fil
   h+=`<div class="def"><b>Como ler:</b> o <b>erro</b> é a quantidade de itens em que a contagem não bateu com o sistema, dividida pelo total de itens da loja (ou da categoria). Itens ainda não contados não entram como erro, então confira a coluna "Contados". Níveis: Ótimo até 5% · Atenção de 5% a 15% · Crítico acima de 15%. Vendas e entradas feitas depois de ${esc(D.gerado)} aparecem como diferença.</div>`;
   $('relGer').innerHTML=h}
 async function admRel(forcar){const loja=$('cfLoja').value,el=$('relGer');if(!PLANILHA||!loja)return;
-  if(!forcar&&CMP&&CMP.loja===loja&&CMP.daPlanilha&&relLoja===loja){renderRelGer();return}
-  const seq=++relSeq;$('relSub').textContent=nl(loja);el.innerHTML='<div class="kpis4">'+'<div class="kpi4"><span class="sk" style="width:50%"></span><span class="sk" style="width:70%;height:28px;margin:6px 0"></span><span class="sk"></span></div>'.repeat(4)+'</div><div class="card admcard"><span class="sk" style="height:120px"></span></div>';
+  if(!forcar&&CMP&&CMP.loja===loja&&CMP.daPlanilha&&relLoja===loja){renderRelGer();renderRelOM();return}
+  const seq=++relSeq;$('relSub').textContent=nl(loja);$('relOM').innerHTML='';el.innerHTML='<div class="kpis4">'+'<div class="kpi4"><span class="sk" style="width:50%"></span><span class="sk" style="width:70%;height:28px;margin:6px 0"></span><span class="sk"></span></div>'.repeat(4)+'</div><div class="card admcard"><span class="sk" style="height:120px"></span></div>';
   try{const [c,pr]=await Promise.all([carregarCMP(loja,forcar),getPl('acao=equipe&loja='+encodeURIComponent(loja)+'&senha='+encodeURIComponent(senhaGer())).catch(()=>({}))]);if(seq!==relSeq)return;
     PROD=(pr&&pr.ok&&pr.pessoas)||{};
     if(!c){el.innerHTML=`<div class="card admcard"><div class="vazio2"><b style="color:var(--ink2)">Ainda não tem contagem de ${esc(nl(loja))}</b>O relatório aparece aqui assim que alguém começar a contar esta loja.</div></div>`;return}
-    relLoja=loja;renderRelGer()}
+    relLoja=loja;renderRelGer();renderRelOM()}
   catch(e){if(seq===relSeq)el.innerHTML='<div class="card admcard"><div class="vazio2"><b style="color:var(--ink2)">Sem conexão com a planilha</b>Confira a internet e toque em Atualizar.</div></div>'}}
 $('relXls').onclick=exportarExcel;
+function omDados(){const C=CMP.L.filter(x=>x.k!==null),D=C.filter(x=>x.d!==0);const naoC=CMP.L.filter(x=>x.k===null&&x.s>0).length;
+  const pend=CMP.recPed?[...CMP.recPed].filter(c=>!(CMP.recFeitos&&CMP.recFeitos.has(c))).length:0;
+  return{C,D,naoC,pend,liq:D.reduce((a,x)=>a+x.d*x.v,0)}}
+function renderRelOM(){const el=$('relOM');if(!CMP||!CMP.daPlanilha||CMP.loja!==$('cfLoja').value){el.innerHTML='';return}
+  const o=omDados(),n=v=>v.toLocaleString('pt-BR'),rs=v=>(v<0?'−':'+')+'R$ '+Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  el.innerHTML=`<div class="card admcard omcard"><div class="admh"><b>Lançar no OM</b><span class="muted small">ajuste de estoque pelo coletor (F7)</span></div>
+    <div class="omnums"><div><b>${n(o.D.length)}</b><span>com diferença (vão mudar no OM)</span></div><div><b>${n(o.C.length)}</b><span>contados no total</span></div><div><b>${rs(o.liq)}</b><span>ajuste líquido (preço de venda)</span></div></div>
+    ${o.pend?`<div class="omaviso warn"><b>Espere as recontagens:</b> ainda faltam ${n(o.pend)} produtos que você pediu pra recontar. Lance depois que voltarem.</div>`:''}
+    <div class="omaviso info">O OM troca o estoque de cada produto do arquivo pela quantidade contada. Lance com a loja sem vendas desde a contagem (o estoque do app é de ${esc(D.gerado)}).${o.naoC?` Os ${n(o.naoC)} produtos com estoque que ninguém contou <b>não</b> entram e continuam como estão.`:''}</div>
+    <div class="ombtns"><button class="btn pri" data-om="dif" type="button">${svgI('download')} Arquivo do OM · só diferenças</button><button class="btn" data-om="tudo" type="button">${svgI('download')} Arquivo do OM · tudo contado</button><button class="btn" data-om="xls" type="button">${svgI('list')} Planilha pra conferir antes</button></div></div>`}
+$('relOM').addEventListener('click',e=>{const b=e.target.closest('[data-om]');if(!b||!CMP)return;const o=omDados(),loja=nl(CMP.loja),dia=new Date().toISOString().slice(0,10);
+  if(b.dataset.om==='xls'){const rows=o.C.slice().sort((a,c)=>Math.abs(c.d*c.v)-Math.abs(a.d*a.v)||a.p.d.localeCompare(c.p.d)).map(x=>({'Código':x.p.c,'Produto':x.p.d,'Grupo':x.p.g||'','Unidade':un(x.p.u),'Sistema':x.s,'Contado':x.k,'Ajuste (contado − sistema)':r3(x.d),'Preço de venda':x.v,'Valor do ajuste (R$)':Math.round(x.d*x.v*100)/100,'Vai no arquivo "só diferenças"':x.d!==0?'sim':'não'}));
+    const wb=XLSX.utils.book_new(),ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:9},{wch:50},{wch:24},{wch:9},{wch:10},{wch:10},{wch:14},{wch:12},{wch:16},{wch:14}];XLSX.utils.book_append_sheet(wb,ws,'Ajuste');baixar(wb,nomeArq(`Ajuste_OM_${loja}_${dia}.xlsx`));return}
+  const L=b.dataset.om==='dif'?o.D:o.C;if(!L.length){toast('Nenhum produto pra lançar','bad');return}
+  const go=()=>{const m=new Map();L.forEach(x=>m.set(x.p.c,x.k));entregarTxt(txtOM(m),nomeArq(`Coletor_${loja}_${b.dataset.om==='dif'?'diferencas':'tudo'}_${dia}.txt`),false);toast(L.length+' produtos no arquivo do OM','ok')};
+  if(o.pend){confirmar('Ainda tem recontagem pendente',`Faltam ${o.pend} produtos que você pediu pra recontar. Se lançar agora, eles entram com a contagem antiga.`,'Gerar mesmo assim',go);return}go()});
 function resumoDono(){const R=relCalc(),loja=$('cfLoja').value,[,nv]=nivelErro(R.erro),pc=v=>(v*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
   const rs=v=>'R$ '+Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   const cats=R.cats.filter(o=>o.c&&o.e).sort((a,b)=>b.e/b.t-a.e/a.t).slice(0,3);
@@ -1542,7 +1590,7 @@ async function carregarCMP(loja,forcar){if(!forcar&&CMP&&CMP.loja===loja&&CMP.da
   const g=new Map();j.rows.forEach(([nome,ap,c,q])=>{const k=nome+'|'+ap;if(!g.has(k))g.set(k,{nome,l:[]});g.get(k).l.push(c+';'+String(q).replace('.',','))});
   RECONT={loja,m:new Map(Object.entries(j.recont||{}).map(([c,q])=>[+c,+q]))};
   $('txtJuntar').value=[...g.values()].map(b=>`CONTAGEM|${loja}|${b.nome}|planilha|${b.l.length} produtos\n`+b.l.join('\n')).join('\n');$('btnJuntar').click();
-  if(!CMP||CMP.loja!==loja)return null;CMP.daPlanilha=true;CMP.recPed=new Set((j.recPed||[]).map(Number));CMP.recQuando=j.recQuando;CMP.rodada=j.rodada;return CMP}
+  if(!CMP||CMP.loja!==loja)return null;CMP.daPlanilha=true;CMP.recPed=new Set((j.recPed||[]).map(Number));CMP.recFeitos=new Set(Object.keys(j.recont||{}).map(Number));CMP.recQuando=j.recQuando;CMP.rodada=j.rodada;return CMP}
 
 /* ---------- relatório: produtividade e Excel ---------- */
 let PROD={};
